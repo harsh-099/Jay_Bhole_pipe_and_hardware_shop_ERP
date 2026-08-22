@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <style>
+        @page {
+            size: A4;
+            margin: 18px;
+        }
+
+        body {
+            font-family: DejaVu Sans;
+            font-size: 12px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #0d47a1;
+            color: white;
+            border: 1px solid black;
+            padding: 8px;
+        }
+
+        td {
+            border: 1px solid black;
+            padding: 7px;
+        }
+
+        .nb {
+            border: none;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        .title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #0d47a1;
+        }
+
+        .report {
+            background: #0d47a1;
+            color: white;
+            padding: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <table class="nb">
+
+        <tr>
+
+            <td class="nb" width="90">
+
+                {% if shop.logo %}
+
+                <img src="{{ shop.logo.path }}" width="80">
+
+                {% endif %}
+
+            </td>
+
+            <td class="nb center">
+
+                <div class="title">
+
+                    {{ shop.shop_name }}
+
+                </div>
+
+                <div>{{ shop.address }}</div>
+
+                <div>Owner : {{ shop.owner_name }}</div>
+
+                <div>Mobile : {{ shop.mobile }}</div>
+
+                <div>GST : {{ shop.gst_number }}</div>
+
+            </td>
+
+        </tr>
+
+    </table>
+
+    <br>
+
+    <div class="report">
+
+        PAYMENT MODE REPORT
+
+    </div>
+
+    <br>
+
+    <table>
+
+        <tr>
+
+            <th>Payment Mode</th>
+
+            <th>Total Bills</th>
+
+            <th>Total Amount</th>
+
+        </tr>
+
+        <tr>
+
+            <td>Cash</td>
+
+            <td align="center">{{ cash_count }}</td>
+
+            <td align="right">₹{{ cash_total }}</td>
+
+        </tr>
+
+        <tr>
+
+            <td>UPI</td>
+
+            <td align="center">{{ upi_count }}</td>
+
+            <td align="right">₹{{ upi_total }}</td>
+
+        </tr>
+
+        <tr>
+
+            <td>Credit</td>
+
+            <td align="center">{{ credit_count }}</td>
+
+            <td align="right">₹{{ credit_total }}</td>
+
+        </tr>
+
+    </table>
+
+    <br><br>
+
+    <hr>
+
+    <div align="center">
+
+        Printed :
+        {{ current_time|date:"d-m-Y h:i A" }}
+
+        <br><br>
+
+        <b>
+
+            ***** END OF PAYMENT MODE REPORT *****
+
+        </b>
+
+    </div>
+
+</body>
+
+</html>

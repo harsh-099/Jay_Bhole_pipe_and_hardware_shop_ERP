@@ -1,0 +1,1334 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block page_title %}
+Dashboard
+{% endblock %}
+
+{% block content %}
+
+<div class="row mb-4">
+
+    <div class="col-12">
+
+        <div class="card shadow-lg border-0 bg-dark text-white">
+
+            <div class="card-body p-4">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <div>
+
+                        <h3 class="fw-bold mb-2">
+
+                            <i class="fa-solid fa-brain text-warning me-2"></i>
+
+                            Today's Business Brief
+
+                        </h3>
+
+                        <p class="mb-0 text-light">
+
+                            Welcome {{ request.user.first_name|default:request.user.username }} 👋
+
+                        </p>
+
+                    </div>
+
+                    <div class="text-end">
+
+                        <small class="text-light">
+
+                            {{ now|date:"d M Y" }}
+
+                        </small>
+
+                    </div>
+
+                </div>
+
+                <hr class="border-secondary">
+
+                <div class="row text-center">
+
+                    <div class="col-md-3">
+
+                        <h4 class="text-success">
+
+                            ₹{{ brief.today_sales }}
+
+                        </h4>
+
+                        <small>Today's Sales</small>
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                        <h4 class="text-danger">
+
+                            ₹{{ brief.today_expense }}
+
+                        </h4>
+
+                        <small>Today's Expenses</small>
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                        <h4 class="text-info">
+
+                            {{ brief.bills }}
+
+                        </h4>
+
+                        <small>Invoices</small>
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                        <h4 class="text-warning">
+
+                            {{ brief.trend }}
+
+                        </h4>
+
+                        <small>Sales Trend</small>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="container-fluid">
+
+    <!-- Quick Actions -->
+
+    <div class="card shadow mb-4">
+
+        <div class="card-header bg-primary text-white">
+
+            <h5 class="mb-0">
+
+                <i class="fa fa-bolt"></i>
+
+                Quick Actions
+
+            </h5>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row g-3">
+
+                <div class="col-lg-2 col-md-3">
+
+                    <a href="/billing/" class="btn btn-primary w-100">
+
+                        <i class="fa fa-file-invoice"></i><br>
+
+                        New Bill
+
+                    </a>
+
+                </div>
+
+                <div class="col-lg-2 col-md-3">
+
+                    <a href="/products/add/" class="btn btn-success w-100">
+
+                        <i class="fa fa-box"></i><br>
+
+                        Product
+
+                    </a>
+
+                </div>
+
+                <div class="col-lg-2 col-md-3">
+
+                    <a href="/customers/add/" class="btn btn-info w-100">
+
+                        <i class="fa fa-users"></i><br>
+
+                        Customer
+
+                    </a>
+
+                </div>
+
+                <div class="col-lg-2 col-md-3">
+
+                    <a href="/suppliers/add/" class="btn btn-warning w-100">
+
+                        <i class="fa fa-truck"></i><br>
+
+                        Supplier
+
+                    </a>
+
+                </div>
+
+                <div class="col-lg-2 col-md-3">
+
+                    <a href="/purchases/add/" class="btn btn-secondary w-100">
+
+                        <i class="fa fa-cart-shopping"></i><br>
+
+                        Purchase
+
+                    </a>
+
+                </div>
+
+                <div class="col-lg-2 col-md-3">
+
+                    <a href="/expenses/" class="btn btn-danger w-100">
+
+                        <i class="fa fa-money-bill"></i><br>
+
+                        Expense
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Cards Row -->
+    <div class="row">
+
+        <!-- Total Sales -->
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h6>Total Sales</h6>
+                    <h3 class="text-success">₹{{ total_sales }}</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Customers -->
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h6>Customers</h6>
+                    <h3 class="text-primary">{{ total_customers }}</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Products -->
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h6>Products</h6>
+                    <h3 class="text-warning">{{ total_products }}</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profit -->
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h6>Profit</h6>
+                    <h3 class="text-success">₹{{ profit }}</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Suppliers -->
+
+        <div class="col-lg-3 col-md-6 mb-4">
+
+            <a href="/suppliers/" class="text-decoration-none">
+
+                <div class="card shadow border-start border-primary border-4">
+
+                    <div class="card-body">
+
+                        <h6 class="text-dark">
+
+                            <i class="fa fa-truck"></i>
+
+                            Suppliers
+
+                        </h6>
+
+                        <h3 class="text-primary">
+
+                            {{ total_suppliers }}
+
+                        </h3>
+
+                    </div>
+
+                </div>
+
+            </a>
+
+        </div>
+
+
+        <!-- Bills -->
+
+        <div class="col-lg-3 col-md-6 mb-4">
+
+            <a href="/billing/" class="text-decoration-none">
+
+                <div class="card shadow border-start border-success border-4">
+
+                    <div class="card-body">
+
+                        <h6>
+
+                            <i class="fa fa-file-invoice"></i>
+
+                            Bills
+
+                        </h6>
+
+                        <h3 class="text-success">
+
+                            {{ total_bills }}
+
+                        </h3>
+
+                    </div>
+
+                </div>
+
+            </a>
+
+        </div>
+
+
+        <!-- Purchases -->
+
+        <div class="col-lg-3 col-md-6 mb-4">
+
+            <a href="/purchases/add/" class="text-decoration-none">
+
+                <div class="card shadow border-start border-warning border-4">
+
+                    <div class="card-body">
+
+                        <h6>
+
+                            <i class="fa fa-cart-shopping"></i>
+
+                            Purchases
+
+                        </h6>
+
+                        <h3 class="text-warning">
+
+                            {{ total_purchases }}
+
+                        </h3>
+
+                    </div>
+
+                </div>
+
+            </a>
+
+        </div>
+
+
+        <!-- Low Stock -->
+
+        <div class="col-lg-3 col-md-6 mb-4">
+
+            <a href="/inventory/" class="text-decoration-none">
+
+                <div class="card shadow border-start border-danger border-4">
+
+                    <div class="card-body">
+
+                        <h6>
+
+                            <i class="fa fa-triangle-exclamation"></i>
+
+                            Low Stock
+
+                        </h6>
+
+                        <h3 class="text-danger">
+
+                            {{ low_stock_count }}
+
+                        </h3>
+
+                    </div>
+
+                </div>
+
+            </a>
+
+        </div>
+
+
+        <!-- Sale Return -->
+
+        <div class="col-lg-3 col-md-6 mb-4">
+
+            <a href="/sale-return/" class="text-decoration-none">
+
+                <div class="card shadow">
+
+                    <div class="card-body">
+
+                        <h6>
+
+                            Sale Return
+
+                        </h6>
+
+                        <h3 class="text-danger">
+
+                            {{ total_sale_returns }}
+
+                        </h3>
+
+                    </div>
+
+                </div>
+
+            </a>
+
+        </div>
+
+
+        <!-- Purchase Return -->
+
+        <div class="col-lg-3 col-md-6 mb-4">
+
+            <a href="/purchase-return/" class="text-decoration-none">
+
+                <div class="card shadow">
+
+                    <div class="card-body">
+
+                        <h6>
+
+                            Purchase Return
+
+                        </h6>
+
+                        <h3 class="text-primary">
+
+                            {{ total_purchase_returns }}
+
+                        </h3>
+
+                    </div>
+
+                </div>
+
+            </a>
+
+        </div>
+
+        <!-- Expense -->
+        <div class="col-lg-3 col-md-6 mb-4">
+
+            <a href="{% url 'expense_report' %}" style="text-decoration:none;color:inherit;">
+
+                <div class="card shadow-sm">
+
+                    <div class="card-body">
+
+                        <h6>Total Expense</h6>
+
+                        <h3 class="text-danger">
+                            ₹{{ total_expense }}
+                        </h3>
+
+                    </div>
+
+                </div>
+
+            </a>
+
+        </div>
+
+        <!-- Udhari -->
+        <div class="col-lg-3 col-md-6 mb-4">
+
+            <a href="{% url 'payment_recovery' %}" style="text-decoration:none;color:inherit;">
+
+                <div class="card shadow-sm">
+
+                    <div class="card-body">
+
+                        <h6>Pending Udhari</h6>
+
+                        <h3 class="text-danger">
+                            ₹{{ total_udhari }}
+                        </h3>
+
+                    </div>
+
+                </div>
+
+            </a>
+
+        </div>
+        <div class="row mt-4">
+
+            <div class="col-lg-12">
+
+                <div class="card shadow border-0">
+
+                    <div class="card-header bg-primary text-white">
+
+                        <h5 class="mb-0">
+
+                            <i class="fa-solid fa-brain me-2"></i>
+
+                            Smart Business Advisor
+
+                        </h5>
+
+                    </div>
+
+                    <div class="card-body">
+
+                        {% if advisor %}
+
+                        <div class="row">
+
+                            {% for item in advisor %}
+
+                            <div class="col-md-4 mb-3">
+
+                                <div class="card border-start border-4 border-{{ item.color }} h-100">
+
+                                    <div class="card-body">
+
+                                        <div class="d-flex align-items-center">
+
+                                            <div class="me-3">
+
+                                                <i class="fa-solid {{ item.icon }} fa-2x text-{{ item.color }}"></i>
+
+                                            </div>
+
+                                            <div>
+
+                                                <h6 class="mb-1">
+
+                                                    {{ item.title }}
+
+                                                </h6>
+
+                                                <small class="text-muted">
+
+                                                    {{ item.message }}
+
+                                                </small>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            {% endfor %}
+
+                        </div>
+
+                        {% else %}
+
+                        <div class="alert alert-success mb-0">
+
+                            <i class="fa-solid fa-circle-check me-2"></i>
+
+                            Everything looks good. No important business alerts today.
+
+                        </div>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+        <div class="card shadow mt-4">
+
+            <div class="card-header bg-dark text-white">
+
+                <h5 class="mb-0">
+
+                    🔔 Dashboard Notifications
+
+                </h5>
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="row">
+
+                    <div class="col-md-3">
+
+                        <div class="alert alert-danger">
+
+                            🔴 <strong>Low Stock</strong>
+
+                            <br>
+
+                            {{ low_stock_count }} Products
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                        <div class="alert alert-warning">
+
+                            🟡 <strong>Pending Udhari</strong>
+
+                            <br>
+
+                            ₹ {{ pending_udhari }}
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                        <div class="alert alert-primary">
+
+                            🔵 <strong>Today's Sales</strong>
+
+                            <br>
+
+                            ₹ {{ today_sales }}
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                        <div class="alert alert-success">
+
+                            🟢 <strong>Today's Expenses</strong>
+
+                            <br>
+
+                            ₹ {{ today_expenses }}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+        <div class="card shadow mt-4">
+
+            <div class="card-header bg-primary text-white">
+
+                <h5 class="mb-0">
+
+                    📊 Daily / Monthly Summary
+
+                </h5>
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="row">
+
+                    <div class="col-md-3">
+
+                        <div class="alert alert-info">
+
+                            <strong>Today's Bills</strong>
+
+                            <br>
+
+                            {{ today_bill_count }}
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                        <div class="alert alert-success">
+
+                            <strong>Today's Profit</strong>
+
+                            <br>
+
+                            ₹ {{ today_profit }}
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                        <div class="alert alert-primary">
+
+                            <strong>Month Sales</strong>
+
+                            <br>
+
+                            ₹ {{ month_sales }}
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                        <div class="alert alert-warning">
+
+                            <strong>Month Expenses</strong>
+
+                            <br>
+
+                            ₹ {{ month_expenses }}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+    <br>
+    <!-- Reports & Utilities -->
+
+    <div class="card shadow mb-4">
+
+        <div class="card-header bg-dark text-white">
+
+            <h5 class="mb-0">
+
+                <i class="fa fa-chart-line"></i>
+
+                Reports & Utilities
+
+            </h5>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row g-3">
+
+                <!-- Sales Report -->
+
+                <div class="col-lg-3 col-md-6">
+
+                    <a href="/reports/sales/" class="btn btn-outline-primary w-100">
+
+                        <i class="fa fa-chart-line fa-2x"></i>
+
+                        <br><br>
+
+                        Sales Report
+
+                    </a>
+
+                </div>
+
+                <!-- Stock Report -->
+
+                <div class="col-lg-3 col-md-6">
+
+                    <a href="/reports/stock/" class="btn btn-outline-success w-100">
+
+                        <i class="fa fa-boxes-stacked fa-2x"></i>
+
+                        <br><br>
+
+                        Stock Report
+
+                    </a>
+
+                </div>
+
+                <!-- Payment Recovery -->
+
+                <div class="col-lg-3 col-md-6">
+
+                    <a href="/reports/payment-recovery/" class="btn btn-outline-danger w-100">
+
+                        <i class="fa fa-money-bill-wave fa-2x"></i>
+
+                        <br><br>
+
+                        Payment Recovery
+
+                    </a>
+
+                </div>
+
+                <!-- Top Products -->
+
+                <div class="col-lg-3 col-md-6">
+
+                    <a href="/reports/top-products/" class="btn btn-outline-warning w-100">
+
+                        <i class="fa fa-star fa-2x"></i>
+
+                        <br><br>
+
+                        Top Products
+
+                    </a>
+
+                </div>
+
+            </div>
+
+            <hr>
+
+            <div class="row g-3">
+
+                <!-- Inventory -->
+
+                <div class="col-lg-3 col-md-6">
+
+                    <a href="/inventory/" class="btn btn-outline-secondary w-100">
+
+                        <i class="fa fa-warehouse fa-2x"></i>
+
+                        <br><br>
+
+                        Inventory
+
+                    </a>
+
+                </div>
+
+                <!-- Supplier Ledger -->
+
+                <div class="col-lg-3 col-md-6">
+
+                    <a href="/suppliers/" class="btn btn-outline-info w-100">
+
+                        <i class="fa fa-book fa-2x"></i>
+
+                        <br><br>
+
+                        Supplier Ledger
+
+                    </a>
+
+                </div>
+
+                <!-- Backup -->
+
+                <div class="col-lg-3 col-md-6">
+
+                    <a href="/backup/" class="btn btn-outline-dark w-100">
+
+                        <i class="fa fa-database fa-2x"></i>
+
+                        <br><br>
+
+                        Backup
+
+                    </a>
+
+                </div>
+
+                <!-- Shop Settings -->
+
+                <div class="col-lg-3 col-md-6">
+
+                    <a href="/shopsettings/" class="btn btn-outline-primary w-100">
+
+                        <i class="fa fa-gear fa-2x"></i>
+
+                        <br><br>
+
+                        Shop Settings
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="row mt-4">
+
+        <div class="col-lg-12">
+
+            <div class="card shadow border-0">
+
+                <div class="card-header bg-warning">
+
+                    <h5 class="mb-0">
+
+                        <i class="fa-solid fa-robot me-2"></i>
+
+                        AI Purchase Recommendations
+
+                    </h5>
+
+                </div>
+
+                <div class="card-body">
+
+                    {% if purchase_advice %}
+
+                    <div class="table-responsive">
+
+                        <table class="table table-hover align-middle">
+
+                            <thead class="table-light">
+
+                                <tr>
+
+                                    <th>Product</th>
+
+                                    <th>Current Stock</th>
+
+                                    <th>Daily Sale</th>
+
+                                    <th>Days Left</th>
+
+                                    <th>Recommended Purchase</th>
+
+                                    <th>Status</th>
+
+                                </tr>
+
+                            </thead>
+
+                            <tbody>
+
+                                {% for item in purchase_advice %}
+
+                                <tr>
+
+                                    <td>
+
+                                        <strong>{{ item.name }}</strong>
+
+                                    </td>
+
+                                    <td>
+
+                                        {{ item.stock }}
+
+                                    </td>
+
+                                    <td>
+
+                                        {{ item.daily_sale }}
+
+                                    </td>
+
+                                    <td>
+
+                                        {{ item.days_left }} Days
+
+                                    </td>
+
+                                    <td>
+
+                                        <strong class="text-primary">
+
+                                            {{ item.recommend }}
+
+                                        </strong>
+
+                                    </td>
+
+                                    <td>
+
+                                        {% if item.days_left <= 2 %} <span class="badge bg-danger">
+
+                                            Critical
+
+                                            </span>
+
+                                            {% elif item.days_left <= 5 %} <span class="badge bg-warning text-dark">
+
+                                                Warning
+
+                                                </span>
+
+                                                {% else %}
+
+                                                <span class="badge bg-success">
+
+                                                    Normal
+
+                                                </span>
+
+                                                {% endif %}
+
+                                    </td>
+
+                                </tr>
+
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                    {% else %}
+
+                    <div class="alert alert-success mb-0">
+
+                        <i class="fa-solid fa-circle-check me-2"></i>
+
+                        Inventory is healthy. No purchase required right now.
+
+                    </div>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+    <br>
+    <!-- Charts Row -->
+    <div class="row">
+
+        <!-- Monthly Sales Chart -->
+        <div class="col-lg-8 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5>Monthly Sales</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="salesChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payment Chart -->
+        <div class="col-lg-4 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5>Payment Methods</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="paymentChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Tables Row -->
+    <div class="row">
+
+        <!-- Recent Sales -->
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5>Recent Sales</h5>
+                </div>
+                <div class="card-body">
+
+                    <table class="table table-hover">
+
+                        <thead>
+                            <tr>
+                                <th>Invoice</th>
+                                <th>Customer</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            {% for bill in recent_bills %}
+                            <tr>
+                                <td>{{ bill.invoice_no }}</td>
+
+                                <td>
+                                    {% if bill.customer %}
+                                    {{ bill.customer.name }}
+                                    {% else %}
+                                    Walk In
+                                    {% endif %}
+                                </td>
+
+                                <td>₹{{ bill.total_amount }}</td>
+
+                                <td>
+                                    {% if bill.payment_method == 'Credit' %}
+                                    <span class="badge bg-warning text-dark">Credit</span>
+                                    {% else %}
+                                    <span class="badge bg-success">Paid</span>
+                                    {% endif %}
+                                </td>
+
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4">No Sales Yet</td>
+                            </tr>
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+            </div>
+        </div>
+        <!-- Low Stock -->
+        <div class="col-lg-4">
+            <div class="card shadow-sm">
+
+                <div class="card-header">
+                    <h5>Low Stock Alert</h5>
+                </div>
+
+                <div class="card-body">
+
+                    {% if low_stock %}
+                    {% for product in low_stock %}
+                    <div class="alert alert-warning">
+                        <b>{{ product.name }}</b><br>
+                        Stock: {{ product.quantity }}
+
+                    </div>
+
+                    {% endfor %}
+                    {% else %}
+                    <div class="alert alert-success">
+                        Stock OK
+                    </div>
+                    {% endif %}
+
+                </div>
+                {% if low_stock_count > 20 %}
+
+                <div class="text-center mt-3">
+
+                    <a href="{% url 'low_stock_products' %}" class="btn btn-outline-danger btn-sm">
+
+                        View All ({{ low_stock_count }})
+
+                    </a>
+
+                </div>
+
+                {% endif %}
+            </div>
+        </div>
+        <!-- Recent Purchases -->
+
+        <div class="row mt-4">
+
+            <div class="col-lg-12">
+
+                <div class="card shadow-sm">
+
+                    <div class="card-header">
+
+                        <h5 class="mb-0">
+
+                            Recent Purchases
+
+                        </h5>
+
+                    </div>
+
+                    <div class="card-body">
+
+                        <table class="table table-hover">
+
+                            <thead class="table-light">
+
+                                <tr>
+
+                                    <th>ID</th>
+
+                                    <th>Supplier</th>
+
+                                    <th>Total</th>
+
+                                    <th>Date</th>
+
+                                </tr>
+
+                            </thead>
+
+                            <tbody>
+
+                                {% for purchase in recent_purchases %}
+
+                                <tr>
+
+                                    <td>#{{ purchase.id }}</td>
+
+                                    <td>{{ purchase.supplier.name }}</td>
+
+                                    <td>₹{{ purchase.total_amount }}</td>
+
+                                    <td>{{ purchase.created_at|date:"d-m-Y" }}</td>
+
+                                </tr>
+
+                                {% empty %}
+
+                                <tr>
+
+                                    <td colspan="4" class="text-center">
+
+                                        No Purchases
+
+                                    </td>
+
+                                </tr>
+
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+    </div>
+
+</div>
+
+<!-- Charts Script -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+    const salesChart = document.getElementById('salesChart');
+
+    new Chart(salesChart, {
+
+        type: 'bar',
+
+        data: {
+
+            labels: {{ chart_labels| safe }},
+
+        datasets: [{
+
+            label: 'Monthly Sales',
+
+            data: {{ chart_data| safe }},
+
+        backgroundColor: '#2563eb'
+
+        }]
+
+    },
+
+        options: {
+
+        responsive: true,
+
+        scales: {
+
+            y: {
+
+                beginAtZero: true
+
+            }
+
+        }
+
+    }
+
+});
+
+
+    const paymentChart = document.getElementById('paymentChart');
+
+    new Chart(paymentChart, {
+
+        type: 'doughnut',
+
+        data: {
+
+            labels: ['Cash', 'UPI', 'Credit'],
+
+            datasets: [{
+
+                data: [
+
+                    {{ cash_count }},
+
+            {{ upi_count }},
+
+                    {{ credit_count }}
+        ],
+        backgroundColor: ['#22c55e', '#3b82f6', '#f59e0b']
+
+            }]
+
+        }
+
+    });
+
+</script>
+
+{% endblock %}

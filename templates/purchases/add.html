@@ -1,0 +1,378 @@
+{% extends 'base.html' %}
+
+{% block title %}Purchase Entry{% endblock %}
+
+{% block page_title %}
+Purchase Entry
+{% endblock %}
+
+{% block content %}
+
+<div class="row">
+
+    <!-- LEFT SIDE -->
+
+    <div class="col-lg-7">
+
+        <div class="card shadow">
+
+            <div class="card-header bg-primary text-white">
+
+                <h5 class="mb-0">
+
+                    Product List
+
+                </h5>
+
+            </div>
+
+            <div class="card-body">
+
+                <input
+                    type="text"
+                    id="searchProduct"
+                    class="form-control mb-3"
+                    placeholder="Search Product...">
+
+                <table class="table table-hover">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Product</th>
+
+                            <th>Stock</th>
+
+                            <th></th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for product in products %}
+
+                        <tr class="product-row">
+
+                            <td>{{ product.name }}</td>
+
+                            <td>{{ product.quantity }}</td>
+
+                            <td>
+
+                                <a
+                                    href="{% url 'add_purchase_item' product.id %}"
+                                    class="btn btn-success btn-sm">
+
+                                    Add
+
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- RIGHT SIDE -->
+
+    <div class="col-lg-5">
+
+        <div class="card shadow">
+
+            <div class="card-header bg-success text-white">
+
+                <h5 class="mb-0">
+
+                    Purchase Cart
+
+                </h5>
+
+            </div>
+
+            <div class="card-body">
+
+                <form method="POST" action="{% url 'save_purchase' %}">
+
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+
+                            Supplier
+
+                        </label>
+
+                        <select
+                            name="supplier"
+                            class="form-select"
+                            required>
+
+                            <option value="">
+
+                                Select Supplier
+
+                            </option>
+
+                            {% for supplier in suppliers %}
+
+                            <option value="{{ supplier.id }}">
+
+                                {{ supplier.name }}
+
+                            </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+
+                            Paid Amount
+
+                        </label>
+
+                        <input
+
+                            type="number"
+
+                            name="paid_amount"
+
+                            class="form-control"
+
+                            step="0.01"
+
+                            min="0"
+
+                            value="0"
+
+                        />
+
+                    </div>
+
+                    <table class="table table-bordered">
+
+                        <thead class="table-light">
+
+                            <tr>
+
+                                <th>Product</th>
+
+                                <th width="80">Qty</th>
+
+                                <th width="70"></th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            {% if cart %}
+
+                            {% for item in cart %}
+
+                            <tr>
+
+                                <td>{{ item.name }}</td>
+
+                                <td>{{ item.quantity }}</td>
+
+                                <td>
+
+                                    <a
+                                        href="{% url 'remove_purchase_item' item.id %}"
+                                        class="btn btn-danger btn-sm">
+
+                                        X
+
+                                    </a>
+
+                                </td>
+
+                            </tr>
+
+                            {% endfor %}
+
+                            {% else %}
+
+                            <tr>
+
+                                <td colspan="3" class="text-center">
+
+                                    No Products Added
+
+                                </td>
+
+                            </tr>
+
+                            {% endif %}
+
+                        </tbody>
+
+                    </table>
+
+                    <hr>
+
+                    <div class="row">
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="form-label">
+
+                                Payment Method
+
+                            </label>
+
+                            <select
+                                name="payment_method"
+                                id="paymentMethod"
+                                class="form-select">
+
+                                <option value="Cash">
+
+                                    Cash
+
+                                </option>
+
+                                <option value="UPI">
+
+                                    UPI
+
+                                </option>
+
+                                <option value="Credit">
+
+                                    Credit
+
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="form-label">
+
+                                Paid Amount
+
+                            </label>
+
+                            <input
+                                type="number"
+                                step="0.01"
+                                min="0"
+                                name="paid_amount"
+                                id="paidAmount"
+                                value="0"
+                                class="form-control"
+                                disabled>
+
+                        </div>
+
+                    </div>
+
+                    <button
+                        class="btn btn-success w-100">
+
+                        <i class="fa fa-save"></i>
+
+                        Continue
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+document.getElementById("searchProduct").addEventListener(
+
+    "keyup",
+
+    function () {
+
+        let value = this.value.toLowerCase();
+
+        document.querySelectorAll(".product-row").forEach(
+
+            function (row) {
+
+                row.style.display =
+
+                row.innerText.toLowerCase().includes(value)
+
+                ?
+
+                ""
+
+                :
+
+                "none";
+
+            }
+
+        );
+
+    }
+
+);
+
+const paymentMethod = document.getElementById("paymentMethod");
+
+const paidAmount = document.getElementById("paidAmount");
+
+paymentMethod.addEventListener(
+
+    "change",
+
+    function(){
+
+        if(this.value==="Credit"){
+
+            paidAmount.disabled=false;
+
+            paidAmount.value="0";
+
+        }
+
+        else{
+
+            paidAmount.disabled=true;
+
+            paidAmount.value="0";
+
+        }
+
+    }
+
+);
+
+</script>
+
+{% endblock %}

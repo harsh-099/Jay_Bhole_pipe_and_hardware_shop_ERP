@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Supplier Ledger
+{% endblock %}
+
+{% block page_title %}
+Supplier Ledger
+{% endblock %}
+
+{% block content %}
+
+<div class="card shadow">
+
+    <div class="card-header bg-primary text-white d-flex justify-content-between">
+
+        <div>
+
+            <h4 class="mb-0">
+
+                {{ supplier.name }}
+
+            </h4>
+
+            <small>
+
+                Mobile : {{ supplier.mobile }}
+
+            </small>
+
+        </div>
+
+        <div>
+
+            <h5>
+
+                Balance : ₹{{ supplier.ledger_balance }}
+
+            </h5>
+
+        </div>
+
+    </div>
+
+    <div class="card-body">
+
+        <div class="mb-3">
+
+            <a href="{% url 'supplier_list' %}" class="btn btn-secondary">
+
+                Back
+
+            </a>
+
+            <a href="{% url 'supplier_ledger_pdf' supplier.id %}" class="btn btn-success">
+
+                PDF
+
+            </a>
+
+            <a href="{% url 'supplier_ledger_print' supplier.id %}" class="btn btn-info">
+
+                Print
+
+            </a>
+
+        </div>
+
+        <table class="table table-bordered table-striped">
+
+            <thead class="table-dark">
+
+                <tr>
+
+                    <th>Date</th>
+
+                    <th>Particular</th>
+
+                    <th>Debit</th>
+
+                    <th>Credit</th>
+
+                    <th>Balance</th>
+
+                    <th>Remarks</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for row in ledger %}
+
+                <tr>
+
+                    <td>
+
+                        {{ row.date|date:"d-m-Y H:i" }}
+
+                    </td>
+
+                    <td>
+
+                        {{ row.particular }}
+
+                    </td>
+
+                    <td class="text-danger">
+
+                        ₹{{ row.debit }}
+
+                    </td>
+
+                    <td class="text-success">
+
+                        ₹{{ row.credit }}
+
+                    </td>
+
+                    <td>
+
+                        ₹{{ row.balance }}
+
+                    </td>
+
+                    <td>
+
+                        {{ row.remarks }}
+
+                    </td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+
+                    <td colspan="6" class="text-center">
+
+                        No Ledger Found
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

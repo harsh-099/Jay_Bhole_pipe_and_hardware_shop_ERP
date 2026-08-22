@@ -1,0 +1,1637 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Billing
+{% endblock %}
+
+{% block page_title %}
+Billing (POS)
+{% endblock %}
+
+{% block content %}
+
+<div class="row">
+
+    <!-- ========================= -->
+    <!-- Product List -->
+    <!-- ========================= -->
+
+    <div class="col-lg-7">
+
+        <div class="card shadow-sm">
+
+            <div class="card-header bg-primary text-white">
+
+                <h5 class="mb-0">
+                    🛒 Product List
+                </h5>
+
+            </div>
+
+            <div class="card-body">
+
+                <input type="text" id="productSearch" class="form-control mb-3" placeholder="🔍 Search Product...">
+
+                <table class="table table-hover">
+
+                    <thead class="table-dark">
+
+                        <tr>
+
+                            <th>Product</th>
+
+                            <th>Price</th>
+
+                            <th>Stock</th>
+
+                            <th width="90"></th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for product in products %}
+
+                        <tr class="product-row">
+
+                            <td>
+
+                                {{ product.name }}
+
+                            </td>
+
+                            <td>
+
+                                ₹ {{ product.selling_price }}
+
+                            </td>
+
+                            <td>
+
+                                {% if product.quantity <= 5 %} <span class="badge bg-danger">
+
+                                    {{ product.quantity }}
+
+                                    </span>
+
+                                    {% elif product.quantity <= 15 %} <span class="badge bg-warning text-dark">
+
+                                        {{ product.quantity }}
+
+                                        </span>
+
+                                        {% else %}
+
+                                        <span class="badge bg-success">
+
+                                            {{ product.quantity }}
+
+                                        </span>
+
+                                        {% endif %}
+
+                            </td>
+
+                            <td>
+
+                                {% if product.quantity > 0 %}
+
+                                <a href="{% url 'add_to_bill' product.id %}"
+                                    class="btn btn-success btn-sm rounded-pill">
+
+                                    <i class="fa fa-plus"></i>
+
+                                    Add
+
+                                </a>
+
+                                {% else %}
+
+                                <button class="btn btn-danger btn-sm rounded-pill" disabled>
+
+                                    Out of Stock
+
+                                </button>
+
+                                {% endif %}
+
+                            </td>
+
+                        </tr>
+
+                        {% empty %}
+
+                        <tr>
+
+                            <td colspan="4" class="text-center">
+
+                                No Products Available
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ========================= -->
+    <!-- Billing Area -->
+    <!-- ========================= -->
+
+    <div class="col-lg-5">
+
+        <div class="card shadow-sm">
+
+            <div class="card-header bg-success text-white">
+
+                <h5 class="mb-0">
+
+                    🧾 Current Invoice
+
+                </h5>
+
+            </div>
+
+            <div class="card-body">
+
+                <form id="billingForm" method="POST" action="{% url 'save_bill' %}" onsubmit="return validatePayment()">
+
+                    {% csrf_token %}
+
+                    <!-- Customer -->
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+
+                            Customer
+
+                        </label>
+
+                        <select id="customer" name="customer" class="form-select">
+
+                            <option value="">
+
+                                Walk-in Customer
+
+                            </option>
+
+                            {% for customer in customers %}
+
+                            <option value="{{ customer.id }}">
+
+                                {{ customer.name }}
+
+                            </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+                    <!-- Invoice Items -->
+
+                    <table class="table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Item</th>
+
+                                <th width="170">
+
+                                    Qty
+
+                                </th>
+
+                                <th>Total</th>
+
+                                <th></th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+                            {% if cart %}
+
+                            {% for item in cart %}
+
+                            <tr>
+
+                                <td>
+
+                                    {{ item.name }}
+
+                                </td>
+
+                                <td>
+
+                                    <div class="input-group input-group-sm">
+
+                                        <a href="{% url 'decrease_qty' item.id %}" class="btn btn-warning">
+
+                                            ➖
+
+                                        </a>
+
+                                        <input type="number" id="qty{{ item.id }}" value="{{ item.quantity }}" min="1"
+                                            max="{{ item.stock }}" class="form-control text-center">
+
+                                        <button type="button" class="btn btn-primary"
+                                            onclick="location.href='/billing/update/{{ item.id }}/?qty='+document.getElementById('qty{{ item.id }}').value">
+
+                                            ✓
+
+                                        </button>
+
+                                        <a href="{% url 'increase_qty' item.id %}" class="btn btn-success">
+
+                                            ➕
+
+                                        </a>
+
+                                    </div>
+
+                                </td>
+
+                                <td>
+
+                                    ₹ {{ item.total }}
+
+                                </td>
+
+                                <td>
+
+                                    <a href="{% url 'remove_item' item.id %}" class="btn btn-danger btn-sm">
+
+                                        🗑️
+
+                                    </a>
+
+                                </td>
+
+                            </tr>
+
+                            {% endfor %}
+
+                            {% else %}
+
+                            <tr>
+
+                                <td colspan="4" class="text-center text-muted">
+
+                                    No Items Added
+
+                                </td>
+
+                            </tr>
+
+                            {% endif %}
+
+                        </tbody>
+
+                    </table>
+
+                    <hr>
+
+                    <!-- ===================== -->
+                    <!-- Bill Summary -->
+                    <!-- ===================== -->
+
+                    <div class="card border-success shadow-sm mt-3">
+
+                        <div class="card-header bg-success text-white">
+
+                            <h5 class="mb-0">
+
+                                💰 Bill Summary
+
+                            </h5>
+
+                        </div>
+
+                        <div class="card-body">
+
+                            <div class="d-flex justify-content-between mb-2">
+
+                                <strong>
+
+                                    Sub Total
+
+                                </strong>
+
+                                <strong>
+
+                                    ₹
+                                    <span id="subtotal">
+
+                                        {{ grand_total }}
+
+                                    </span>
+
+                                </strong>
+
+                            </div>
+
+                            <div class="mb-3">
+
+                                <label class="form-label">
+
+                                    Discount Type
+
+                                </label>
+
+                                <select id="discount_type" name="discount_type" class="form-select">
+
+                                    <option value="Amount">
+
+                                        Amount (₹)
+
+                                    </option>
+
+                                    <option value="Percent">
+
+                                        Percentage (%)
+
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+                            <div class="mb-3">
+
+                                <label class="form-label">
+
+                                    Discount
+
+                                </label>
+
+                                <input type="number" id="discount" name="discount" value="0" step="0.01"
+                                    class="form-control">
+
+                            </div>
+
+                            <div class="d-flex justify-content-between">
+
+                                <strong class="text-danger">
+
+                                    Discount
+
+                                </strong>
+
+                                <strong class="text-danger">
+
+                                    ₹
+                                    <span id="discount_amount">
+
+                                        0.00
+
+                                    </span>
+
+                                </strong>
+
+                            </div>
+
+                            <hr>
+
+                            <div class="d-flex justify-content-between">
+
+                                <h4 class="text-success">
+
+                                    Grand Total
+
+                                </h4>
+
+                                <h4 class="text-success">
+
+                                    ₹
+                                    <span id="final_total">
+
+                                        {{ grand_total }}
+
+                                    </span>
+
+                                </h4>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <input type="hidden" id="hidden_discount_amount" name="discount_amount">
+
+                    <input type="hidden" id="hidden_final_total" name="final_amount">
+                    <!-- ========================= -->
+                    <!-- Payment Details -->
+                    <!-- ========================= -->
+
+                    <div class="card mt-3 border-primary">
+
+                        <div class="card-header bg-primary text-white">
+
+                            <b>💳 Payment Details</b>
+
+                        </div>
+
+                        <div class="card-body">
+
+                            <div class="mb-3">
+
+                                <label class="form-label">
+
+                                    Payment Method
+
+                                </label>
+
+                                <select id="payment_method" name="payment_method" class="form-select">
+
+                                    <option value="Cash">
+
+                                        Cash
+
+                                    </option>
+
+                                    <option value="UPI">
+
+                                        UPI
+
+                                    </option>
+
+                                    <option value="Credit">
+
+                                        Credit
+
+                                    </option>
+
+                                    <option value="Cash+UPI">
+
+                                        Cash + UPI
+
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+                            <!-- Cash -->
+
+                            <div class="mb-3" id="cash_box">
+
+                                <label>
+
+                                    💵 Cash
+
+                                </label>
+
+                                <input type="number" step="0.01" value="0" id="cash_amount" name="cash_amount"
+                                    class="form-control">
+
+                            </div>
+
+                            <!-- UPI -->
+
+                            <div class="mb-3" id="upi_box">
+
+                                <label>
+
+                                    📱 UPI
+
+                                </label>
+
+                                <input type="number" step="0.01" value="0" id="upi_amount" name="upi_amount"
+                                    class="form-control">
+
+                            </div>
+
+                            <!-- Credit -->
+
+                            <div class="mb-3" id="credit_box">
+
+                                <label>
+
+                                    📒 Credit
+
+                                </label>
+
+                                <input type="number" step="0.01" value="0" id="credit_amount" name="credit_amount"
+                                    class="form-control">
+
+                            </div>
+
+                            <!-- QR -->
+
+                            <div id="upi_qr_box" class="card border-success mt-3" style="display:none;">
+
+                                <div class="card-header bg-success text-white">
+
+                                    Scan & Pay
+
+                                </div>
+
+                                <div class="card-body text-center">
+
+                                    <div id="upi_qr"></div>
+
+                                    <h4 class="mt-3">
+
+                                        ₹
+                                        <span id="upi_qr_amount">
+
+                                            0
+
+                                        </span>
+
+                                    </h4>
+
+                                    <hr>
+
+                                    <button type="button" id="upi_received_btn" class="btn btn-success w-100">
+
+                                        <i class="fa fa-check-circle"></i>
+
+                                        Payment Received
+
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                            <hr>
+
+                            <div class="d-flex justify-content-between">
+
+                                <strong>
+
+                                    Paid
+
+                                </strong>
+
+                                <strong>
+
+                                    ₹
+                                    <span id="paid_total">
+
+                                        0.00
+
+                                    </span>
+
+                                </strong>
+
+                            </div>
+
+                            <div class="d-flex justify-content-between mt-2">
+
+                                <strong class="text-danger">
+
+                                    Remaining
+
+                                </strong>
+
+                                <strong class="text-danger">
+
+                                    ₹
+                                    <span id="remaining">
+
+                                        {{ grand_total }}
+
+                                    </span>
+
+                                </strong>
+
+                            </div>
+
+                            <div class="d-flex justify-content-between mt-2">
+
+                                <strong class="text-success">
+
+                                    Change Return
+
+                                </strong>
+
+                                <strong class="text-success">
+
+                                    ₹
+                                    <span id="change_return">
+
+                                        0.00
+
+                                    </span>
+
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <input type="hidden" id="upi_verified" value="0">
+
+                    <button type="submit" class="btn btn-success w-100 mt-4">
+
+                        🧾 Generate Invoice
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+        <!-- ============================= -->
+        <!-- Recent Bills -->
+        <!-- ============================= -->
+
+        <div class="card shadow-sm mt-4">
+
+            <div class="card-header">
+
+                <h5 class="mb-0">
+
+                    Recent Bills
+
+                </h5>
+
+            </div>
+
+            <div class="card-body">
+
+                <table class="table table-sm">
+
+                    <thead class="table-dark">
+
+                        <tr>
+
+                            <th>Invoice</th>
+
+                            <th>Total</th>
+
+                            <th>Action</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for bill in bills %}
+
+                        <tr>
+
+                            <td>
+
+                                <b>
+
+                                    {{ bill.invoice_no }}
+
+                                </b>
+
+                            </td>
+
+                            <td>
+
+                                ₹ {{ bill.final_amount }}
+
+                            </td>
+
+                            <td>
+
+                                <a href="{% url 'invoice_detail' bill.id %}" class="btn btn-primary btn-sm">
+
+                                    <i class="fa fa-eye"></i>
+
+                                </a>
+
+                                <a href="{% url 'invoice_detail' bill.id %}" target="_blank"
+                                    class="btn btn-success btn-sm">
+
+                                    <i class="fa fa-print"></i>
+
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                        {% empty %}
+
+                        <tr>
+
+                            <td colspan="3" class="text-center">
+
+                                No Bills Found
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ======================================= -->
+<!-- Walk-in Customer Save Modal -->
+<!-- ======================================= -->
+
+<div class="modal fade" id="saveCustomerModal" tabindex="-1">
+
+    <div class="modal-dialog">
+
+        <div class="modal-content">
+
+            <div class="modal-header bg-primary text-white">
+
+                <h5 class="modal-title">
+
+                    Save Walk-in Customer
+
+                </h5>
+
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+
+            </div>
+
+            <div class="modal-body">
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+
+                        Customer Name
+
+                    </label>
+
+                    <input type="text" id="new_customer_name" class="form-control">
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+
+                        Mobile Number
+
+                    </label>
+
+                    <input type="text" id="new_customer_mobile" class="form-control">
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+
+                        Address
+
+                    </label>
+
+                    <textarea id="new_customer_address" class="form-control"></textarea>
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+
+                        Credit Due Days
+
+                    </label>
+
+                    <input type="number" id="new_customer_due_days" class="form-control" value="30">
+
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+
+                    Cancel
+
+                </button>
+
+                <button type="button" id="saveCustomerBtn" class="btn btn-success">
+
+                    Save Customer
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+
+    // =====================================
+    // Global Variables
+    // =====================================
+
+    let allowSubmit = false;
+
+    let savingCustomer = false;
+
+    let customerModal = null;
+
+    window.addEventListener("load", function () {
+
+        customerModal = new bootstrap.Modal(
+            document.getElementById("saveCustomerModal")
+        );
+
+    });
+
+
+    // =====================================
+    // Discount Calculation
+    // =====================================
+
+    function calculateDiscount() {
+
+        let subtotal =
+            parseFloat(
+
+                document.getElementById(
+                    "subtotal"
+                ).innerText
+
+            ) || 0;
+
+        let discount =
+            parseFloat(
+
+                document.getElementById(
+                    "discount"
+                ).value
+
+            ) || 0;
+
+        let type =
+            document.getElementById(
+                "discount_type"
+            ).value;
+
+        let discountAmount = 0;
+
+        if (type == "Amount") {
+
+            discountAmount = discount;
+
+        }
+
+        else {
+
+            discountAmount =
+                (subtotal * discount) / 100;
+
+        }
+
+        if (discountAmount > subtotal) {
+
+            discountAmount = subtotal;
+
+        }
+
+        let finalTotal =
+            subtotal - discountAmount;
+
+        document.getElementById(
+            "discount_amount"
+        ).innerHTML =
+            discountAmount.toFixed(2);
+
+        document.getElementById(
+            "final_total"
+        ).innerHTML =
+            finalTotal.toFixed(2);
+
+        document.getElementById(
+            "hidden_discount_amount"
+        ).value =
+            discountAmount.toFixed(2);
+
+        document.getElementById(
+            "hidden_final_total"
+        ).value =
+            finalTotal.toFixed(2);
+
+        calculatePayment();
+
+    }
+
+
+    // =====================================
+    // Payment Calculation
+    // =====================================
+
+    function calculatePayment() {
+
+        let total =
+            parseFloat(
+
+                document.getElementById(
+                    "hidden_final_total"
+                ).value
+
+            ) || 0;
+
+        let cash =
+            parseFloat(
+
+                document.getElementById(
+                    "cash_amount"
+                ).value
+
+            ) || 0;
+
+        let upi =
+            parseFloat(
+
+                document.getElementById(
+                    "upi_amount"
+                ).value
+
+            ) || 0;
+
+        let credit =
+            parseFloat(
+
+                document.getElementById(
+                    "credit_amount"
+                ).value
+
+            ) || 0;
+
+        let paid =
+            cash + upi + credit;
+
+        let remaining =
+            total - paid;
+
+        let change = 0;
+
+        if (remaining < 0) {
+
+            change =
+                Math.abs(remaining);
+
+            remaining = 0;
+
+        }
+
+        document.getElementById(
+            "paid_total"
+        ).innerHTML =
+            paid.toFixed(2);
+
+        document.getElementById(
+            "remaining"
+        ).innerHTML =
+            remaining.toFixed(2);
+
+        document.getElementById(
+            "change_return"
+        ).innerHTML =
+            change.toFixed(2);
+
+    }
+    // =====================================
+    // Payment Method Change
+    // =====================================
+
+    function paymentMethodChanged() {
+
+        document.getElementById(
+            "upi_verified"
+        ).value = "0";
+
+        let btn =
+            document.getElementById(
+                "upi_received_btn"
+            );
+
+        btn.classList.remove(
+            "btn-primary"
+        );
+
+        btn.classList.add(
+            "btn-success"
+        );
+
+        btn.innerHTML =
+            '<i class="fa fa-check-circle"></i> Payment Received';
+
+        let payment =
+            document.getElementById(
+                "payment_method"
+            ).value;
+
+        let finalAmount =
+            parseFloat(
+                document.getElementById(
+                    "hidden_final_total"
+                ).value
+            ) || 0;
+
+        let cashBox =
+            document.getElementById(
+                "cash_box"
+            );
+
+        let upiBox =
+            document.getElementById(
+                "upi_box"
+            );
+
+        let creditBox =
+            document.getElementById(
+                "credit_box"
+            );
+
+        let qrBox =
+            document.getElementById(
+                "upi_qr_box"
+            );
+
+        cashBox.style.display = "none";
+        upiBox.style.display = "none";
+        creditBox.style.display = "none";
+        qrBox.style.display = "none";
+
+        document.getElementById(
+            "cash_amount"
+        ).value = 0;
+
+        document.getElementById(
+            "upi_amount"
+        ).value = 0;
+
+        document.getElementById(
+            "credit_amount"
+        ).value = 0;
+
+        if (payment == "Cash") {
+
+            cashBox.style.display = "block";
+
+            document.getElementById(
+                "cash_amount"
+            ).value = finalAmount;
+
+        }
+
+        else if (payment == "UPI") {
+
+            upiBox.style.display = "block";
+
+            qrBox.style.display = "block";
+
+            document.getElementById(
+                "upi_amount"
+            ).value = finalAmount;
+
+        }
+
+        else if (payment == "Credit") {
+
+            creditBox.style.display = "block";
+
+            document.getElementById(
+                "credit_amount"
+            ).value = finalAmount;
+
+        }
+
+        else if (payment == "Cash+UPI") {
+
+            cashBox.style.display = "block";
+
+            upiBox.style.display = "block";
+
+            qrBox.style.display = "block";
+
+        }
+
+        calculatePayment();
+
+        updateUPIQR();
+
+    }
+
+
+    // =====================================
+    // UPI QR Update
+    // =====================================
+
+    function updateUPIQR() {
+
+        let payment =
+            document.getElementById(
+                "payment_method"
+            ).value;
+
+        let qrBox =
+            document.getElementById(
+                "upi_qr_box"
+            );
+
+        if (
+            payment != "UPI" &&
+            payment != "Cash+UPI"
+        ) {
+
+            qrBox.style.display = "none";
+
+            return;
+
+        }
+
+        qrBox.style.display = "block";
+
+        let amount = 0;
+
+        if (payment == "UPI") {
+
+            amount =
+                parseFloat(
+                    document.getElementById(
+                        "hidden_final_total"
+                    ).value
+                ) || 0;
+
+        }
+
+        else {
+
+            amount =
+                parseFloat(
+                    document.getElementById(
+                        "upi_amount"
+                    ).value
+                ) || 0;
+
+        }
+
+        document.getElementById(
+            "upi_qr_amount"
+        ).innerHTML =
+            amount.toFixed(2);
+
+        document.getElementById(
+            "upi_qr"
+        ).innerHTML = "";
+
+        let upiLink =
+            "upi://pay?pa={{ shop.upi_id }}&pn={{ shop.shop_name }}&am="
+            + amount.toFixed(2)
+            + "&cu=INR";
+
+        new QRCode(
+
+            document.getElementById(
+                "upi_qr"
+            ),
+
+            {
+
+                text: upiLink,
+
+                width: 180,
+
+                height: 180
+
+            }
+
+        );
+
+    }
+    // =====================================
+    // Billing Validation
+    // =====================================
+
+    function validatePayment() {
+
+        let payment =
+            document.getElementById(
+                "payment_method"
+            ).value;
+
+        // -----------------------------
+        // UPI Validation
+        // -----------------------------
+
+        if (payment == "UPI") {
+
+            if (
+
+                document.getElementById(
+                    "upi_verified"
+                ).value == "0"
+
+            ) {
+
+                Swal.fire({
+
+                    icon: "warning",
+
+                    title: "Please Confirm UPI Payment"
+
+                });
+
+                return false;
+
+            }
+
+        }
+
+        // -----------------------------
+        // Walk-in Customer Credit
+        // -----------------------------
+
+        let customer =
+            document.getElementById(
+                "customer"
+            ).value;
+
+        if (
+
+            payment == "Credit" &&
+            customer == "" &&
+            allowSubmit == false
+
+        ) {
+
+            customerModal.show();
+
+            return false;
+
+        }
+
+        return true;
+
+    }
+
+
+    // =====================================
+    // Save Customer
+    // =====================================
+
+    document.getElementById(
+        "saveCustomerBtn"
+    ).onclick = function () {
+
+        if (savingCustomer) {
+
+            return;
+
+        }
+
+        savingCustomer = true;
+
+        let name =
+            document.getElementById(
+                "new_customer_name"
+            ).value.trim();
+
+        let mobile =
+            document.getElementById(
+                "new_customer_mobile"
+            ).value.trim();
+
+        let address =
+            document.getElementById(
+                "new_customer_address"
+            ).value.trim();
+
+        let due_days =
+            document.getElementById(
+                "new_customer_due_days"
+            ).value;
+
+
+        if (name == "") {
+
+            savingCustomer = false;
+
+            Swal.fire({
+
+                icon: "warning",
+
+                title: "Enter Customer Name"
+
+            });
+
+            return;
+
+        }
+
+        if (mobile == "") {
+
+            savingCustomer = false;
+
+            Swal.fire({
+
+                icon: "warning",
+
+                title: "Enter Mobile Number"
+
+            });
+
+            return;
+
+        }
+
+
+        fetch(
+
+            "{% url 'ajax_save_customer' %}",
+
+            {
+
+                method: "POST",
+
+                headers: {
+
+                    "X-CSRFToken": "{{ csrf_token }}",
+
+                    "Content-Type": "application/x-www-form-urlencoded"
+
+                },
+
+                body: new URLSearchParams({
+
+                    name: name,
+
+                    mobile: mobile,
+
+                    address: address,
+
+                    due_days: due_days
+
+                })
+
+            }
+
+        )
+
+            .then(response => response.json())
+
+            .then(data => {
+
+                savingCustomer = false;
+
+                if (data.status == "success") {
+
+                    let customerSelect =
+                        document.getElementById(
+                            "customer"
+                        );
+
+                    let option =
+                        document.createElement(
+                            "option"
+                        );
+
+                    option.value = data.id;
+
+                    option.text = data.name;
+
+                    option.selected = true;
+
+                    customerSelect.appendChild(
+                        option
+                    );
+
+                    customerSelect.value =
+                        data.id;
+
+                }
+
+                else if (data.status == "exists") {
+
+                    document.getElementById(
+                        "customer"
+                    ).value = data.id;
+
+                }
+
+                else {
+
+                    Swal.fire({
+
+                        icon: "error",
+
+                        title: "Customer Save Failed"
+
+                    });
+
+                    return;
+
+                }
+
+                allowSubmit = true;
+
+                customerModal.hide();
+
+                document.getElementById(
+                    "billingForm"
+                ).submit();
+
+            });
+
+    };
+    // =====================================
+    // Events
+    // =====================================
+
+    document.getElementById(
+        "discount"
+    ).addEventListener(
+        "keyup",
+        calculateDiscount
+    );
+
+    document.getElementById(
+        "discount_type"
+    ).addEventListener(
+        "change",
+        calculateDiscount
+    );
+
+    document.getElementById(
+        "payment_method"
+    ).addEventListener(
+        "change",
+        paymentMethodChanged
+    );
+
+    document.getElementById(
+        "cash_amount"
+    ).addEventListener(
+        "keyup",
+        calculatePayment
+    );
+
+    document.getElementById(
+        "upi_amount"
+    ).addEventListener(
+        "keyup",
+        function () {
+
+            calculatePayment();
+
+            updateUPIQR();
+
+        }
+
+    );
+
+    document.getElementById(
+        "credit_amount"
+    ).addEventListener(
+        "keyup",
+        calculatePayment
+    );
+
+
+    // =====================================
+    // UPI Payment Received
+    // =====================================
+
+    document.getElementById(
+        "upi_received_btn"
+    ).addEventListener(
+
+        "click",
+
+        function () {
+
+            document.getElementById(
+                "upi_verified"
+            ).value = "1";
+
+            this.classList.remove(
+                "btn-success"
+            );
+
+            this.classList.add(
+                "btn-primary"
+            );
+
+            this.innerHTML =
+                '<i class="fa fa-check-circle"></i> Payment Confirmed';
+
+        }
+
+    );
+
+
+    // =====================================
+    // Reset Modal
+    // =====================================
+
+    document.getElementById(
+        "saveCustomerModal"
+    ).addEventListener(
+
+        "hidden.bs.modal",
+
+        function () {
+
+            document.getElementById(
+                "new_customer_name"
+            ).value = "";
+
+            document.getElementById(
+                "new_customer_mobile"
+            ).value = "";
+
+            document.getElementById(
+                "new_customer_address"
+            ).value = "";
+
+            document.getElementById(
+                "new_customer_due_days"
+            ).value = 30;
+
+            savingCustomer = false;
+
+            allowSubmit = false;
+
+        }
+
+    );
+
+
+    // =====================================
+    // Customer Change
+    // =====================================
+
+    document.getElementById(
+        "customer"
+    ).addEventListener(
+
+        "change",
+
+        function () {
+
+            if (this.value != "") {
+
+                allowSubmit = false;
+
+            }
+
+        }
+
+    );
+
+
+    // =====================================
+    // Initial Load
+    // =====================================
+
+    calculateDiscount();
+
+    paymentMethodChanged();
+
+    calculatePayment();
+
+    updateUPIQR();
+
+</script>
+
+{% endblock %}

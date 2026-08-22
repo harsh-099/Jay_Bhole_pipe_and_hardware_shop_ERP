@@ -1,0 +1,197 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Dead Stock Report
+{% endblock %}
+
+{% block page_title %}
+Dead Stock Report
+{% endblock %}
+
+{% block content %}
+
+<div class="card shadow">
+
+    <div class="card-header d-flex justify-content-between align-items-center">
+
+        <h4 class="mb-0">
+
+            <i class="fa-solid fa-box-open text-danger"></i>
+
+            Dead Stock Report
+
+        </h4>
+
+        <a href="{% url 'print_dead_stock_report' %}?days={{ days }}"
+           class="btn btn-dark">
+
+            <i class="fa-solid fa-print"></i>
+
+            Print
+
+        </a>
+
+    </div>
+
+    <div class="card-body">
+
+        <form method="get"
+              class="row mb-4">
+
+            <div class="col-md-3">
+
+                <label>
+
+                    Dead Stock Days
+
+                </label>
+
+                <input type="number"
+                       name="days"
+                       value="{{ days }}"
+                       class="form-control">
+
+            </div>
+
+            <div class="col-md-2 mt-4">
+
+                <button class="btn btn-primary">
+
+                    Filter
+
+                </button>
+
+            </div>
+
+        </form>
+
+        <div class="alert alert-danger">
+
+            <strong>
+
+                Total Dead Stock Value :
+
+            </strong>
+
+            ₹{{ total_value }}
+
+        </div>
+
+        <div class="table-responsive">
+
+            <table class="table table-bordered table-hover">
+
+                <thead class="table-dark">
+
+                    <tr>
+
+                        <th>#</th>
+
+                        <th>Product</th>
+
+                        <th>Category</th>
+
+                        <th>Qty</th>
+
+                        <th>Purchase Price</th>
+
+                        <th>Stock Value</th>
+
+                        <th>Last Sold</th>
+
+                        <th>Days Idle</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for item in products %}
+
+                    <tr>
+
+                        <td>
+
+                            {{ forloop.counter }}
+
+                        </td>
+
+                        <td>
+
+                            {{ item.product.name }}
+
+                        </td>
+
+                        <td>
+
+                            {{ item.product.category }}
+
+                        </td>
+
+                        <td>
+
+                            {{ item.product.quantity }}
+
+                        </td>
+
+                        <td>
+
+                            ₹{{ item.product.purchase_price }}
+
+                        </td>
+
+                        <td>
+
+                            ₹{{ item.stock_value }}
+
+                        </td>
+
+                        <td>
+
+                            {% if item.last_sale %}
+
+                                {{ item.last_sale|date:"d-m-Y" }}
+
+                            {% else %}
+
+                                Never Sold
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+
+                            {{ item.days_idle }}
+
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td colspan="8"
+                            class="text-center text-success">
+
+                            No Dead Stock Found
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

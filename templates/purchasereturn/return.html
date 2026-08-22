@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+{% block title %}Purchase Return{% endblock %}
+
+{% block page_title %}
+Purchase Return
+{% endblock %}
+
+{% block content %}
+
+<div class="card shadow">
+
+    <div class="card-header bg-danger text-white">
+
+        <h4>
+
+            Purchase #{{ purchase.id }}
+
+        </h4>
+
+    </div>
+
+    <div class="card-body">
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <table class="table table-bordered">
+
+                <thead>
+
+                    <tr>
+
+                        <th>Product</th>
+
+                        <th>Purchased Qty</th>
+
+                        <th>Price</th>
+
+                        <th>Return Qty</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for item in items %}
+
+                    <tr>
+
+                        <td>
+
+                            {{ item.product.name }}
+
+                        </td>
+
+                        <td>
+
+                            {{ item.quantity }}
+
+                        </td>
+
+                        <td>
+
+                            ₹{{ item.price }}
+
+                        </td>
+
+                        <td>
+
+                            <input type="number" class="form-control" min="0" max="{{ item.quantity }}" value="0"
+                                name="qty_{{ item.id }}">
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+            <button class="btn btn-danger">
+
+                Save Return
+
+            </button>
+
+            <a href="{% url 'purchase_return_list' %}" class="btn btn-secondary">
+
+                Back
+
+            </a>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

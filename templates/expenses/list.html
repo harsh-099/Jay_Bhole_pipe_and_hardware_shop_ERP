@@ -1,0 +1,177 @@
+{% extends 'base.html' %}
+
+{% block title %}Expenses{% endblock %}
+
+{% block page_title %}
+Expenses
+{% endblock %}
+
+{% block content %}
+
+<div class="card shadow">
+
+    <div class="card-header">
+
+        <div class="row align-items-center">
+
+            <div class="col-md-6">
+
+                <form method="GET">
+
+                    <div class="input-group">
+
+                        <input
+                            type="text"
+                            name="search"
+                            class="form-control"
+                            placeholder="Search Category..."
+                            value="{{ search }}">
+
+                        <button class="btn btn-primary">
+
+                            <i class="fa fa-search"></i>
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+            <div class="col-md-6 text-end">
+
+                <a href="/expenses/add/"
+                   class="btn btn-danger">
+
+                    <i class="fa fa-plus"></i>
+
+                    Add Expense
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="card-body">
+
+        <div class="mb-3">
+
+            <b>Total Expense Entries :</b>
+
+            {{ total_expense }}
+
+        </div>
+
+        <table class="table table-hover table-bordered">
+
+            <thead class="table-dark">
+
+                <tr>
+
+                    <th>ID</th>
+
+                    <th>Date</th>
+
+                    <th>Category</th>
+
+                    <th>Amount</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for expense in expenses %}
+
+                <tr>
+
+                    <td>{{ expense.id }}</td>
+
+                    <td>{{ expense.date }}</td>
+
+                    <td>{{ expense.category }}</td>
+
+                    <td class="text-danger">
+
+                        ₹ {{ expense.amount }}
+
+                    </td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+
+                    <td colspan="4" class="text-center">
+
+                        No Expense Found
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+        <nav>
+
+            <ul class="pagination justify-content-center">
+
+                {% if expenses.has_previous %}
+
+                <li class="page-item">
+
+                    <a class="page-link"
+                       href="?page={{ expenses.previous_page_number }}&search={{ search }}">
+
+                        Previous
+
+                    </a>
+
+                </li>
+
+                {% endif %}
+
+                <li class="page-item active">
+
+                    <span class="page-link">
+
+                        {{ expenses.number }}
+
+                    </span>
+
+                </li>
+
+                {% if expenses.has_next %}
+
+                <li class="page-item">
+
+                    <a class="page-link"
+                       href="?page={{ expenses.next_page_number }}&search={{ search }}">
+
+                        Next
+
+                    </a>
+
+                </li>
+
+                {% endif %}
+
+            </ul>
+
+        </nav>
+
+    </div>
+
+</div>
+
+{% endblock %}

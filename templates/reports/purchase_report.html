@@ -1,0 +1,208 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+
+    <h2 class="mb-4">
+
+        Purchase Report
+
+    </h2>
+
+    <div class="mb-3">
+
+        <a href="{% url 'purchase_report_pdf' %}?from_date={{ from_date|default_if_none:'' }}&to_date={{ to_date|default_if_none:'' }}"
+           class="btn btn-danger">
+
+            📄 Download PDF
+
+        </a>
+
+        <button
+            onclick="window.print()"
+            class="btn btn-primary">
+
+            🖨 Print
+
+        </button>
+
+    </div>
+
+    <div class="row mb-4">
+
+        <div class="col-md-4">
+
+            <div class="card shadow border-0">
+
+                <div class="card-body">
+
+                    <h6>
+
+                        Total Purchase
+
+                    </h6>
+
+                    <h3>
+
+                        ₹{{ total_purchase }}
+
+                    </h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <form method="GET" class="row mb-4">
+
+        <div class="col-md-4">
+
+            <label>
+
+                From Date
+
+            </label>
+
+            <input
+                type="date"
+                name="from_date"
+                class="form-control"
+                value="{{ from_date }}">
+
+        </div>
+
+        <div class="col-md-4">
+
+            <label>
+
+                To Date
+
+            </label>
+
+            <input
+                type="date"
+                name="to_date"
+                class="form-control"
+                value="{{ to_date }}">
+
+        </div>
+
+        <div class="col-md-4">
+
+            <label>&nbsp;</label>
+
+            <button
+                class="btn btn-success w-100">
+
+                Search
+
+            </button>
+
+        </div>
+
+    </form>
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-dark">
+
+            <tr>
+
+                <th>
+
+                    Purchase No
+
+                </th>
+
+                <th>
+
+                    Date
+
+                </th>
+
+                <th>
+
+                    Supplier
+
+                </th>
+
+                <th>
+
+                    Payment
+
+                </th>
+
+                <th>
+
+                    Total
+
+                </th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for purchase in purchases %}
+
+            <tr>
+
+                <td>
+
+                    {{ purchase.purchase_no }}
+
+                </td>
+
+                <td>
+
+                    {{ purchase.created_at|date:"d-m-Y H:i" }}
+
+                </td>
+
+                <td>
+
+                    {{ purchase.supplier.name }}
+
+                </td>
+
+                <td>
+
+                    {{ purchase.payment_method }}
+
+                </td>
+
+                <td>
+
+                    ₹{{ purchase.final_amount }}
+
+                </td>
+
+            </tr>
+
+            {% empty %}
+
+            <tr>
+
+                <td colspan="5" class="text-center">
+
+                    No Purchase Found
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}
+```

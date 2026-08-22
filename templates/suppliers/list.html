@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="card shadow">
+
+    <div class="card-header d-flex justify-content-between">
+
+        <h4>Suppliers</h4>
+
+        <a href="{% url 'add_supplier' %}" class="btn btn-primary">
+            Add Supplier
+        </a>
+
+    </div>
+
+    <div class="card-body">
+
+        <table class="table table-hover table-bordered">
+
+            <thead class="table-dark">
+
+                <tr>
+
+                    <th>Name</th>
+
+                    <th>Mobile</th>
+
+                    <th>Balance</th>
+
+                    <th width="320">Action</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for supplier in suppliers %}
+
+                <tr>
+
+                    <td>{{ supplier.name }}</td>
+
+                    <td>{{ supplier.mobile }}</td>
+
+                    <td>₹{{ supplier.ledger_balance }}</td>
+
+                    <td>
+
+                        <a href="{% url 'supplier_ledger' supplier.id %}"
+                           class="btn btn-info btn-sm">
+
+                            Ledger
+
+                        </a>
+
+                        <a href="{% url 'edit_supplier' supplier.id %}"
+                           class="btn btn-warning btn-sm">
+
+                            Edit
+
+                        </a>
+
+                        <a href="{% url 'delete_supplier' supplier.id %}"
+                           class="btn btn-danger btn-sm">
+
+                            Delete
+
+                        </a>
+
+                    </td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+
+                    <td colspan="4" class="text-center">
+                        No Supplier Found
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

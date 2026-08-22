@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+
+    <div class="d-flex justify-content-between mb-3">
+
+        <h2>
+
+            Expense Report
+
+        </h2>
+
+        <div>
+
+            <a href="{% url 'expense_report_pdf' %}"
+               class="btn btn-danger">
+
+                Download PDF
+
+            </a>
+
+            <button
+                onclick="window.print()"
+                class="btn btn-primary">
+
+                Print
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <div class="row mb-4">
+
+        <div class="col-md-4">
+
+            <div class="card shadow border-0">
+
+                <div class="card-body">
+
+                    <h6>
+
+                        Total Expense
+
+                    </h6>
+
+                    <h3>
+
+                        ₹{{ total_expense }}
+
+                    </h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-dark">
+
+            <tr>
+
+                <th>#</th>
+
+                <th>Date</th>
+
+                <th>Category</th>
+
+                <th>Amount</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for expense in expenses %}
+
+            <tr>
+
+                <td>
+
+                    {{ forloop.counter }}
+
+                </td>
+
+                <td>
+
+                    {{ expense.date|date:"d-m-Y" }}
+
+                </td>
+
+                <td>
+
+                    {{ expense.category }}
+
+                </td>
+
+                <td class="text-end">
+
+                    ₹{{ expense.amount }}
+
+                </td>
+
+            </tr>
+
+            {% empty %}
+
+            <tr>
+
+                <td colspan="4" class="text-center">
+
+                    No Expense Found
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}
+

@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Add User
+{% endblock %}
+
+{% block page_title %}
+Add User
+{% endblock %}
+
+{% block content %}
+
+<div class="card shadow-lg">
+
+    <div class="card-header bg-success text-white">
+
+        <h4>
+
+            <i class="fa fa-user-plus"></i>
+
+            Add New User
+
+        </h4>
+
+    </div>
+
+    <div class="card-body">
+
+        <form method="POST" enctype="multipart/form-data">
+
+            {% csrf_token %}
+
+            <div class="row">
+
+                <div class="col-md-6 mb-3">
+
+                    <label>First Name</label>
+
+                    {{ user_form.first_name }}
+
+                </div>
+
+                <div class="col-md-6 mb-3">
+
+                    <label>Last Name</label>
+
+                    {{ user_form.last_name }}
+
+                </div>
+
+                <div class="col-md-6 mb-3">
+
+                    <label>Username</label>
+
+                    {{ user_form.username }}
+
+                </div>
+
+                <div class="col-md-6 mb-3">
+
+                    <label>Email</label>
+
+                    {{ user_form.email }}
+
+                </div>
+
+                <div class="col-md-6 mb-3">
+
+                    <label>Password</label>
+
+                    {{ user_form.password1 }}
+
+                </div>
+
+                <div class="col-md-6 mb-3">
+
+                    <label>Confirm Password</label>
+
+                    {{ user_form.password2 }}
+
+                </div>
+
+                <div class="col-md-6 mb-3">
+
+                    <label>Role</label>
+
+                    {{ profile_form.role }}
+
+                </div>
+
+                <div class="col-md-6 mb-3">
+
+                    <label>Mobile</label>
+
+                    {{ profile_form.mobile }}
+
+                </div>
+
+                <div class="col-md-12 mb-3">
+
+                    <label>Address</label>
+
+                    {{ profile_form.address }}
+
+                </div>
+
+                <div class="col-md-6 mb-3">
+
+                    <label>Photo</label>
+
+                    {{ profile_form.photo }}
+
+                </div>
+
+                <div class="col-md-6 mt-4">
+
+                    {{ profile_form.is_active }}
+
+                    Active User
+
+                </div>
+
+            </div>
+
+            <hr>
+
+            <button class="btn btn-success">
+
+                <i class="fa fa-save"></i>
+
+                Save User
+
+            </button>
+
+            <a href="{% url 'users' %}" class="btn btn-secondary">
+
+                Cancel
+
+            </a>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

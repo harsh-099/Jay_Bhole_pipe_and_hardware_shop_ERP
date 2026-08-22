@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <style>
+        @page {
+            size: A4;
+            margin: 20px;
+        }
+
+        body {
+            font-family: Helvetica;
+            font-size: 11px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            border: 1px solid #000;
+            padding: 6px;
+        }
+
+        .heading {
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .sub {
+            font-size: 10px;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 10px;
+            margin-bottom: 15px;
+        }
+
+        .section {
+            margin-top: 10px;
+        }
+
+        .right {
+            text-align: right;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        .bold {
+            font-weight: bold;
+        }
+
+        .no-border {
+            border: none;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <table class="no-border">
+
+        <tr>
+
+            <td width="20%" class="no-border">
+
+                {% if shop.logo %}
+
+                <img src="{{ shop.logo.path }}" width="90" height="90">
+
+                {% endif %}
+
+            </td>
+
+            <td width="80%" class="no-border center">
+
+                <h1 style="margin:0;">
+                    {{ shop.shop_name }}
+                </h1>
+
+                <b>{{ shop.owner_name }}</b>
+
+                <br>
+
+                {{ shop.address }}
+
+                <br>
+
+                Mobile : {{ shop.mobile }}
+
+                <br>
+
+                GSTIN : {{ shop.gst_number }}
+
+            </td>
+
+        </tr>
+
+    </table>
+
+    <hr>
+
+    <h2 class="center">
+
+        PURCHASE INVOICE
+
+    </h2>
+
+    <table>
+
+        <tr>
+
+            <td width="50%">
+
+                <b>Purchase No :</b>
+
+                {{ purchase.purchase_no }}
+
+            </td>
+
+            <td>
+
+                <b>Date :</b>
+
+                {{ purchase.created_at|date:"d-m-Y" }}
+
+            </td>
+
+        </tr>
+
+        <tr>
+
+            <td>
+
+                <b>Supplier :</b>
+
+                {{ purchase.supplier.name }}
+
+            </td>
+
+            <td>
+
+                <b>Invoice No :</b>
+
+                {{ purchase.supplier_invoice_no }}
+
+            </td>
+
+        </tr>
+
+        <tr>
+
+            <td colspan="2">
+
+                <b>Remarks :</b>
+
+                {{ purchase.remarks }}
+
+            </td>
+
+        </tr>
+
+    </table>
+
+    <br>
+    <table>
+
+        <thead>
+
+            <tr>
+
+                <th width="8%">Sr.</th>
+
+                <th width="42%">Product Name</th>
+
+                <th width="15%">Quantity</th>
+
+                <th width="15%">Rate</th>
+
+                <th width="20%">Amount</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for item in items %}
+
+            <tr>
+
+                <td class="center">
+
+                    {{ forloop.counter }}
+
+                </td>
+
+                <td>
+
+                    {{ item.product.name }}
+
+                </td>
+
+                <td class="center">
+
+                    {{ item.quantity }}
+
+                </td>
+
+                <td class="right">
+
+                    ₹ {{ item.price }}
+
+                </td>
+
+                <td class="right">
+
+                    ₹ {{ item.total }}
+
+                </td>
+
+            </tr>
+
+            {% empty %}
+
+            <tr>
+
+                <td colspan="5" class="center">
+
+                    No Items
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+    <br>
+
+    <table>
+
+        <tr>
+
+            <td width="70%" class="no-border">
+
+            </td>
+
+            <td width="30%">
+
+                <table>
+
+                    <tr>
+
+                        <td>
+
+                            Total
+
+                        </td>
+
+                        <td class="right">
+
+                            ₹ {{ purchase.total_amount }}
+
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>
+
+                            Discount
+
+                        </td>
+
+                        <td class="right">
+
+                            ₹ {{ purchase.discount_amount }}
+
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>
+
+                            <b>Final Amount</b>
+
+                        </td>
+
+                        <td class="right">
+
+                            <b>
+
+                                ₹ {{ purchase.final_amount }}
+
+                            </b>
+
+                        </td>
+
+                    </tr>
+
+                </table>
+
+            </td>
+
+        </tr>
+
+    </table>
+
+    <br>
+    <table class="no-border">
+
+        <tr>
+
+            <td class="no-border" width="50%">
+
+                <b>Payment Method :</b>
+
+                {{ purchase.payment_method }}
+
+            </td>
+
+            <td class="no-border right">
+
+                <b>Date :</b>
+
+                {{ purchase.created_at|date:"d-m-Y h:i A" }}
+
+            </td>
+
+        </tr>
+
+    </table>
+
+    <br><br><br>
+
+    <table class="no-border">
+
+        <tr>
+
+            <td class="no-border center">
+
+                _______________________
+
+                <br>
+
+                Receiver Signature
+
+            </td>
+
+            <td class="no-border center">
+
+                _______________________
+
+                <br>
+
+                Authorized Signature
+
+            </td>
+
+        </tr>
+
+    </table>
+
+    <br><br>
+
+    <hr>
+
+    <div style="text-align:center; font-size:10px;">
+
+        <b>{{ shop.shop_name }}</b>
+
+        <br>
+
+        Thank You For Your Business
+
+        <br>
+
+        This is a Computer Generated Purchase Invoice.
+
+    </div>
+
+</body>
+
+</html>

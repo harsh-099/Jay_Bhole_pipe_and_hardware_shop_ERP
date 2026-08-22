@@ -1,0 +1,264 @@
+{% extends 'base.html' %}
+
+{% block title %}Purchase Return{% endblock %}
+
+{% block page_title %}
+Purchase Return
+{% endblock %}
+
+{% block content %}
+
+<div class="card shadow">
+
+    <div class="card-header">
+
+        <div class="row">
+
+            <div class="col-md-6">
+
+                <form method="GET">
+
+                    <div class="input-group">
+
+                        <input type="text" name="search" class="form-control" placeholder="Search Supplier..."
+                            value="{{ search }}">
+
+                        <button class="btn btn-primary">
+
+                            <i class="fa fa-search"></i>
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+            <div class="col-md-6 text-end">
+
+                <span class="badge bg-primary p-2">
+
+                    Total Returns :
+                    {{ total_returns }}
+
+                </span>
+
+                <span class="badge bg-danger p-2">
+
+                    Amount :
+                    ₹{{ total_return_amount }}
+
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="card-body">
+
+        <h5 class="mb-3">
+
+            Purchase List
+
+        </h5>
+
+        <table class="table table-hover table-bordered">
+
+            <thead class="table-dark">
+
+                <tr>
+
+                    <th>ID</th>
+
+                    <th>Supplier</th>
+
+                    <th>Total</th>
+
+                    <th>Date</th>
+
+                    <th>Action</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for purchase in purchases %}
+
+                <tr>
+
+                    <td>{{ purchase.id }}</td>
+
+                    <td>{{ purchase.supplier.name }}</td>
+
+                    <td>₹{{ purchase.total_amount }}</td>
+
+                    <td>{{ purchase.created_at|date:"d-m-Y" }}</td>
+
+                    <td>
+
+                        <a href="{% url 'purchase_return' purchase.id %}" class="btn btn-danger btn-sm">
+
+                            Return
+
+                        </a>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+        <hr>
+
+        <h5>
+
+            Return History
+
+        </h5>
+
+        <table class="table table-hover table-bordered">
+
+            <thead class="table-success">
+
+                <tr>
+
+                    <th>No</th>
+
+                    <th>Supplier</th>
+
+                    <th>Amount</th>
+
+                    <th>Status</th>
+
+                    <th>Date</th>
+
+                    <th>Action</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for r in returns %}
+
+                <tr>
+
+                    <td>{{ r.return_no }}</td>
+
+                    <td>{{ r.purchase.supplier.name }}</td>
+
+                    <td>₹{{ r.total_return }}</td>
+
+                    <td>
+
+                        <span class="badge bg-warning">
+
+                            {{ r.status }}
+
+                        </span>
+
+                    </td>
+
+                    <td>{{ r.created_at|date:"d-m-Y" }}</td>
+
+                    <td>
+
+                        <a href="{% url 'purchase_return_print' r.id %}" class="btn btn-success btn-sm" target="_blank">
+
+                            <i class="fa-solid fa-print"></i>
+
+                            Print
+
+                        </a>
+
+                        <a href="{% url 'purchase_return_pdf' r.id %}" class="btn btn-danger btn-sm" target="_blank">
+
+                            <i class="fa-solid fa-file-pdf"></i>
+
+                            PDF
+
+                        </a>
+
+                    </td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+
+                    <td colspan="6" class="text-center">
+
+                        No Return History
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+        <nav>
+
+            <ul class="pagination justify-content-center">
+
+                {% if returns.has_previous %}
+
+                <li class="page-item">
+
+                    <a class="page-link" href="?page={{ returns.previous_page_number }}&search={{ search }}">
+
+                        Previous
+
+                    </a>
+
+                </li>
+
+                {% endif %}
+
+                <li class="page-item active">
+
+                    <span class="page-link">
+
+                        {{ returns.number }}
+
+                    </span>
+
+                </li>
+
+                {% if returns.has_next %}
+
+                <li class="page-item">
+
+                    <a class="page-link" href="?page={{ returns.next_page_number }}&search={{ search }}">
+
+                        Next
+
+                    </a>
+
+                </li>
+
+                {% endif %}
+
+            </ul>
+
+        </nav>
+
+    </div>
+
+</div>
+
+{% endblock %}

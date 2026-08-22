@@ -1,0 +1,264 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+
+    <h2 class="mb-4">
+
+        Business Profit Report
+
+    </h2>
+
+    <div class="mb-3">
+
+        <a href="{% url 'profit_report_pdf' %}?from_date={{ from_date|default_if_none:'' }}&to_date={{ to_date|default_if_none:'' }}"
+            class="btn btn-danger">
+
+            Download PDF
+
+        </a>
+
+        <button onclick="window.print()" class="btn btn-primary">
+
+            Print
+
+        </button>
+
+    </div>
+
+    <form method="GET" class="row mb-4">
+
+        <div class="col-md-4">
+
+            <label>
+
+                From Date
+
+            </label>
+
+            <input type="date" name="from_date" class="form-control" value="{{ from_date }}">
+
+        </div>
+
+        <div class="col-md-4">
+
+            <label>
+
+                To Date
+
+            </label>
+
+            <input type="date" name="to_date" class="form-control" value="{{ to_date }}">
+
+        </div>
+
+        <div class="col-md-4">
+
+            <label>&nbsp;</label>
+
+            <button class="btn btn-success w-100">
+
+                Search
+
+            </button>
+
+        </div>
+
+    </form>
+
+    <div class="row">
+
+        <div class="col-md-4 mb-3">
+
+            <div class="card shadow">
+
+                <div class="card-body">
+
+                    <h6>Total Sales</h6>
+
+                    <h3>
+
+                        ₹{{ total_sales }}
+
+                    </h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4 mb-3">
+
+            <div class="card shadow">
+
+                <div class="card-body">
+
+                    <h6>Total Purchase</h6>
+
+                    <h3>
+
+                        ₹{{ total_purchase }}
+
+                    </h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4 mb-3">
+
+            <div class="card shadow">
+
+                <div class="card-body">
+
+                    <h6>Total Expense</h6>
+
+                    <h3>
+
+                        ₹{{ total_expense }}
+
+                    </h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4 mb-3">
+
+            <div class="card shadow">
+
+                <div class="card-body">
+
+                    <h6>Gross Profit</h6>
+
+                    <h3>
+
+                        ₹{{ gross_profit }}
+
+                    </h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4 mb-3">
+
+            <div class="card shadow">
+
+                <div class="card-body">
+
+                    <h6>Net Profit</h6>
+
+                    <h3 class="{% if profit >= 0 %}text-success{% else %}text-danger{% endif %}">
+
+                        ₹{{ profit }}
+
+                    </h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4 mb-3">
+
+            <div class="card shadow">
+
+                <div class="card-body">
+
+                    <h6>Profit Margin</h6>
+
+                    <h3>
+
+                        {{ profit_margin }} %
+
+                    </h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <table class="table table-bordered mt-4">
+
+        <thead class="table-dark">
+
+            <tr>
+
+                <th>Particular</th>
+
+                <th>Amount</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            <tr>
+
+                <td>Total Sales</td>
+
+                <td>₹{{ total_sales }}</td>
+
+            </tr>
+
+            <tr>
+
+                <td>Total Purchase</td>
+
+                <td>₹{{ total_purchase }}</td>
+
+            </tr>
+
+            <tr>
+
+                <td>Total Expense</td>
+
+                <td>₹{{ total_expense }}</td>
+
+            </tr>
+
+            <tr>
+
+                <td>Gross Profit</td>
+
+                <td>₹{{ gross_profit }}</td>
+
+            </tr>
+
+            <tr>
+
+                <td>Net Profit</td>
+
+                <td>₹{{ profit }}</td>
+
+            </tr>
+
+            <tr>
+
+                <td>Profit Margin</td>
+
+                <td>{{ profit_margin }} %</td>
+
+            </tr>
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}

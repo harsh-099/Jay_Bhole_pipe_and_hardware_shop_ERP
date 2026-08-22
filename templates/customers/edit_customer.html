@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Customer{% endblock %}
+
+{% block page_title %}
+Edit Customer
+{% endblock %}
+
+{% block content %}
+
+<div class="card shadow-sm">
+
+    <div class="card-header bg-warning d-flex justify-content-between align-items-center">
+
+        <h4 class="mb-0">
+            <i class="fa-solid fa-user-pen"></i>
+            Edit Customer
+        </h4>
+
+        <a href="{% url 'customer_list' %}" class="btn btn-light btn-sm">
+            <i class="fa-solid fa-arrow-left"></i>
+            Back
+        </a>
+
+    </div>
+
+    <div class="card-body">
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <div class="row">
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Customer Name</label>
+                    {{ form.name }}
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Mobile Number</label>
+                    {{ form.mobile }}
+                </div>
+
+                <div class="col-md-12 mb-3">
+                    <label class="form-label">Address</label>
+                    {{ form.address }}
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Udhari</label>
+                    {{ form.udhari }}
+                </div>
+
+            </div>
+
+            <hr>
+
+            <button class="btn btn-success">
+
+                <i class="fa-solid fa-floppy-disk"></i>
+
+                Update Customer
+
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

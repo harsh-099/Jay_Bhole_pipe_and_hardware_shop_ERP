@@ -1,0 +1,245 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+
+    <div class="d-flex justify-content-between mb-3">
+
+        <h2>
+
+            Customer Ledger Report
+
+        </h2>
+
+        <div>
+
+            {% if selected_customer %}
+
+            <a href="{% url 'customer_ledger_pdf' %}?customer={{ selected_customer.id }}" class="btn btn-danger">
+
+                Download PDF
+
+            </a>
+
+            <button onclick="window.print()" class="btn btn-primary">
+
+                Print
+
+            </button>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    <form method="GET">
+
+        <div class="row mb-4">
+
+            <div class="col-md-5">
+
+                <select name="customer" class="form-control">
+
+                    <option value="">
+
+                        Select Customer
+
+                    </option>
+
+                    {% for customer in customers %}
+
+                    <option value="{{ customer.id }}" {% if selected_customer.id == customer.id %} selected {% endif %}>
+
+                        {{ customer.name }}
+
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+            <div class="col-md-2">
+
+                <button class="btn btn-success">
+
+                    Search
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </form>
+
+    {% if selected_customer %}
+
+    <div class="row mb-4">
+
+        <div class="col-md-3">
+
+            <div class="card shadow">
+
+                <div class="card-body">
+
+                    <h6>Total Sales</h6>
+
+                    <h3>
+
+                        ₹{{ total_sales }}
+
+                    </h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <div class="card shadow">
+
+                <div class="card-body">
+
+                    <h6>Paid</h6>
+
+                    <h3>
+
+                        ₹{{ total_paid }}
+
+                    </h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <div class="card shadow">
+
+                <div class="card-body">
+
+                    <h6>Credit</h6>
+
+                    <h3>
+
+                        ₹{{ total_credit }}
+
+                    </h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <div class="card shadow border-danger">
+
+                <div class="card-body">
+
+                    <h6>Balance</h6>
+
+                    <h3 class="text-danger">
+
+                        ₹{{ current_balance }}
+
+                    </h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <table class="table table-bordered">
+
+        <thead class="table-dark">
+
+            <tr>
+
+                <th>Date</th>
+
+                <th>Invoice</th>
+
+                <th>Payment</th>
+
+                <th>Bill Amount</th>
+
+                <th>Credit</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for bill in bills %}
+
+            <tr>
+
+                <td>
+
+                    {{ bill.created_at|date:"d-m-Y" }}
+
+                </td>
+
+                <td>
+
+                    {{ bill.invoice_no }}
+
+                </td>
+
+                <td>
+
+                    {{ bill.payment_method }}
+
+                </td>
+
+                <td>
+
+                    ₹{{ bill.final_amount }}
+
+                </td>
+
+                <td>
+
+                    ₹{{ bill.credit_amount }}
+
+                </td>
+
+            </tr>
+
+            {% empty %}
+
+            <tr>
+
+                <td colspan="5" align="center">
+
+                    No Bills Found
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,355 @@
+{% extends 'base.html' %}
+
+{% block title %}Business Position Report{% endblock %}
+
+{% block page_title %}
+Business Position Report
+{% endblock %}
+
+{% block content %}
+
+<div class="card shadow border-0">
+
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+
+        <h4 class="mb-0">
+            <i class="fa-solid fa-chart-pie"></i>
+            Business Position Report
+        </h4>
+
+        <div>
+
+            <a href="{% url 'print_business_position_report' %}?from={{ from_date|default:'' }}&to={{ to_date|default:'' }}"
+                class="btn btn-light btn-sm">
+
+                <i class="fa-solid fa-print"></i>
+
+                Print
+
+            </a>
+
+        </div>
+
+    </div>
+
+    <div class="card-body">
+
+        <form method="get" class="row g-3 mb-4">
+
+            <div class="col-md-3">
+
+                <label>From Date</label>
+
+                <input type="date" name="from" value="{{ from_date }}" class="form-control">
+
+            </div>
+
+            <div class="col-md-3">
+
+                <label>To Date</label>
+
+                <input type="date" name="to" value="{{ to_date }}" class="form-control">
+
+            </div>
+
+            <div class="col-md-2 d-flex align-items-end">
+
+                <button class="btn btn-primary w-100">
+
+                    Generate
+
+                </button>
+
+            </div>
+
+        </form>
+
+        <div class="row">
+
+            <div class="col-lg-3">
+
+                <div class="card border-success shadow-sm">
+
+                    <div class="card-body text-center">
+
+                        <h6>Total Sales</h6>
+
+                        <h3 class="text-success">
+
+                            ₹{{ total_sales|floatformat:2 }}
+                        </h3>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-lg-3">
+
+                <div class="card border-warning shadow-sm">
+
+                    <div class="card-body text-center">
+
+                        <h6>Total Purchase</h6>
+
+                        <h3 class="text-warning">
+
+                            ₹{{ total_purchase|floatformat:2 }}
+                        </h3>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-lg-3">
+
+                <div class="card border-danger shadow-sm">
+
+                    <div class="card-body text-center">
+
+                        <h6>Total Expense</h6>
+
+                        <h3 class="text-danger">
+
+                            ₹{{ total_expense|floatformat:2 }}
+                        </h3>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-lg-3">
+
+                <div class="card border-primary shadow-sm">
+
+                    <div class="card-body text-center">
+
+                        <h6>Business Balance</h6>
+
+                        <h3 class="text-primary">
+
+                            ₹{{ business_balance|floatformat:2 }}
+                        </h3>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="alert alert-{{ color }} mt-4">
+
+            <strong>
+
+                Financial Health :
+
+            </strong>
+
+            {{ health }}
+
+        </div>
+
+        <hr>
+
+        <h5 class="mb-3">
+
+            Sales Summary
+
+        </h5>
+
+        <div class="table-responsive">
+
+            <table class="table table-bordered table-hover">
+
+                <thead class="table-dark">
+
+                    <tr>
+
+                        <th>Invoice</th>
+
+                        <th>Customer</th>
+
+                        <th>Payment</th>
+
+                        <th>Date</th>
+
+                        <th>Amount</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for bill in sales %}
+
+                    <tr>
+
+                        <td>{{ bill.invoice_no }}</td>
+
+                        <td>{{ bill.customer }}</td>
+
+                        <td>{{ bill.payment_method }}</td>
+
+                        <td>{{ bill.created_at|date:"d-m-Y" }}</td>
+
+                        <td>₹{{ bill.final_amount }}</td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td colspan="5" class="text-center">
+
+                            No Sales Found
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <h5 class="mt-5 mb-3">
+
+            Purchase Summary
+
+        </h5>
+
+        <div class="table-responsive">
+
+            <table class="table table-bordered table-hover">
+
+                <thead class="table-dark">
+
+                    <tr>
+
+                        <th>Purchase No</th>
+
+                        <th>Supplier</th>
+
+                        <th>Date</th>
+
+                        <th>Amount</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for purchase in purchases %}
+
+                    <tr>
+
+                        <td>{{ purchase.purchase_no }}</td>
+
+                        <td>{{ purchase.supplier }}</td>
+
+                        <td>{{ purchase.created_at|date:"d-m-Y" }}</td>
+
+                        <td>₹{{ purchase.final_amount }}</td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td colspan="4" class="text-center">
+
+                            No Purchases Found
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <h5 class="mt-5 mb-3">
+
+            Expense Summary
+
+        </h5>
+
+        <div class="table-responsive">
+
+            <table class="table table-bordered table-hover">
+
+                <thead class="table-dark">
+
+                    <tr>
+
+                        <th>Date</th>
+
+                        <th>Category</th>
+
+                        <th>Description</th>
+
+                        <th>Amount</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for expense in expenses %}
+
+                    <tr>
+
+                        <td>{{ expense.date }}</td>
+
+                        <td>{{ expense.category }}</td>
+
+                        <td>{{ expense.description }}</td>
+
+                        <td>₹{{ expense.amount }}</td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td colspan="4" class="text-center">
+
+                            No Expenses Found
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,529 @@
+/* ================================
+   PREMIUM NOTIFICATION DRAWER
+================================ */
+
+.premium-notification{
+
+    width:430px !important;
+
+    border:none;
+
+    background:#f8fafc;
+
+}
+
+
+/* ================= HEADER ================= */
+
+.notification-top{
+
+    padding:24px;
+
+    background:linear-gradient(135deg,#0f172a,#1e3a8a);
+
+    color:#fff;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+}
+
+.notification-small-title{
+
+    font-size:11px;
+
+    letter-spacing:2px;
+
+    opacity:.8;
+
+    text-transform:uppercase;
+
+}
+
+.notification-top h4{
+
+    margin-top:6px;
+
+    margin-bottom:0;
+
+    font-weight:700;
+
+}
+
+
+/* ================= BUSINESS CARD ================= */
+
+.business-health{
+
+    margin:18px;
+
+    padding:18px;
+
+    background:#fff;
+
+    border-radius:18px;
+
+    box-shadow:0 10px 25px rgba(0,0,0,.08);
+
+}
+
+.health-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+}
+
+.health-header small{
+
+    color:#64748b;
+
+    text-transform:uppercase;
+
+    font-size:11px;
+
+}
+
+.health-header h5{
+
+    margin-top:5px;
+
+    margin-bottom:0;
+
+    font-weight:700;
+
+}
+
+.health-status{
+
+    width:10px;
+
+    height:10px;
+
+    border-radius:50%;
+
+    display:inline-block;
+
+    background:#10b981;
+
+    margin-left:8px;
+
+}
+
+.health-icon{
+
+    width:55px;
+
+    height:55px;
+
+    border-radius:15px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    background:#eff6ff;
+
+    color:#2563eb;
+
+    font-size:22px;
+
+}
+
+.health-data{
+
+    display:grid;
+
+    grid-template-columns:repeat(3,1fr);
+
+    gap:10px;
+
+    margin-top:20px;
+
+}
+
+.health-data div{
+
+    background:#f8fafc;
+
+    border-radius:12px;
+
+    padding:12px;
+
+    text-align:center;
+
+}
+
+.health-data span{
+
+    display:block;
+
+    color:#64748b;
+
+    font-size:12px;
+
+}
+
+.health-data strong{
+
+    display:block;
+
+    margin-top:5px;
+
+    font-size:16px;
+
+}
+
+
+/* ================= LIST ================= */
+
+.notification-scroll{
+
+    padding:0 18px 18px;
+
+    overflow-y:auto;
+
+    max-height:520px;
+
+}
+
+
+/* ================= CARD ================= */
+
+.notification-card{
+
+    display:flex;
+
+    gap:15px;
+
+    align-items:flex-start;
+
+    background:#fff;
+
+    padding:18px;
+
+    border-radius:18px;
+
+    margin-bottom:15px;
+
+    text-decoration:none;
+
+    color:#111827;
+
+    box-shadow:0 8px 20px rgba(0,0,0,.06);
+
+    transition:.25s;
+
+}
+
+.notification-card:hover{
+
+    transform:translateY(-4px);
+
+    box-shadow:0 18px 40px rgba(37,99,235,.15);
+
+}
+
+.notification-icon{
+
+    width:55px;
+
+    height:55px;
+
+    border-radius:16px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    color:#fff;
+
+    font-size:22px;
+
+    flex-shrink:0;
+
+}
+
+.notification-content{
+
+    flex:1;
+
+}
+
+.notification-card-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+}
+
+.notification-card-header h6{
+
+    margin:0;
+
+    font-weight:700;
+
+}
+
+.notification-content p{
+
+    margin:8px 0;
+
+    color:#64748b;
+
+    font-size:14px;
+
+}
+
+.notification-bottom{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    font-size:12px;
+
+    color:#94a3b8;
+
+}
+
+.notification-bottom span{
+
+    color:#2563eb;
+
+    font-weight:600;
+
+}
+
+
+/* ================= BADGE ================= */
+
+.notification-badge{
+
+    background:#ef4444;
+
+    color:#fff;
+
+    font-size:10px;
+
+    padding:3px 8px;
+
+    border-radius:20px;
+
+}
+
+
+/* ================= AI ================= */
+
+.ai-card{
+
+    display:flex;
+
+    gap:15px;
+
+    align-items:center;
+
+    background:linear-gradient(135deg,#7c3aed,#8b5cf6);
+
+    color:#fff;
+
+    padding:18px;
+
+    border-radius:18px;
+
+    margin-bottom:18px;
+
+}
+
+.ai-icon{
+
+    width:55px;
+
+    height:55px;
+
+    border-radius:15px;
+
+    background:rgba(255,255,255,.2);
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:22px;
+
+}
+
+
+/* ================= TODAY ================= */
+
+.today-card{
+
+    background:#fff;
+
+    border-radius:18px;
+
+    padding:18px;
+
+    box-shadow:0 8px 20px rgba(0,0,0,.06);
+
+}
+
+.today-title{
+
+    font-weight:700;
+
+    margin-bottom:15px;
+
+    display:flex;
+
+    gap:10px;
+
+    align-items:center;
+
+}
+
+.today-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(2,1fr);
+
+    gap:12px;
+
+}
+
+.today-box{
+
+    background:#f8fafc;
+
+    border-radius:12px;
+
+    padding:15px;
+
+}
+
+.today-box small{
+
+    display:block;
+
+    color:#64748b;
+
+}
+
+.today-box strong{
+
+    display:block;
+
+    margin-top:5px;
+
+}
+
+
+/* ================= FOOTER ================= */
+
+.notification-footer{
+
+    padding:18px;
+
+    display:flex;
+
+    gap:10px;
+
+    background:#fff;
+
+    border-top:1px solid #e5e7eb;
+
+}
+
+.footer-link{
+
+    flex:1;
+
+    text-align:center;
+
+    padding:12px;
+
+    border-radius:12px;
+
+    background:#111827;
+
+    color:#fff;
+
+    text-decoration:none;
+
+    transition:.25s;
+
+}
+
+.footer-link:hover{
+
+    background:#2563eb;
+
+    color:#fff;
+
+}
+
+
+/* ================= COLORS ================= */
+
+.bg-red{
+
+    background:#ef4444;
+
+}
+
+.bg-amber{
+
+    background:#f59e0b;
+
+}
+
+.bg-blue{
+
+    background:#3b82f6;
+
+}
+
+.bg-green{
+
+    background:#10b981;
+
+}
+
+.bg-violet{
+
+    background:#8b5cf6;
+
+}
+
+
+/* ================= SCROLLBAR ================= */
+
+.notification-scroll::-webkit-scrollbar{
+
+    width:6px;
+
+}
+
+.notification-scroll::-webkit-scrollbar-thumb{
+
+    background:#cbd5e1;
+
+    border-radius:10px;
+
+}

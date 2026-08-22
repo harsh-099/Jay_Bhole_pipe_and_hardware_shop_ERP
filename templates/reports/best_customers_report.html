@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+
+    <div class="d-flex justify-content-between mb-3">
+
+        <h2>
+
+            Best Customers Report
+
+        </h2>
+
+        <div>
+
+            <a href="{% url 'best_customers_pdf' %}" class="btn btn-danger">
+
+                Download PDF
+
+            </a>
+
+            <button onclick="window.print()" class="btn btn-primary">
+
+                Print
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-dark">
+
+            <tr>
+
+                <th>Rank</th>
+
+                <th>Customer</th>
+
+                <th>Total Bills</th>
+
+                <th>Total Sales</th>
+
+                <th>Credit Balance</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for customer in customers %}
+
+            <tr>
+
+                <td>{{ forloop.counter }}</td>
+
+                <td>{{ customer.name }}</td>
+
+                <td>{{ customer.total_bills }}</td>
+
+                <td>₹{{ customer.total_sales|default:0 }}</td>
+
+                <td>₹{{ customer.credit_balance }}</td>
+
+            </tr>
+
+            {% empty %}
+
+            <tr>
+
+                <td colspan="5" align="center">
+
+                    No Customers Found
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}

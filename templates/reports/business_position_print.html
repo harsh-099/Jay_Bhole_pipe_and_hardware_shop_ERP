@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Business Position Report</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+            font-size: 13px;
+            color: #222;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #000;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .logo img {
+            height: 80px;
+        }
+
+        .shop-details {
+            line-height: 1.7;
+        }
+
+        .shop-details h2 {
+            margin: 0;
+            font-size: 26px;
+        }
+
+        h3 {
+            text-align: center;
+            margin: 20px 0;
+            letter-spacing: 1px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th {
+            background: #efefef;
+        }
+
+        th,
+        td {
+            border: 1px solid #444;
+            padding: 8px;
+            text-align: center;
+        }
+
+        .summary {
+
+            margin-top: 25px;
+
+        }
+
+        .summary table td {
+
+            font-weight: bold;
+            text-align: left;
+
+        }
+
+        .green {
+            color: green;
+        }
+
+        .orange {
+            color: #ff8800;
+        }
+
+        .red {
+            color: red;
+        }
+
+        .footer {
+
+            margin-top: 50px;
+
+            display: flex;
+
+            justify-content: space-between;
+
+        }
+
+        @media print {
+
+            .no-print {
+                display: none;
+            }
+
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="header">
+
+        <div class="shop-details">
+
+            <h2>{{ shop.shop_name }}</h2>
+
+            {{ shop.address }}
+
+            <br>
+
+            Mobile :
+            {{ shop.mobile }}
+
+            <br>
+
+            GST :
+            {{ shop.gst_number }}
+
+        </div>
+
+        <div class="logo">
+
+            {% if shop.logo %}
+            <img src="{{ shop.logo.url }}">
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    <h3>
+
+        BUSINESS POSITION REPORT
+
+    </h3>
+
+    <p>
+
+        <b>From :</b>
+
+        {{ from_date }}
+
+        &nbsp;&nbsp;&nbsp;&nbsp;
+
+        <b>To :</b>
+
+        {{ to_date }}
+
+    </p>
+
+    <table>
+
+        <tr>
+
+            <th>Total Sales</th>
+
+            <th>Total Purchase</th>
+
+            <th>Total Expense</th>
+
+            <th>Business Balance</th>
+
+        </tr>
+
+        <tr>
+
+            <td>
+
+                ₹{{ total_sales|floatformat:2 }}
+            </td>
+
+            <td>
+
+                ₹{{ total_purchase|floatformat:2 }}
+            </td>
+
+            <td>
+
+                ₹{{ total_expense|floatformat:2 }}
+            </td>
+
+            <td>
+
+                ₹{{ business_balance|floatformat:2 }}
+            </td>
+
+        </tr>
+
+    </table>
+
+    <div class="summary">
+
+        <table>
+
+            <tr>
+
+                <td width="40%">
+
+                    Financial Health
+
+                </td>
+
+                <td>
+
+                    {% if color == "success" %}
+
+                    <span class="green">
+
+                        🟢 {{ health }}
+
+                    </span>
+
+                    {% elif color == "warning" %}
+
+                    <span class="orange">
+
+                        🟠 {{ health }}
+
+                    </span>
+
+                    {% else %}
+
+                    <span class="red">
+
+                        🔴 {{ health }}
+
+                    </span>
+
+                    {% endif %}
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td>
+
+                    Business Position
+
+                </td>
+
+                <td>
+
+                    {% if business_balance > 0 %}
+
+                    Available Business Balance :
+
+                    <b>
+
+                        ₹{{ business_balance|floatformat:2 }}
+                    </b>
+
+                    {% else %}
+
+                    Business is running in negative balance.
+
+                    {% endif %}
+
+                </td>
+
+            </tr>
+
+        </table>
+
+    </div>
+
+    <h3>
+
+        Sales Summary
+
+    </h3>
+
+    <table>
+
+        <tr>
+
+            <th>Invoice</th>
+
+            <th>Customer</th>
+
+            <th>Amount</th>
+
+        </tr>
+
+        {% for bill in sales %}
+
+        <tr>
+
+            <td>{{ bill.invoice_no }}</td>
+
+            <td>{{ bill.customer }}</td>
+
+            <td>₹{{ bill.final_amount }}</td>
+
+        </tr>
+
+        {% empty %}
+
+        <tr>
+
+            <td colspan="3">
+
+                No Sales Found
+
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+    </table>
+
+    <h3>
+
+        Purchase Summary
+
+    </h3>
+
+    <table>
+
+        <tr>
+
+            <th>Purchase No</th>
+
+            <th>Supplier</th>
+
+            <th>Amount</th>
+
+        </tr>
+
+        {% for purchase in purchases %}
+
+        <tr>
+
+            <td>{{ purchase.purchase_no }}</td>
+
+            <td>{{ purchase.supplier }}</td>
+
+            <td>
+
+                ₹{{ purchase.final_amount }}
+
+            </td>
+
+        </tr>
+
+        {% empty %}
+
+        <tr>
+
+            <td colspan="3">
+
+                No Purchase Found
+
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+    </table>
+
+    <h3>
+
+        Expense Summary
+
+    </h3>
+
+    <table>
+
+        <tr>
+
+            <th>Date</th>
+
+            <th>Category</th>
+
+            <th>Amount</th>
+
+        </tr>
+
+        {% for expense in expenses %}
+
+        <tr>
+
+            <td>{{ expense.date }}</td>
+
+            <td>{{ expense.category }}</td>
+
+            <td>
+
+                ₹{{ expense.amount }}
+
+            </td>
+
+        </tr>
+
+        {% empty %}
+
+        <tr>
+
+            <td colspan="3">
+
+                No Expense Found
+
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+    </table>
+
+    <div class="footer">
+
+        <div>
+
+            Generated On :
+
+            {{ today|date:"d-m-Y H:i" }}
+
+        </div>
+
+        <div>
+
+            Authorized Signature
+
+        </div>
+
+    </div>
+
+    <script>
+
+        window.onload = function () {
+
+            window.print();
+
+        }
+
+    </script>
+
+</body>
+
+</html>

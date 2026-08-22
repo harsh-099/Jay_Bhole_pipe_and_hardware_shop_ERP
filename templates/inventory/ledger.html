@@ -1,0 +1,225 @@
+{% extends 'base.html' %}
+
+{% block title %}Inventory{% endblock %}
+
+{% block page_title %}
+Inventory Ledger
+{% endblock %}
+
+{% block content %}
+
+<div class="card shadow">
+
+    <div class="card-header">
+
+        <div class="row align-items-center">
+
+            <div class="col-md-6">
+
+                <form method="GET">
+
+                    <div class="input-group">
+
+                        <input
+                            type="text"
+                            name="search"
+                            class="form-control"
+                            placeholder="Search Product..."
+                            value="{{ search }}">
+
+                        <button class="btn btn-primary">
+
+                            <i class="fa fa-search"></i>
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+            <div class="col-md-6 text-end">
+
+                <span class="badge bg-primary p-2">
+
+                    Total Entries :
+                    {{ total_entries }}
+
+                </span>
+
+                <span class="badge bg-success p-2">
+
+                    IN :
+                    {{ in_stock }}
+
+                </span>
+
+                <span class="badge bg-danger p-2">
+
+                    OUT :
+                    {{ out_stock }}
+
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="card-body">
+
+        <table class="table table-hover table-bordered align-middle">
+
+            <thead class="table-dark">
+
+                <tr>
+
+                    <th>ID</th>
+
+                    <th>Date</th>
+
+                    <th>Product</th>
+
+                    <th>Type</th>
+
+                    <th>Qty</th>
+
+                    <th>Remarks</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for entry in entries %}
+
+                <tr>
+
+                    <td>
+
+                        {{ entry.id }}
+
+                    </td>
+
+                    <td>
+
+                        {{ entry.created_at|date:"d-m-Y H:i" }}
+
+                    </td>
+
+                    <td>
+
+                        {{ entry.product.name }}
+
+                    </td>
+
+                    <td>
+
+                        {% if entry.transaction_type == "IN" %}
+
+                        <span class="badge bg-success">
+
+                            Stock IN
+
+                        </span>
+
+                        {% else %}
+
+                        <span class="badge bg-danger">
+
+                            Stock OUT
+
+                        </span>
+
+                        {% endif %}
+
+                    </td>
+
+                    <td>
+
+                        {{ entry.quantity }}
+
+                    </td>
+
+                    <td>
+
+                        {{ entry.remarks }}
+
+                    </td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+
+                    <td colspan="6" class="text-center">
+
+                        No Stock Entries Found
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+        <nav>
+
+            <ul class="pagination justify-content-center">
+
+                {% if entries.has_previous %}
+
+                <li class="page-item">
+
+                    <a class="page-link"
+                       href="?page={{ entries.previous_page_number }}&search={{ search }}">
+
+                        Previous
+
+                    </a>
+
+                </li>
+
+                {% endif %}
+
+                <li class="page-item active">
+
+                    <span class="page-link">
+
+                        {{ entries.number }}
+
+                    </span>
+
+                </li>
+
+                {% if entries.has_next %}
+
+                <li class="page-item">
+
+                    <a class="page-link"
+                       href="?page={{ entries.next_page_number }}&search={{ search }}">
+
+                        Next
+
+                    </a>
+
+                </li>
+
+                {% endif %}
+
+            </ul>
+
+        </nav>
+
+    </div>
+
+</div>
+
+{% endblock %}

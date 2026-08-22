@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+
+    <div class="d-flex justify-content-between mb-3">
+
+        <h2>
+
+            Low Stock Report
+
+        </h2>
+
+        <div>
+
+            <a href="{% url 'low_stock_pdf' %}?limit={{ limit }}" class="btn btn-danger">
+
+                Download PDF
+
+            </a>
+
+            <button onclick="window.print()" class="btn btn-primary">
+
+                Print
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <form method="GET" class="row mb-4">
+
+        <div class="col-md-4">
+
+            <label>
+
+                Show Products Having Stock Less Than Or Equal To
+
+            </label>
+
+            <input type="number" name="limit" class="form-control" value="{{ limit }}">
+
+        </div>
+
+        <div class="col-md-2">
+
+            <label>&nbsp;</label>
+
+            <button class="btn btn-success w-100">
+
+                Search
+
+            </button>
+
+        </div>
+
+    </form>
+
+    <div class="alert alert-warning">
+
+        <b>
+
+            Total Low Stock Products :
+
+            {{ total_products }}
+
+        </b>
+
+    </div>
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-dark">
+
+            <tr>
+
+                <th>#</th>
+
+                <th>Product</th>
+
+                <th>Category</th>
+
+                <th>Current Stock</th>
+
+                <th>Purchase Price</th>
+
+                <th>Selling Price</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for product in products %}
+
+            <tr>
+
+                <td>{{ forloop.counter }}</td>
+
+                <td>{{ product.name }}</td>
+
+                <td>{{ product.category }}</td>
+
+                <td class="text-danger fw-bold">
+
+                    {{ product.quantity }}
+
+                </td>
+
+                <td>₹{{ product.purchase_price }}</td>
+
+                <td>₹{{ product.selling_price }}</td>
+
+            </tr>
+
+            {% empty %}
+
+            <tr>
+
+                <td colspan="6" class="text-center">
+
+                    No Low Stock Products
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}

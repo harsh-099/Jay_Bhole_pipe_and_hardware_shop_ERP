@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+
+    <div class="d-flex justify-content-between mb-3">
+
+        <h2>
+
+            Top Selling Products
+
+        </h2>
+
+        <div>
+
+            <a href="{% url 'top_products_pdf' %}" class="btn btn-danger">
+
+                Download PDF
+
+            </a>
+
+            <button onclick="window.print()" class="btn btn-primary">
+
+                Print
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-dark">
+
+            <tr>
+
+                <th>Rank</th>
+
+                <th>Product Name</th>
+
+                <th>Total Qty Sold</th>
+
+                <th>Total Sales</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for product in products %}
+
+            <tr>
+
+                <td>
+
+                    {{ forloop.counter }}
+
+                </td>
+
+                <td>
+
+                    {{ product.product__name }}
+
+                </td>
+
+                <td>
+
+                    {{ product.total_qty }}
+
+                </td>
+
+                <td>
+
+                    ₹{{ product.total_amount }}
+
+                </td>
+
+            </tr>
+
+            {% empty %}
+
+            <tr>
+
+                <td colspan="4" class="text-center">
+
+                    No Data Found
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}

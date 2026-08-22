@@ -1,0 +1,339 @@
+<div class="offcanvas offcanvas-end premium-notification" tabindex="-1" id="notificationPanel">
+
+
+    <!-- HEADER -->
+
+    <div class="notification-top">
+
+        <div>
+
+            <span class="notification-small-title">
+                BUSINESS CENTER
+            </span>
+
+            <h4>
+                <i class="fa-solid fa-bell"></i>
+                Notifications
+            </h4>
+
+        </div>
+
+
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas">
+
+        </button>
+
+    </div>
+
+
+
+    <!-- BUSINESS HEALTH CARD -->
+
+    <div class="business-health">
+
+
+        <div class="health-header">
+
+
+            <div>
+
+                <small>
+                    BUSINESS HEALTH
+                </small>
+
+
+                <h5>
+
+                    Excellent
+
+                    <span class="health-status"></span>
+
+                </h5>
+
+            </div>
+
+
+
+            <div class="health-icon">
+
+                <i class="fa-solid fa-chart-line"></i>
+
+            </div>
+
+
+        </div>
+
+
+
+        <div class="health-data">
+
+
+            <div>
+
+                <span>
+                    Alerts
+                </span>
+
+                <strong>
+                    {{ notification_count|default:"0" }}
+                </strong>
+
+            </div>
+
+
+
+            <div>
+
+                <span>
+                    Stock
+                </span>
+
+                <strong>
+                    OK
+                </strong>
+
+            </div>
+
+
+
+            <div>
+
+                <span>
+                    Recovery
+                </span>
+
+                <strong>
+                    ₹{{ pending_udhari|default:"0" }}
+                </strong>
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- NOTIFICATION LIST START -->
+
+    <div class="notification-scroll">
+        {% if notifications %}
+
+        {% for n in notifications %}
+
+        <a href="{{ n.url }}" class="notification-card">
+
+            <div class="notification-icon bg-{{ n.color }}">
+
+                <i class="fa-solid {{ n.icon }}"></i>
+
+            </div>
+
+            <div class="notification-content">
+
+                <div class="notification-card-header">
+
+                    <h6>{{ n.title }}</h6>
+
+                    <span class="notification-badge">
+
+                        NEW
+
+                    </span>
+
+                </div>
+
+                <p>
+
+                    {{ n.message }}
+
+                </p>
+
+                <div class="notification-bottom">
+
+                    <small>
+
+                        Today
+
+                    </small>
+
+                    <span>
+
+                        View
+
+                        <i class="fa-solid fa-arrow-right"></i>
+
+                    </span>
+
+                </div>
+
+            </div>
+
+        </a>
+
+        {% endfor %}
+
+        {% else %}
+
+        <div class="notification-empty">
+
+            <i class="fa-solid fa-circle-check"></i>
+
+            <h5>
+
+                Everything looks good
+
+            </h5>
+
+            <p>
+
+                No pending notifications.
+
+            </p>
+
+        </div>
+
+        {% endif %}
+        <!-- AI Suggestion -->
+
+        <div class="ai-card">
+
+            <div class="ai-icon">
+
+                <i class="fa-solid fa-brain"></i>
+
+            </div>
+
+            <div>
+
+                <h6>
+
+                    AI Suggestion
+
+                </h6>
+
+                <small>
+
+                    Review purchase recommendations before placing today's order.
+
+                </small>
+
+            </div>
+
+        </div>
+
+        <!-- Today's Business -->
+
+        <div class="today-card">
+
+            <div class="today-title">
+
+                <i class="fa-solid fa-chart-column"></i>
+
+                <span>
+
+                    Today's Business
+
+                </span>
+
+            </div>
+
+            <div class="today-grid">
+
+                <div class="today-box">
+
+                    <small>
+
+                        Bills
+
+                    </small>
+
+                    <strong>
+
+                        {{ today_bills|default:"0" }}
+
+                    </strong>
+
+                </div>
+
+                <div class="today-box">
+
+                    <small>
+
+                        Sales
+
+                    </small>
+
+                    <strong>
+
+                        ₹{{ today_sales|default:"0" }}
+
+                    </strong>
+
+                </div>
+
+                <div class="today-box">
+
+                    <small>
+
+                        Profit
+
+                    </small>
+
+                    <strong>
+
+                        ₹{{ today_profit|default:"0" }}
+
+                    </strong>
+
+                </div>
+
+                <div class="today-box">
+
+                    <small>
+
+                        Recovery
+
+                    </small>
+
+                    <strong>
+
+                        ₹{{ pending_udhari|default:"0" }}
+
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- Footer -->
+
+        <div class="notification-footer">
+
+            <a href="/activity-log/" class="footer-link">
+
+                <i class="fa-solid fa-clock-rotate-left"></i>
+
+                Activity Log
+
+            </a>
+
+            <a href="/reports/" class="footer-link">
+
+                <i class="fa-solid fa-chart-line"></i>
+
+                Reports
+
+            </a>
+
+        </div>
+
+    </div>
+
+</div>

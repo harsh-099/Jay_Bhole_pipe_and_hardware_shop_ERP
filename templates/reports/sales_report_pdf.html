@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <style>
+        @page {
+            size: A4;
+            margin: 15px;
+        }
+
+        body {
+            font-family: DejaVu Sans;
+            font-size: 12px;
+            color: #222;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            border: 1px solid #666;
+            padding: 6px;
+        }
+
+        .no-border {
+            border: none;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        .right {
+            text-align: right;
+        }
+
+        .title {
+            font-size: 30px;
+            font-weight: bold;
+            color: #0d47a1;
+        }
+
+        .subtitle {
+            font-size: 13px;
+        }
+
+        .report-title {
+
+            background: #0d47a1;
+            color: white;
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            padding: 8px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+
+        }
+
+        .table-head {
+
+            background: #0d47a1;
+            color: white;
+            font-weight: bold;
+
+        }
+
+        .summary th {
+
+            background: #0d47a1;
+            color: white;
+
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <table class="no-border">
+
+        <tr>
+
+            <td class="no-border" width="120">
+
+                {% if shop.logo %}
+
+                <img src="{{ shop.logo.path }}" width="95" height="95">
+
+                {% endif %}
+
+            </td>
+
+            <td class="no-border center">
+
+                <div class="title">
+
+                    {{ shop.shop_name }}
+
+                </div>
+
+                <div class="subtitle">
+
+                    <b>Owner :</b>
+
+                    {{ shop.owner_name }}
+
+                </div>
+
+                <div class="subtitle">
+
+                    {{ shop.address }}
+
+                </div>
+
+                <div class="subtitle">
+
+                    Mobile :
+
+                    {{ shop.mobile }}
+
+                </div>
+
+                <div class="subtitle">
+
+                    GST :
+
+                    {{ shop.gst_number }}
+
+                </div>
+
+            </td>
+
+        </tr>
+
+    </table>
+
+    <div class="report-title">
+
+        SALES REPORT
+
+    </div>
+
+    <table class="no-border">
+
+        <tr>
+
+            <td class="no-border">
+
+                <b>From :</b>
+
+                {{ from_date|default:"Beginning" }}
+
+            </td>
+
+            <td class="no-border">
+
+                <b>To :</b>
+
+                {{ to_date|default:"Today" }}
+
+            </td>
+
+            <td class="no-border right">
+
+                <b>Generated :</b>
+
+                {{ current_time|date:"d-m-Y h:i A" }}
+
+            </td>
+
+        </tr>
+
+    </table>
+
+    <br>
+
+    <table>
+
+        <thead>
+
+            <tr class="table-head">
+
+                <th width="15%">
+
+                    Invoice
+
+                </th>
+
+                <th width="18%">
+
+                    Date
+
+                </th>
+
+                <th width="35%">
+
+                    Customer
+
+                </th>
+
+                <th width="15%">
+
+                    Payment
+
+                </th>
+
+                <th width="17%">
+
+                    Amount
+
+                </th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for bill in bills %}
+
+            <tr>
+
+                <td>
+
+                    {{ bill.invoice_no }}
+
+                </td>
+
+                <td>
+
+                    {{ bill.created_at|date:"d-m-Y" }}
+
+                </td>
+
+                <td>
+
+                    {% if bill.customer %}
+
+                    {{ bill.customer.name }}
+
+                    {% else %}
+
+                    Walk In Customer
+
+                    {% endif %}
+
+                </td>
+
+                <td class="center">
+
+                    {{ bill.payment_method }}
+
+                </td>
+
+                <td class="right">
+
+                    ₹{{ bill.total_amount }}
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+    <br>
+    <!-- Summary -->
+
+    <table class="summary" width="45%" align="right">
+
+        <tr>
+
+            <th width="60%">
+
+                Cash Sales
+
+            </th>
+
+            <td class="right">
+
+                ₹{{ cash_sales }}
+
+            </td>
+
+        </tr>
+
+        <tr>
+
+            <th>
+
+                UPI Sales
+
+            </th>
+
+            <td class="right">
+
+                ₹{{ upi_sales }}
+
+            </td>
+
+        </tr>
+
+        <tr>
+
+            <th>
+
+                Credit Sales
+
+            </th>
+
+            <td class="right">
+
+                ₹{{ credit_sales }}
+
+            </td>
+
+        </tr>
+
+        <tr>
+
+            <th style="font-size:15px;">
+
+                TOTAL SALES
+
+            </th>
+
+            <th class="right" style="font-size:15px;">
+
+                ₹{{ total_sales }}
+
+            </th>
+
+        </tr>
+
+    </table>
+
+    <br><br><br><br><br>
+
+    <hr>
+
+    <table class="no-border">
+
+        <tr>
+
+            <td class="no-border" width="70%">
+
+                <b>Report Generated By</b>
+
+                <br><br>
+
+                {{ shop.shop_name }}
+
+                <br>
+
+                Owner :
+
+                {{ shop.owner_name }}
+
+                <br>
+
+                {{ shop.address }}
+
+                <br>
+
+                Mobile :
+
+                {{ shop.mobile }}
+
+                <br>
+
+                GST :
+
+                {{ shop.gst_number }}
+
+            </td>
+
+            <td class="no-border center">
+
+                <br><br><br>
+
+                _______________________
+
+                <br>
+
+                Authorized Signature
+
+            </td>
+
+        </tr>
+
+    </table>
+
+    <hr>
+
+    <table class="no-border">
+
+        <tr>
+
+            <td class="no-border">
+
+                Printed On :
+
+                {{ current_time|date:"d-m-Y h:i A" }}
+
+            </td>
+
+            <td class="no-border right">
+
+                Total Bills :
+
+                {{ bills|length }}
+
+            </td>
+
+        </tr>
+
+    </table>
+
+    <div class="center" style="margin-top:12px;">
+
+        <b>
+
+            ***** END OF SALES REPORT *****
+
+        </b>
+
+        <br><br>
+
+        <font size="2">
+
+            Generated by {{ shop.shop_name }}
+
+        </font>
+
+    </div>
+
+</body>
+
+</html>

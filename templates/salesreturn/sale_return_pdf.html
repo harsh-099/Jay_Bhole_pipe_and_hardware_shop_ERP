@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <style>
+        @page {
+
+            size: A4;
+
+            margin: 12px;
+
+        }
+
+        body {
+
+            font-family: DejaVu Sans;
+
+            font-size: 14px;
+
+            line-height: 1.2;
+
+        }
+
+        table {
+
+            width: 100%;
+
+            border-collapse: collapse;
+
+        }
+
+        th,
+        td {
+
+            border: 1px solid #000;
+
+            padding: 5px;
+
+        }
+
+        .no-border,
+        .no-border td {
+
+            border: none;
+
+        }
+
+        .center {
+
+            text-align: center;
+
+        }
+
+        .right {
+
+            text-align: right;
+
+        }
+
+        .title {
+
+            font-size: 20px;
+
+            font-weight: bold;
+
+        }
+
+        .heading {
+
+            font-size: 18px;
+
+            font-weight: bold;
+
+            text-align: center;
+
+        }
+
+        .small {
+
+            font-size: 11px;
+
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <table class="no-border">
+
+        <tr>
+
+            <td width="75" class="no-border">
+
+                {% if shop.logo %}
+
+                <img src="{{ shop.logo.url }}" width="65" height="65">
+
+                {% endif %}
+
+            </td>
+
+            <td class="center no-border">
+
+                <div class="title">
+
+                    {{ shop.shop_name }}
+
+                </div>
+
+                <div class="small">
+
+                    {{ shop.address }}
+
+                </div>
+
+                <div class="small">
+
+                    Mobile :
+                    {{ shop.mobile }}
+
+                </div>
+
+                <div class="small">
+
+                    GST :
+                    {{ shop.gst_number }}
+
+                </div>
+
+            </td>
+
+        </tr>
+
+    </table>
+
+    <hr>
+
+    <div class="heading">
+
+        SALE RETURN
+
+    </div>
+
+    <hr>
+
+    <table>
+
+        <tr>
+
+            <td width="65%">
+
+                <b>Return No :</b>
+
+                {{ return_data.return_no }}
+
+                <br>
+
+                <b>Invoice No :</b>
+
+                {{ return_data.bill.invoice_no }}
+
+                <br>
+
+                <b>Customer :</b>
+
+                {% if return_data.bill.customer %}
+
+                {{ return_data.bill.customer.name }}
+
+                {% else %}
+
+                Walk In Customer
+
+                {% endif %}
+            </td>
+
+            <td>
+
+                <b>Date :</b>
+
+                {{ return_data.created_at|date:"d-m-Y H:i" }}
+
+                <br>
+
+                <b>Status :</b>
+
+                {{ return_data.status }}
+
+            </td>
+
+        </tr>
+
+    </table>
+
+    <br>
+
+    <table>
+
+        <thead>
+
+            <tr>
+
+                <th width="8%">
+
+                    Sr.
+
+                </th>
+
+                <th>
+
+                    Product
+
+                </th>
+
+                <th width="15%">
+
+                    Qty
+
+                </th>
+
+                <th width="20%">
+
+                    Rate
+
+                </th>
+
+                <th width="22%">
+
+                    Amount
+
+                </th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for item in return_data.items.all %}
+
+            <tr>
+
+                <td class="center">
+
+                    {{ forloop.counter }}
+
+                </td>
+
+                <td>
+
+                    {{ item.bill_item.product.name }}
+
+                </td>
+
+                <td class="center">
+
+                    {{ item.quantity }}
+
+                </td>
+
+                <td class="right">
+
+                    ₹{{ item.bill_item.price }}
+                </td>
+
+                <td class="right">
+
+                    ₹{{ item.amount }}
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+            <!-- रिकाम्या rows टाकलेल्या नाहीत -->
+            <!-- 1 Product असला तरी table मोठा दिसणार नाही -->
+
+        </tbody>
+
+    </table>
+
+    <br>
+
+    <table width="45%" align="right">
+
+        <tr>
+
+            <th>
+
+                Total Return
+
+            </th>
+
+            <th class="right">
+
+                ₹{{ return_data.total_return }}
+
+            </th>
+
+        </tr>
+
+    </table>
+
+    <br>
+    <br>
+    <br>
+
+    <table>
+
+        <tr>
+
+            <td width="60%">
+
+                <b>Customer Details</b>
+
+                <br><br>
+
+                {{ return_data.bill.customer.name }}
+
+                <br>
+
+                {% if return_data.bill.customer.mobile %}
+
+                Mobile :
+
+                {{ return_data.bill.customer.mobile }}
+
+                <br>
+
+                {% endif %}
+
+                {% if return_data.bill.customer.address %}
+
+                Address :
+
+                {{ return_data.bill.customer.address }}
+
+                {% endif %}
+
+            </td>
+
+            <td>
+
+                <b>Return Reason</b>
+
+                <br><br>
+
+                {% for item in return_data.items.all %}
+
+                {{ item.reason }}
+
+                {% if not forloop.last %}
+
+                ,
+
+                {% endif %}
+
+                {% empty %}
+
+                -
+
+                {% endfor %}
+
+            </td>
+
+        </tr>
+
+    </table>
+
+    <br>
+    <!-- Terms & Conditions -->
+
+    <table class="no-border">
+
+        <tr>
+
+            <td class="no-border" width="65%">
+
+                <b>Terms & Conditions</b>
+
+                <br><br>
+
+                • Returned goods are accepted subject to verification.
+
+                <br>
+
+                • Refund / Adjustment as per company policy.
+
+                <br>
+
+                • Original invoice is mandatory.
+
+                <br>
+
+                • Keep this document for future reference.
+
+            </td>
+
+            <td class="no-border center">
+
+                <br><br><br>
+
+                ______________________
+
+                <br>
+
+                Customer Signature
+
+            </td>
+
+        </tr>
+
+    </table>
+
+    <br><br>
+
+    <table class="no-border">
+
+        <tr>
+
+            <td class="no-border" width="65%">
+
+            </td>
+
+            <td class="no-border center">
+
+                ______________________
+
+                <br>
+
+                Authorized Signature
+
+            </td>
+
+        </tr>
+
+    </table>
+
+    <hr>
+
+    <div class="center">
+
+        <b>
+
+            THANK YOU • VISIT AGAIN
+
+        </b>
+
+        <br>
+
+        <font size="2">
+
+            Printed :
+
+            {{ return_data.created_at|date:"d-m-Y H:i" }}
+
+            &nbsp;&nbsp;&nbsp;&nbsp;
+
+            Return No :
+
+            {{ return_data.return_no }}
+
+        </font>
+
+    </div>
+    <script>
+
+        window.onload = function () {
+
+            window.print();
+
+        };
+
+    </script>
+
+</body>
+
+</html>

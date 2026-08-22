@@ -1,0 +1,215 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Purchase Details
+{% endblock %}
+
+{% block page_title %}
+Purchase Details
+{% endblock %}
+
+{% block content %}
+
+<div class="card shadow">
+
+    <div class="card-header bg-primary text-white d-flex justify-content-between">
+
+        <h4>
+
+            Purchase {{ purchase.purchase_no }}
+
+        </h4>
+
+        <div>
+
+            <a href="{% url 'print_purchase' purchase.id %}" target="_blank" class="btn btn-dark btn-sm">
+
+                <i class="fa fa-print"></i>
+
+                Print
+
+            </a>
+
+        </div>
+
+    </div>
+
+    <div class="card-body">
+
+        <div class="row mb-4">
+
+            <div class="col-md-6">
+
+                <h5>{{ shop.shop_name }}</h5>
+
+                <p>
+
+                    {{ shop.address }}
+
+                    <br>
+
+                    {{ shop.mobile }}
+
+                </p>
+
+            </div>
+
+            <div class="col-md-6 text-end">
+
+                <b>Purchase No :</b>
+
+                {{ purchase.purchase_no }}
+
+                <br>
+
+                <b>Date :</b>
+
+                {{ purchase.created_at }}
+
+            </div>
+
+        </div>
+
+        <hr>
+
+        <h5>
+
+            Supplier Details
+
+        </h5>
+
+        <p>
+
+            <b>Name :</b>
+
+            {{ purchase.supplier.name }}
+
+            <br>
+
+            <b>Mobile :</b>
+
+            {{ purchase.supplier.mobile }}
+
+            <br>
+
+            <b>Address :</b>
+
+            {{ purchase.supplier.address }}
+
+        </p>
+
+        <table class="table table-bordered">
+
+            <thead class="table-dark">
+
+                <tr>
+
+                    <th>Product</th>
+
+                    <th width="120">Qty</th>
+
+                    <th width="150">Rate</th>
+
+                    <th width="150">Total</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for item in items %}
+
+                <tr>
+
+                    <td>
+
+                        {{ item.product.name }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.quantity }}
+
+                    </td>
+
+                    <td>
+
+                        ₹{{ item.price }}
+
+                    </td>
+
+                    <td>
+
+                        ₹{{ item.total }}
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+        <div class="row">
+
+            <div class="col-md-4 offset-md-8">
+
+                <table class="table table-bordered">
+
+                    <tr>
+
+                        <th>Total</th>
+
+                        <td>
+
+                            ₹{{ purchase.total_amount }}
+
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <th>Discount</th>
+
+                        <td>
+
+                            ₹{{ purchase.discount_amount }}
+
+                        </td>
+
+                    </tr>
+
+                    <tr class="table-success">
+
+                        <th>Final Amount</th>
+
+                        <th>
+
+                            ₹{{ purchase.final_amount }}
+
+                        </th>
+
+                    </tr>
+
+                </table>
+
+            </div>
+
+        </div>
+
+        <a href="{% url 'add_purchase' %}" class="btn btn-secondary">
+
+            Back
+
+        </a>
+
+    </div>
+
+</div>
+
+{% endblock %}

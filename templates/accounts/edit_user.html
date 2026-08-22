@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Edit User
+{% endblock %}
+
+{% block page_title %}
+Edit User
+{% endblock %}
+
+{% block content %}
+
+<div class="card shadow">
+
+    <div class="card-header bg-warning">
+
+        <h4>
+
+            <i class="fa fa-edit"></i>
+
+            Edit User
+
+        </h4>
+
+    </div>
+
+    <div class="card-body">
+
+        <form method="POST" enctype="multipart/form-data">
+
+            {% csrf_token %}
+
+            <div class="row">
+
+                <div class="col-md-6 mb-3">
+
+                    <label>First Name</label>
+
+                    <input type="text" name="first_name" value="{{ user.first_name }}" class="form-control">
+
+                </div>
+
+                <div class="col-md-6 mb-3">
+
+                    <label>Last Name</label>
+
+                    <input type="text" name="last_name" value="{{ user.last_name }}" class="form-control">
+
+                </div>
+
+                <div class="col-md-6 mb-3">
+
+                    <label>Username</label>
+
+                    <input type="text" name="username" value="{{ user.username }}" class="form-control">
+
+                </div>
+
+                <div class="col-md-6 mb-3">
+
+                    <label>Email</label>
+
+                    <input type="email" name="email" value="{{ user.email }}" class="form-control">
+
+                </div>
+
+                <div class="col-md-6 mb-3">
+
+                    <label>Role</label>
+
+                    <select name="role" class="form-select">
+
+                        {% for value,label in roles %}
+
+                        <option value="{{ value }}" {% if profile.role == value %}selected{% endif %}>
+
+                            {{ label }}
+
+                        </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+                <div class="col-md-6 mb-3">
+
+                    <label>Mobile</label>
+
+                    <input type="text" name="mobile" value="{{ profile.mobile }}" class="form-control">
+
+                </div>
+
+                <div class="col-md-12 mb-3">
+
+                    <label>Address</label>
+
+                    <textarea name="address" class="form-control">{{ profile.address }}</textarea>
+
+                </div>
+
+                <div class="col-md-6 mb-3">
+
+                    <label>Photo</label>
+
+                    <input type="file" name="photo" class="form-control">
+
+                </div>
+
+                <div class="col-md-6 mt-4">
+
+                    <input type="checkbox" name="is_active" {% if profile.is_active %}checked{% endif %}>
+
+                    Active User
+
+                </div>
+
+            </div>
+
+            <hr>
+
+            <button class="btn btn-success">
+
+                <i class="fa fa-save"></i>
+
+                Update
+
+            </button>
+
+            <a href="{% url 'users' %}" class="btn btn-secondary">
+
+                Cancel
+
+            </a>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,309 @@
+{% load static %}
+
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+    <title>Supplier Ledger Print</title>
+
+
+    <style>
+        body {
+
+            font-family: Arial;
+            margin: 30px;
+
+        }
+
+
+        .header {
+
+            text-align: center;
+            border-bottom: 2px solid black;
+            padding-bottom: 15px;
+
+        }
+
+
+        .header img {
+
+            height: 80px;
+
+        }
+
+
+        table {
+
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 25px;
+
+        }
+
+
+        table,
+        th,
+        td {
+
+            border: 1px solid black;
+
+        }
+
+
+        th,
+        td {
+
+            padding: 8px;
+            text-align: center;
+
+        }
+
+
+        .info {
+
+            margin-top: 20px;
+            line-height: 25px;
+
+        }
+
+
+        @media print {
+
+            button {
+
+                display: none;
+
+            }
+
+        }
+    </style>
+
+
+</head>
+
+
+<body>
+
+
+    <button onclick="window.print()">
+
+        Print
+
+    </button>
+
+
+
+    <div class="header">
+
+
+        {% if shop.logo %}
+
+        <img src="{{ shop.logo.url }}">
+
+        {% endif %}
+
+
+        <h2>
+
+            {{ shop.shop_name }}
+
+        </h2>
+
+
+        <p>
+
+            {{ shop.address }}
+
+        </p>
+
+
+        <p>
+
+            Mobile : {{ shop.mobile }}
+
+        </p>
+
+
+        <p>
+
+            GST : {{ shop.gst_number }}
+
+        </p>
+
+
+    </div>
+
+
+
+    <h2 style="text-align:center">
+
+        Supplier Ledger
+
+    </h2>
+
+
+
+    <div class="info">
+
+
+        <b>
+
+            Supplier :
+
+        </b>
+
+        {{ supplier.name }}
+
+
+        <br>
+
+
+        <b>
+
+            Mobile :
+
+        </b>
+
+        {{ supplier.mobile }}
+
+
+
+    </div>
+
+
+
+    <table>
+
+
+        <tr>
+
+            <th>Date</th>
+
+            <th>Particular</th>
+
+            <th>Debit</th>
+
+            <th>Credit</th>
+
+            <th>Balance</th>
+
+            <th>Remarks</th>
+
+
+        </tr>
+
+
+
+        {% for row in ledger %}
+
+
+        <tr>
+
+
+            <td>
+
+                {{ row.date|date:"d-m-Y" }}
+
+            </td>
+
+
+            <td>
+
+                {{ row.particular }}
+
+            </td>
+
+
+            <td>
+
+                ₹{{ row.debit }}
+
+            </td>
+
+
+            <td>
+
+                ₹{{ row.credit }}
+
+            </td>
+
+
+            <td>
+
+                ₹{{ row.balance }}
+
+            </td>
+
+
+            <td>
+
+                {{ row.remarks }}
+
+            </td>
+
+
+        </tr>
+
+
+        {% empty %}
+
+
+        <tr>
+
+            <td colspan="6">
+
+                No Ledger Found
+
+            </td>
+
+        </tr>
+
+
+        {% endfor %}
+
+
+    </table>
+
+
+
+    <br><br>
+
+
+    <div style="text-align:right">
+
+
+        <b>
+
+            Authorized Signature
+
+        </b>
+
+
+        <br><br>
+
+
+        {{ shop.owner_name }}
+
+
+    </div>
+
+
+
+    <script>
+
+        window.onload = function () {
+
+            window.print();
+
+        }
+
+    </script>
+
+
+
+</body>
+
+
+</html>

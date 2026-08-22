@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="card shadow">
+
+    <div class="card-header">
+
+        <h4>
+
+            Quotation {{ quotation.quotation_no }}
+
+        </h4>
+
+    </div>
+
+    <div class="card-body">
+
+        <h5>
+
+            Customer :
+
+            {{ quotation.customer }}
+
+        </h5>
+
+        <hr>
+
+        <table class="table table-bordered">
+
+            <thead>
+
+                <tr>
+
+                    <th>Product</th>
+
+                    <th>Qty</th>
+
+                    <th>Rate</th>
+
+                    <th>Total</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for item in items %}
+
+                <tr>
+
+                    <td>{{ item.product.name }}</td>
+
+                    <td>{{ item.quantity }}</td>
+
+                    <td>{{ item.price }}</td>
+
+                    <td>{{ item.total }}</td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+        <h3 class="text-end">
+
+            Grand Total :
+
+            ₹{{ quotation.total_amount }}
+
+        </h3>
+
+        <a href="{% url 'quotation_pdf' quotation.id %}" class="btn btn-success">
+
+            Download PDF
+
+        </a>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,238 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+
+    <div class="d-flex justify-content-between mb-3">
+
+        <h2>
+
+            Supplier Ledger Report
+
+        </h2>
+
+        {% if selected_supplier %}
+
+        <div>
+
+            <a href="{% url 'supplier_ledger_pdf' %}?supplier={{ selected_supplier.id }}" class="btn btn-danger">
+
+                Download PDF
+
+            </a>
+
+            <button onclick="window.print()" class="btn btn-primary">
+
+                Print
+
+            </button>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+    <form method="GET">
+
+        <div class="row">
+
+            <div class="col-md-5">
+
+                <select name="supplier" class="form-select">
+
+                    <option value="">
+
+                        Select Supplier
+
+                    </option>
+
+                    {% for supplier in suppliers %}
+
+                    <option value="{{ supplier.id }}" {% if selected_supplier and supplier.id == selected_supplier.id %}
+                        selected {% endif %}>
+
+                        {{ supplier.name }}
+
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+            <div class="col-md-2">
+
+                <button class="btn btn-success">
+
+                    Search
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </form>
+
+    {% if selected_supplier %}
+
+    <hr>
+
+    <div class="row">
+
+        <div class="col-md-4">
+
+            <div class="card shadow">
+
+                <div class="card-body text-center">
+
+                    <h6>Total Purchase</h6>
+
+                    <h3>
+
+                        ₹{{ total_purchase }}
+
+                    </h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4">
+
+            <div class="card shadow">
+
+                <div class="card-body text-center">
+
+                    <h6>Total Paid</h6>
+
+                    <h3 class="text-success">
+
+                        ₹{{ total_paid }}
+
+                    </h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4">
+
+            <div class="card shadow border-danger">
+
+                <div class="card-body text-center">
+
+                    <h6>Pending</h6>
+
+                    <h3 class="text-danger">
+
+                        ₹{{ total_balance }}
+
+                    </h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <br>
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-dark">
+
+            <tr>
+
+                <th>Date</th>
+
+                <th>Purchase No</th>
+
+                <th>Payment</th>
+
+                <th>Bill Amount</th>
+
+                <th>Paid</th>
+
+                <th>Balance</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for purchase in purchases %}
+
+            <tr>
+
+                <td>
+
+                    {{ purchase.created_at|date:"d-m-Y" }}
+
+                </td>
+
+                <td>
+
+                    {{ purchase.purchase_no }}
+
+                </td>
+
+                <td>
+
+                    {{ purchase.payment_method }}
+
+                </td>
+
+                <td>
+
+                    ₹{{ purchase.final_amount }}
+
+                </td>
+
+                <td>
+
+                    ₹{{ purchase.paid_amount }}
+
+                </td>
+
+                <td>
+
+                    ₹{{ purchase.balance_amount }}
+
+                </td>
+
+            </tr>
+
+            {% empty %}
+
+            <tr>
+
+                <td colspan="6" align="center">
+
+                    No Purchase Found
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

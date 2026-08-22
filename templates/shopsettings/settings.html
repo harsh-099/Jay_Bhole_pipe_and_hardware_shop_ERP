@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Shop Settings
+{% endblock %}
+
+{% block page_title %}
+Shop Settings
+{% endblock %}
+
+{% block content %}
+
+<div class="card shadow">
+
+    <div class="card-header bg-primary text-white">
+
+        <h4 class="mb-0">
+
+            <i class="fa fa-store"></i>
+
+            Shop Settings
+
+        </h4>
+
+    </div>
+
+    <div class="card-body">
+
+        <form method="POST" enctype="multipart/form-data">
+
+            {% csrf_token %}
+
+            <div class="row">
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Shop Name
+
+                    </label>
+
+                    {{ form.shop_name }}
+
+                </div>
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Owner Name
+
+                    </label>
+
+                    {{ form.owner_name }}
+
+                </div>
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Mobile
+
+                    </label>
+
+                    {{ form.mobile }}
+
+                </div>
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        GST Number
+
+                    </label>
+
+                    {{ form.gst_number }}
+
+                </div>
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        UPI ID
+
+                    </label>
+
+                    {{ form.upi_id }}
+
+                    <small class="text-muted">
+
+                        Example :
+                        jaybhole@okicici
+
+                    </small>
+
+                </div>
+
+                <div class="col-md-12 mb-3">
+
+                    <label class="form-label">
+
+                        Address
+
+                    </label>
+
+                    {{ form.address }}
+
+                </div>
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Logo
+
+                    </label>
+
+                    {{ form.logo }}
+
+                </div>
+
+            </div>
+
+            <hr>
+
+            <button class="btn btn-success">
+
+                <i class="fa fa-save"></i>
+
+                Save Settings
+
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,257 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="card shadow">
+
+    <div class="card-header">
+
+        <h4>
+
+            {{ customer.name }}
+
+            Ledger
+
+        </h4>
+
+    </div>
+
+    <div class="card-body">
+
+        <div class="row mb-3">
+
+            <div class="col-md-6">
+
+                <h4 class="text-danger">
+
+                    Outstanding :
+                    ₹{{ customer.credit_balance }}
+
+                </h4>
+
+                <p>
+
+                    <strong>Due Date :</strong>
+
+                    {% if customer.due_date %}
+
+                    {{ customer.due_date }}
+
+                    {% else %}
+
+                    --
+
+                    {% endif %}
+
+                </p>
+
+                {% if customer.credit_balance > 0 %}
+
+                {% if customer.due_date %}
+
+                {% if customer.due_date < today %} <span class="badge bg-danger">
+
+                    🔴 OVERDUE
+
+                    </span>
+
+                    {% else %}
+
+                    <span class="badge bg-success">
+
+                        🟢 ACTIVE
+
+                    </span>
+
+                    {% endif %}
+
+                    {% endif %}
+
+                    {% endif %}
+
+            </div>
+
+            <div class="col-md-6 text-end">
+
+                <a href="{% url 'receive_payment' customer.id %}" class="btn btn-success">
+
+                    💵 Receive Payment
+
+                </a>
+
+                <a href="tel:{{ customer.mobile }}" class="btn btn-primary">
+
+                    📞 Call
+
+                </a>
+
+                <a href="{% url 'whatsapp_reminder' customer.id %}" target="_blank" class="btn btn-success">
+
+                    <i class="fa fa-whatsapp"></i>
+
+                    WhatsApp Reminder
+
+                </a>
+
+                <a href="{% url 'customer_statement' customer.id %}" target="_blank" class="btn btn-dark">
+
+                    🖨 Print Statement
+
+                </a>
+
+            </div>
+            <div class="card mb-3">
+
+                <div class="card-body">
+
+                    <form method="GET">
+
+                        <div class="row">
+
+                            <div class="col-md-4">
+
+                                <label>
+
+                                    From Date
+
+                                </label>
+
+                                <input type="date" name="from" value="{{ from_date }}" class="form-control">
+
+                            </div>
+
+                            <div class="col-md-4">
+
+                                <label>
+
+                                    To Date
+
+                                </label>
+
+                                <input type="date" name="to" value="{{ to_date }}" class="form-control">
+
+                            </div>
+
+                            <div class="col-md-4 d-flex align-items-end">
+
+                                <button class="btn btn-primary w-100">
+
+                                    Filter Statement
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <hr>
+
+        <hr>
+
+        <table class="table table-bordered table-hover align-middle">
+
+            <thead class="table-dark">
+
+                <tr>
+
+                    <th>Date</th>
+
+                    <th>Particular</th>
+
+                    <th>Invoice</th>
+
+                    <th class="text-end">Debit</th>
+
+                    <th class="text-end">Credit</th>
+
+                    <th class="text-end">Balance</th>
+
+                    <th>Remarks</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for row in ledger %}
+
+                <tr>
+
+                    <td>
+                        {{ row.date|date:"d-m-Y h:i A" }}
+                    </td>
+
+                    <td>
+                        {{ row.particular }}
+                    </td>
+
+                    <td>
+                        {{ row.invoice_no }}
+                    </td>
+
+                    <td class="text-end text-danger">
+
+                        {% if row.debit > 0 %}
+                        ₹{{ row.debit }}
+                        {% else %}
+                        -
+                        {% endif %}
+
+                    </td>
+
+                    <td class="text-end text-success">
+
+                        {% if row.credit > 0 %}
+                        ₹{{ row.credit }}
+                        {% else %}
+                        -
+                        {% endif %}
+
+                    </td>
+
+                    <td class="text-end">
+
+                        <strong>₹{{ row.balance }}</strong>
+
+                    </td>
+
+                    <td>
+
+                        {{ row.remarks }}
+
+                    </td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+
+                    <td colspan="7" class="text-center text-muted p-4">
+
+                        No Ledger Entries Found
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

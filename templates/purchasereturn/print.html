@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <style>
+        @page {
+
+            size: A4;
+
+            margin: 12px;
+
+        }
+
+        body {
+
+            font-family: DejaVu Sans;
+
+            font-size: 14px;
+
+            line-height: 1.2;
+
+            color: #000;
+
+        }
+
+        table {
+
+            width: 100%;
+
+            border-collapse: collapse;
+
+        }
+
+        th,
+        td {
+
+            border: 1px solid #000;
+
+            padding: 5px;
+
+        }
+
+        .no-border,
+        .no-border td {
+
+            border: none;
+
+        }
+
+        .center {
+
+            text-align: center;
+
+        }
+
+        .right {
+
+            text-align: right;
+
+        }
+
+        .title {
+
+            font-size: 20px;
+
+            font-weight: bold;
+
+        }
+
+        .heading {
+
+            font-size: 18px;
+
+            font-weight: bold;
+
+            text-align: center;
+
+        }
+
+        .small {
+
+            font-size: 11px;
+
+        }
+
+        .bold {
+
+            font-weight: bold;
+
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <!-- Shop Header -->
+
+    <table class="no-border">
+
+        <tr>
+
+            <td width="75" class="no-border">
+
+                {% if shop.logo %}
+
+                <img src="{{ shop.logo.url }}" width="65" height="65">
+
+                {% endif %}
+
+            </td>
+
+            <td class="center no-border">
+
+                <div class="title">
+
+                    {{ shop.shop_name }}
+
+                </div>
+
+                <div class="small">
+
+                    {{ shop.address }}
+
+                </div>
+
+                <div class="small">
+
+                    Mobile :
+                    {{ shop.mobile }}
+
+                </div>
+
+                <div class="small">
+
+                    GST :
+                    {{ shop.gst_number }}
+
+                </div>
+
+            </td>
+
+        </tr>
+
+    </table>
+
+    <hr>
+
+    <div class="heading">
+
+        PURCHASE RETURN
+
+    </div>
+
+    <hr>
+
+    <!-- Return Information -->
+
+    <table>
+
+        <tr>
+
+            <td width="65%">
+
+                <b>Return No :</b>
+
+                {{ return_data.return_no }}
+
+                <br>
+
+                <b>Purchase No :</b>
+
+                {{ return_data.purchase.purchase_no }}
+
+                <br>
+
+                <b>Supplier :</b>
+
+                {{ return_data.purchase.supplier.name }}
+
+            </td>
+
+            <td>
+
+                <b>Date :</b>
+
+                {{ return_data.created_at|date:"d-m-Y H:i" }}
+
+                <br>
+
+                <b>Status :</b>
+
+                {{ return_data.status }}
+
+            </td>
+
+        </tr>
+
+    </table>
+
+    <br>
+
+    <!-- Product Table -->
+
+    <table>
+
+        <thead>
+
+            <tr>
+
+                <th width="8%">
+
+                    Sr.
+
+                </th>
+
+                <th>
+
+                    Product
+
+                </th>
+
+                <th width="15%">
+
+                    Qty
+
+                </th>
+
+                <th width="22%">
+
+                    Amount
+
+                </th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+            {% for item in return_data.items.all %}
+
+            <tr>
+
+                <td class="center">
+
+                    {{ forloop.counter }}
+
+                </td>
+
+                <td>
+
+                    {{ item.purchase_item.product.name }}
+
+                </td>
+
+                <td class="center">
+
+                    {{ item.quantity }}
+
+                </td>
+
+                <td class="right">
+
+                    ₹{{ item.amount }}
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+            <!-- रिकाम्या ओळी नाहीत -->
+            <!-- Product एकच असला तरी table तेवढाच राहील -->
+
+        </tbody>
+
+    </table>
+
+    <br>
+
+    <!-- Total -->
+
+    <table width="45%" align="right">
+
+        <tr>
+
+            <th>
+
+                Total Return Amount
+
+            </th>
+
+            <th class="right">
+
+                ₹{{ return_data.total_return }}
+
+            </th>
+
+        </tr>
+
+    </table>
+
+    <br>
+    <br>
+    <br>
+
+    <!-- Supplier & Remarks -->
+
+    <table>
+
+        <tr>
+
+            <td width="60%">
+
+                <b>Supplier</b>
+
+                <br><br>
+
+                {{ return_data.purchase.supplier.name }}
+
+                <br>
+
+                {% if return_data.purchase.supplier.mobile %}
+
+                Mobile :
+
+                {{ return_data.purchase.supplier.mobile }}
+
+                <br>
+
+                {% endif %}
+
+                {% if return_data.purchase.supplier.gst_number %}
+
+                GST :
+
+                {{ return_data.purchase.supplier.gst_number }}
+
+                {% endif %}
+
+            </td>
+
+            <td>
+
+                <b>Remarks</b>
+
+                <br><br>
+
+                {% if return_data.reason %}
+
+                {{ return_data.reason }}
+
+                {% else %}
+
+                -
+
+                {% endif %}
+
+            </td>
+
+        </tr>
+
+    </table>
+
+    <br>
+    <!-- ================= TERMS & CONDITIONS ================= -->
+
+    <table width="100%" style="margin-top:35px;">
+
+        <tr>
+
+            <td width="65%" valign="top">
+
+                <b style="font-size:14px;">
+
+                    Terms & Conditions
+
+                </b>
+
+                <br><br>
+
+                1. Returned goods should be accepted only after proper verification.
+
+                <br><br>
+
+                2. Return quantity should match the approved Purchase Return.
+
+                <br><br>
+
+                3. Damaged or expired goods should be clearly mentioned.
+
+                <br><br>
+
+                4. This document should be preserved for future reference.
+
+                <br><br>
+
+                5. Any adjustment in supplier account will be made as per company policy.
+
+                <br><br>
+
+                6. Supplier acknowledgement is recommended at the time of return.
+
+            </td>
+
+            <td width="35%" valign="bottom" align="center">
+
+                <br><br><br><br><br><br><br>
+
+                ___________________________
+
+                <br>
+
+                <b>
+
+                    Authorized Signature
+
+                </b>
+
+                <br>
+
+                {{ shop.shop_name }}
+
+            </td>
+
+        </tr>
+
+    </table>
+
+    <hr>
+
+    <table width="100%">
+
+        <tr>
+
+            <td align="center">
+
+                <b>
+
+                    THANK YOU
+
+                </b>
+
+                <br>
+
+                This Purchase Return is system generated and does not require a manual signature.
+
+                <br>
+
+                Printed On :
+
+                {{ return_data.created_at|date:"d-m-Y H:i" }}
+
+            </td>
+
+        </tr>
+
+    </table>
+</body>
+
+</html>

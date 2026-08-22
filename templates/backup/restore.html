@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Restore Database
+{% endblock %}
+
+{% block page_title %}
+Restore Database
+{% endblock %}
+
+{% block content %}
+
+<div class="card shadow">
+
+    <div class="card-header bg-danger text-white">
+
+        <h4 class="mb-0">
+
+            Restore Database
+
+        </h4>
+
+    </div>
+
+    <div class="card-body">
+
+        {% if messages %}
+
+            {% for message in messages %}
+
+                <div class="alert alert-{{ message.tags }}">
+
+                    {{ message }}
+
+                </div>
+
+            {% endfor %}
+
+        {% endif %}
+
+        <div class="alert alert-warning">
+
+            <strong>Warning!</strong><br>
+
+            Restoring a backup will replace the current database.
+
+            Make sure you have taken a backup before continuing.
+
+        </div>
+
+        <form method="POST" enctype="multipart/form-data">
+
+            {% csrf_token %}
+
+            <label class="form-label">
+
+                Select Backup File (.sqlite3)
+
+            </label>
+
+            <input
+                type="file"
+                name="backup_file"
+                accept=".sqlite3"
+                class="form-control"
+                required>
+
+            <br>
+
+            <button
+                type="submit"
+                class="btn btn-danger">
+
+                <i class="fa fa-upload"></i>
+
+                Restore Database
+
+            </button>
+
+            <a href="/"
+               class="btn btn-secondary">
+
+                Cancel
+
+            </a>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

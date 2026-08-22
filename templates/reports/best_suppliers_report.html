@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+
+    <div class="d-flex justify-content-between mb-3">
+
+        <h2>
+
+            Best Suppliers Report
+
+        </h2>
+
+        <div>
+
+            <a href="{% url 'best_suppliers_pdf' %}" class="btn btn-danger">
+
+                Download PDF
+
+            </a>
+
+            <button onclick="window.print()" class="btn btn-primary">
+
+                Print
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-dark">
+
+            <tr>
+
+                <th>Rank</th>
+
+                <th>Supplier</th>
+
+                <th>Total Orders</th>
+
+                <th>Total Purchase</th>
+
+                <th>Current Balance</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for supplier in suppliers %}
+
+            <tr>
+
+                <td>{{ forloop.counter }}</td>
+
+                <td>{{ supplier.name }}</td>
+
+                <td>{{ supplier.total_orders }}</td>
+
+                <td>₹{{ supplier.total_purchase|default:0 }}</td>
+
+                <td>₹{{ supplier.balance }}</td>
+
+            </tr>
+
+            {% empty %}
+
+            <tr>
+
+                <td colspan="5" class="text-center">
+
+                    No Supplier Found
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}

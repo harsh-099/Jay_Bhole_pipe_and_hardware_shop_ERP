@@ -1,0 +1,320 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Sale Return
+{% endblock %}
+
+{% block page_title %}
+Sale Return
+{% endblock %}
+
+{% block content %}
+
+<div class="card shadow">
+
+    <div class="card-header">
+
+        <div class="row align-items-center">
+
+            <div class="col-md-6">
+
+                <form method="GET">
+
+                    <div class="input-group">
+
+                        <input type="text" name="search" class="form-control" placeholder="Search Invoice..."
+                            value="{{ search }}">
+
+                        <button class="btn btn-primary">
+
+                            <i class="fa fa-search"></i>
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+            <div class="col-md-6 text-end">
+
+                <span class="badge bg-primary p-2">
+
+                    Total Returns :
+                    {{ total_returns }}
+
+                </span>
+
+                <span class="badge bg-danger p-2">
+
+                    Amount :
+                    ₹{{ total_return_amount }}
+
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="card-body">
+
+        <h5 class="mb-3">
+
+            Bills
+
+        </h5>
+
+        <div class="table-responsive">
+
+            <table class="table table-hover table-bordered">
+
+                <thead class="table-dark">
+
+                    <tr>
+
+                        <th>Invoice</th>
+
+                        <th>Customer</th>
+
+                        <th>Total</th>
+
+                        <th>Date</th>
+
+                        <th width="110">
+
+                            Action
+
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for bill in bills %}
+
+                    <tr>
+
+                        <td>
+
+                            {{ bill.invoice_no }}
+
+                        </td>
+
+                        <td>
+
+                            {{ bill.customer }}
+
+                        </td>
+
+                        <td>
+
+                            ₹{{ bill.total_amount }}
+
+                        </td>
+
+                        <td>
+
+                            {{ bill.created_at|date:"d-m-Y" }}
+
+                        </td>
+
+                        <td>
+
+                            <a href="{% url 'sale_return' bill.id %}" class="btn btn-danger btn-sm">
+
+                                <i class="fa-solid fa-rotate-left"></i>
+
+                                Return
+
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td colspan="5" class="text-center">
+
+                            No Bills Found
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <hr>
+
+        <h5 class="mb-3">
+
+            Return History
+
+        </h5>
+
+        <div class="table-responsive">
+
+            <table class="table table-hover table-bordered">
+
+                <thead class="table-success">
+
+                    <tr>
+
+                        <th>Return No</th>
+
+                        <th>Invoice</th>
+
+                        <th>Customer</th>
+
+                        <th>Amount</th>
+
+                        <th>Date</th>
+
+                        <th width="170">
+
+                            Action
+
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for r in returns %}
+
+                    <tr>
+
+                        <td>
+
+                            {{ r.return_no }}
+
+                        </td>
+
+                        <td>
+
+                            {{ r.bill.invoice_no }}
+
+                        </td>
+
+                        <td>
+
+                            {{ r.bill.customer }}
+
+                        </td>
+
+                        <td>
+
+                            ₹{{ r.total_return }}
+
+                        </td>
+
+                        <td>
+
+                            {{ r.created_at|date:"d-m-Y" }}
+
+                        </td>
+
+                        <td>
+
+                            <a href="{% url 'print_sale_return' r.id %}" class="btn btn-primary btn-sm" target="_blank">
+
+                                <i class="fa-solid fa-print"></i>
+
+                            </a>
+
+                            <a href="{% url 'sale_return_pdf' r.id %}" class="btn btn-danger btn-sm" target="_blank">
+
+                                <i class="fa-solid fa-file-pdf"></i>
+
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td colspan="6" class="text-center">
+
+                            No Return History
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <nav>
+
+            <ul class="pagination justify-content-center">
+
+                {% if returns.has_previous %}
+
+                <li class="page-item">
+
+                    <a class="page-link" href="?page={{ returns.previous_page_number }}&search={{ search }}">
+
+                        Previous
+
+                    </a>
+
+                </li>
+
+                {% endif %}
+
+                <li class="page-item active">
+
+                    <span class="page-link">
+
+                        {{ returns.number }}
+
+                    </span>
+
+                </li>
+
+                {% if returns.has_next %}
+
+                <li class="page-item">
+
+                    <a class="page-link" href="?page={{ returns.next_page_number }}&search={{ search }}">
+
+                        Next
+
+                    </a>
+
+                </li>
+
+                {% endif %}
+
+            </ul>
+
+        </nav>
+
+    </div>
+
+</div>
+
+{% endblock %}

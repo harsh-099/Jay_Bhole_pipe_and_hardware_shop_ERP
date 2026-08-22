@@ -1,0 +1,180 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Purchase Order
+{% endblock %}
+
+{% block page_title %}
+Purchase Order Details
+{% endblock %}
+
+{% block content %}
+
+<div class="card shadow">
+
+    <div class="card-header d-flex justify-content-between">
+
+        <h4>
+
+            Purchase Order
+
+        </h4>
+
+        <span class="badge bg-warning">
+
+            {{ po.status }}
+
+        </span>
+
+    </div>
+
+    <div class="card-body">
+
+        <div class="row">
+
+            <div class="col-md-6">
+
+                <h5>
+
+                    PO No :
+
+                    {{ po.po_no }}
+
+                </h5>
+
+                <p>
+
+                    <strong>Supplier :</strong>
+
+                    {{ po.supplier.name }}
+
+                </p>
+
+            </div>
+
+            <div class="col-md-6 text-end">
+
+                <p>
+
+                    <strong>Date :</strong>
+
+                    {{ po.order_date }}
+
+                </p>
+
+            </div>
+
+        </div>
+
+        <hr>
+
+        <table class="table table-bordered">
+
+            <thead class="table-dark">
+
+                <tr>
+
+                    <th>Product</th>
+
+                    <th width="150">
+
+                        Quantity
+
+                    </th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for item in items %}
+
+                <tr>
+
+                    <td>
+
+                        {{ item.product.name }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.quantity }}
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+        <hr>
+
+        <div class="text-end">
+
+            <a href="{% url 'purchase_order_list' %}" class="btn btn-secondary">
+
+                Back
+
+            </a>
+            
+            <a href="{% url 'print_purchase_order' po.id %}" target="_blank" class="btn btn-primary">
+
+                🖨 Print
+
+            </a>
+            {% if po.status == "Pending" %}
+
+            <a href="{% url 'convert_to_purchase' po.id %}" class="btn btn-success"
+                onclick="return confirm('Convert this Purchase Order?')">
+
+                <i class="fa fa-check"></i>
+
+                Convert To Purchase
+
+            </a>
+
+            {% else %}
+
+            <button class="btn btn-secondary" disabled>
+
+                ✔ Already Converted
+
+            </button>
+
+            {% endif %}
+        </div>
+
+    </div>
+
+</div>
+
+<style>
+    @media print {
+
+        .navbar,
+
+        .sidebar,
+
+        .btn {
+
+            display: none !important;
+
+        }
+
+        .card {
+
+            border: none;
+
+            box-shadow: none;
+
+        }
+
+    }
+</style>
+
+{% endblock %}

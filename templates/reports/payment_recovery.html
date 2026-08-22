@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+
+    <div class="d-flex justify-content-between mb-3">
+
+        <h2>
+
+            Payment Recovery Report
+
+        </h2>
+
+        <div>
+
+            <a href="{% url 'payment_recovery_pdf' %}" class="btn btn-danger">
+
+                Download PDF
+
+            </a>
+
+            <button onclick="window.print()" class="btn btn-primary">
+
+                Print
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <div class="alert alert-warning">
+
+        <h5>
+
+            Total Recovery :
+
+            ₹{{ total_recovery }}
+
+        </h5>
+
+    </div>
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-dark">
+
+            <tr>
+
+                <th>#</th>
+
+                <th>Customer</th>
+
+                <th>Mobile</th>
+
+                <th>Address</th>
+
+                <th>Pending Amount</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for customer in customers %}
+
+            <tr>
+
+                <td>{{ forloop.counter }}</td>
+
+                <td>{{ customer.name }}</td>
+
+                <td>{{ customer.mobile }}</td>
+
+                <td>{{ customer.address }}</td>
+
+                <td class="text-danger fw-bold">
+
+                    ₹{{ customer.credit_balance }}
+
+                </td>
+
+            </tr>
+
+            {% empty %}
+
+            <tr>
+
+                <td colspan="5" class="text-center">
+
+                    No Pending Recovery
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}

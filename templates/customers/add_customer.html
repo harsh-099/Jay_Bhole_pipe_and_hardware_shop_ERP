@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Customer{% endblock %}
+
+{% block page_title %}
+Add Customer
+{% endblock %}
+
+{% block content %}
+
+<div class="card shadow-sm">
+
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+
+        <h4 class="mb-0">
+            <i class="fa-solid fa-user-plus"></i>
+            Add New Customer
+        </h4>
+
+        <a href="{% url 'customer_list' %}" class="btn btn-light btn-sm">
+            <i class="fa-solid fa-arrow-left"></i>
+            Back
+        </a>
+
+    </div>
+
+    <div class="card-body">
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <div class="row">
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label fw-bold">
+                        Customer Name
+                    </label>
+
+                    {{ form.name }}
+
+                </div>
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label fw-bold">
+                        Mobile Number
+                    </label>
+
+                    {{ form.mobile }}
+
+                </div>
+
+                <div class="col-md-12 mb-3">
+
+                    <label class="form-label fw-bold">
+                        Address
+                    </label>
+
+                    {{ form.address }}
+
+                </div>
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label fw-bold">
+                        Udhari Amount
+                    </label>
+
+                    {{ form.udhari }}
+
+                </div>
+
+            </div>
+
+            <hr>
+
+            <button class="btn btn-success">
+
+                <i class="fa-solid fa-floppy-disk"></i>
+
+                Save Customer
+
+            </button>
+
+            <button type="reset" class="btn btn-warning">
+
+                <i class="fa-solid fa-rotate-right"></i>
+
+                Reset
+
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,301 @@
+<div class="col-lg-2 sidebar bg-dark text-white p-0 vh-100 overflow-auto">
+
+    <div class="text-center py-4 border-bottom">
+
+        <img src="{% static 'images/jayBhole_log.jpeg' %}"
+             width="70"
+             class="rounded-circle shadow">
+
+        <h5 class="mt-2 mb-0">
+
+            Jay Bhole
+
+        </h5>
+
+        <small class="text-secondary">
+
+            Pipe & Hardware
+
+        </small>
+
+    </div>
+
+    <div class="accordion accordion-flush" id="sidebarMenu">
+
+        <!-- Dashboard -->
+
+        <a href="/"
+           class="list-group-item list-group-item-action bg-dark text-white border-0 py-3">
+
+            <i class="fa fa-house me-2"></i>
+
+            Dashboard
+
+        </a>
+
+        <!-- Masters -->
+
+        <div class="accordion-item bg-dark border-0">
+
+            <h2 class="accordion-header">
+
+                <button class="accordion-button collapsed bg-dark text-white shadow-none"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#masters">
+
+                    <i class="fa fa-database me-2"></i>
+
+                    Masters
+
+                </button>
+
+            </h2>
+
+            <div id="masters"
+                 class="accordion-collapse collapse"
+                 data-bs-parent="#sidebarMenu">
+
+                <div class="accordion-body p-0">
+
+                    {% if request.user|has_any_group:"Admin,Manager,Store" %}
+                    <a href="/products/" class="dropdown-item py-2">
+
+                        <i class="fa fa-box me-2"></i>
+
+                        Products
+
+                    </a>
+                    {% endif %}
+
+                    {% if request.user|has_any_group:"Admin,Manager,Cashier" %}
+                    <a href="/customers/" class="dropdown-item py-2">
+
+                        <i class="fa fa-users me-2"></i>
+
+                        Customers
+
+                    </a>
+                    {% endif %}
+
+                    {% if request.user|has_any_group:"Admin,Manager,Store" %}
+                    <a href="/suppliers/" class="dropdown-item py-2">
+
+                        <i class="fa fa-truck me-2"></i>
+
+                        Suppliers
+
+                    </a>
+                    {% endif %}
+
+                    {% if request.user|has_any_group:"Admin,Manager,Store" %}
+                    <a href="/purchase-order/" class="dropdown-item py-2">
+
+                        <i class="fa fa-file-lines me-2"></i>
+
+                        Purchase Orders
+
+                    </a>
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Sales -->
+
+        <div class="accordion-item bg-dark border-0">
+
+            <h2 class="accordion-header">
+
+                <button class="accordion-button collapsed bg-dark text-white shadow-none"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#sales">
+
+                    <i class="fa fa-cart-shopping me-2"></i>
+
+                    Sales
+
+                </button>
+
+            </h2>
+
+            <div id="sales"
+                 class="accordion-collapse collapse"
+                 data-bs-parent="#sidebarMenu">
+
+                <div class="accordion-body p-0">
+
+                    {% if request.user|has_any_group:"Admin,Manager,Cashier" %}
+                    <a href="/quotation/" class="dropdown-item py-2">
+
+                        <i class="fa fa-file-invoice me-2"></i>
+
+                        Quotation
+
+                    </a>
+
+                    <a href="/billing/" class="dropdown-item py-2">
+
+                        <i class="fa fa-receipt me-2"></i>
+
+                        Billing
+
+                    </a>
+
+                    <a href="/sale-return/" class="dropdown-item py-2">
+
+                        <i class="fa fa-rotate-left me-2"></i>
+
+                        Sale Return
+
+                    </a>
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Purchase -->
+
+        <div class="accordion-item bg-dark border-0">
+
+            <h2 class="accordion-header">
+
+                <button class="accordion-button collapsed bg-dark text-white shadow-none"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#purchase">
+
+                    <i class="fa fa-cart-plus me-2"></i>
+
+                    Purchase
+
+                </button>
+
+            </h2>
+
+            <div id="purchase"
+                 class="accordion-collapse collapse"
+                 data-bs-parent="#sidebarMenu">
+
+                <div class="accordion-body p-0">
+
+                    {% if request.user|has_any_group:"Admin,Manager,Store" %}
+                    <a href="/purchases/add/" class="dropdown-item py-2">
+
+                        Purchase
+
+                    </a>
+
+                    <a href="/purchase-return/" class="dropdown-item py-2">
+
+                        Purchase Return
+
+                    </a>
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Inventory -->
+
+        {% if request.user|has_any_group:"Admin,Manager,Store" %}
+
+        <a href="/inventory/"
+           class="list-group-item list-group-item-action bg-dark text-white border-0 py-3">
+
+            <i class="fa fa-warehouse me-2"></i>
+
+            Inventory
+
+        </a>
+
+        {% endif %}
+
+        <!-- Reports -->
+
+        {% if request.user|has_any_group:"Admin,Manager" %}
+
+        <a href="/reports/sales/"
+           class="list-group-item list-group-item-action bg-dark text-white border-0 py-3">
+
+            <i class="fa fa-chart-column me-2"></i>
+
+            Reports
+
+        </a>
+
+        {% endif %}
+
+        <!-- Admin -->
+
+        {% if request.user|has_group:"Admin" %}
+
+        <a href="/users/"
+           class="list-group-item list-group-item-action bg-dark text-white border-0 py-3">
+
+            <i class="fa fa-user-shield me-2"></i>
+
+            User Management
+
+        </a>
+
+        <a href="/backup/"
+           class="list-group-item list-group-item-action bg-dark text-white border-0 py-3">
+
+            <i class="fa fa-database me-2"></i>
+
+            Backup
+
+        </a>
+
+        <a href="/shopsettings/"
+           class="list-group-item list-group-item-action bg-dark text-white border-0 py-3">
+
+            <i class="fa fa-gear me-2"></i>
+
+            Shop Settings
+
+        </a>
+
+        {% endif %}
+
+    </div>
+
+    <!-- Footer -->
+
+    <div class="mt-auto border-top p-3">
+
+        <div class="fw-bold">
+
+            {{ request.user.username }}
+
+        </div>
+
+        <small class="text-secondary">
+
+            {% if request.user.groups.first %}
+                {{ request.user.groups.first.name }}
+            {% else %}
+                Administrator
+            {% endif %}
+        </small>
+
+        <a href="{% url 'logout' %}"
+           class="btn btn-danger btn-sm w-100 mt-3">
+
+            <i class="fa fa-right-from-bracket"></i>
+
+            Logout
+
+        </a>
+
+    </div>
+
+</div>

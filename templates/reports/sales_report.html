@@ -1,0 +1,218 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+
+    <h2 class="mb-4">
+
+        Sales Report
+
+    </h2>
+    <div class="mb-3">
+
+        <a href="{% url 'sales_report_pdf' %}?from_date={{ from_date|default_if_none:'' }}&to_date={{ to_date|default_if_none:'' }}"
+            class="btn btn-danger">
+
+            📄 Download PDF
+
+        </a>
+
+        <button onclick="window.print()" class="btn btn-primary">
+
+            🖨 Print
+
+        </button>
+
+    </div>
+
+    <div class="row mb-4">
+
+        <div class="col-md-3">
+
+            <div class="card shadow">
+
+                <div class="card-body">
+
+                    <h6>Total Sales</h6>
+
+                    <h3>
+
+                        ₹{{ total_sales }}
+
+                    </h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <div class="card shadow">
+
+                <div class="card-body">
+
+                    <h6>Cash Sales</h6>
+
+                    <h3>
+
+                        ₹{{ cash_sales }}
+
+                    </h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <div class="card shadow">
+
+                <div class="card-body">
+
+                    <h6>UPI Sales</h6>
+
+                    <h3>
+
+                        ₹{{ upi_sales }}
+
+                    </h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <div class="card shadow">
+
+                <div class="card-body">
+
+                    <h6>Credit Sales</h6>
+
+                    <h3>
+
+                        ₹{{ credit_sales }}
+
+                    </h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+    <form method="GET" class="row mb-4">
+
+        <div class="col-md-4">
+
+            <label>From Date</label>
+
+            <input type="date" name="from_date" class="form-control" value="{{ from_date }}">
+
+        </div>
+
+        <div class="col-md-4">
+
+            <label>To Date</label>
+
+            <input type="date" name="to_date" class="form-control" value="{{ to_date }}">
+
+        </div>
+
+        <div class="col-md-4">
+
+            <label>&nbsp;</label>
+
+            <button type="submit" class="btn btn-primary w-100">
+
+                Search
+
+            </button>
+
+        </div>
+
+    </form>
+
+    <table class="table table-bordered">
+
+        <thead class="table-dark">
+
+            <tr>
+
+                <th>Invoice</th>
+
+                <th>Date</th>
+
+                <th>Customer</th>
+
+                <th>Payment</th>
+
+                <th>Amount</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for bill in bills %}
+
+            <tr>
+
+                <td>
+
+                    {{ bill.invoice_no }}
+
+                </td>
+
+                <td>
+
+                    {{ bill.created_at }}
+
+                </td>
+
+                <td>
+
+                    {% if bill.customer %}
+
+                    {{ bill.customer.name }}
+
+                    {% else %}
+
+                    Walk In Customer
+
+                    {% endif %}
+
+                </td>
+
+                <td>
+
+                    {{ bill.payment_method }}
+
+                </td>
+
+                <td>
+
+                    ₹{{ bill.total_amount }}
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}

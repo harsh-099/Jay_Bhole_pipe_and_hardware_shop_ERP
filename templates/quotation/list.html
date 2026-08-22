@@ -1,0 +1,208 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Quotation List
+{% endblock %}
+
+{% block page_title %}
+Quotation List
+{% endblock %}
+
+{% block content %}
+
+<div class="card shadow">
+
+    <div class="card-header d-flex justify-content-between align-items-center">
+
+        <h4 class="mb-0">
+
+            Quotation List
+
+        </h4>
+
+        <a href="{% url 'add_quotation' %}" class="btn btn-success">
+
+            <i class="fa fa-plus"></i>
+
+            New Quotation
+
+        </a>
+
+    </div>
+
+    <div class="card-body">
+
+        <form method="GET" class="mb-3">
+
+            <div class="input-group">
+
+                <input type="text"
+                       name="search"
+                       class="form-control"
+                       placeholder="Search Customer / Quotation No..."
+                       value="{{ request.GET.search }}">
+
+                <button class="btn btn-primary">
+
+                    <i class="fa fa-search"></i>
+
+                    Search
+
+                </button>
+
+            </div>
+
+        </form>
+
+        <table class="table table-hover table-bordered align-middle">
+
+            <thead class="table-dark">
+
+                <tr>
+
+                    <th>No</th>
+
+                    <th>Customer</th>
+
+                    <th>Amount</th>
+
+                    <th>Status</th>
+
+                    <th>Date</th>
+
+                    <th width="340">Action</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for q in quotations %}
+
+                <tr>
+
+                    <td>
+
+                        {{ q.quotation_no }}
+
+                    </td>
+
+                    <td>
+
+                        {% if q.customer %}
+
+                            {{ q.customer.name }}
+
+                        {% else %}
+
+                            Walk-in Customer
+
+                        {% endif %}
+
+                    </td>
+
+                    <td>
+
+                        ₹{{ q.total_amount }}
+
+                    </td>
+
+                    <td>
+
+                        {% if q.status == "Pending" %}
+
+                            <span class="badge bg-warning text-dark">
+
+                                Pending
+
+                            </span>
+
+                        {% elif q.status == "Converted" %}
+
+                            <span class="badge bg-success">
+
+                                Converted
+
+                            </span>
+
+                        {% else %}
+
+                            <span class="badge bg-danger">
+
+                                Cancelled
+
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+                    <td>
+
+                        {{ q.created_at|date:"d-m-Y" }}
+
+                    </td>
+
+                    <td>
+
+                        <a href="{% url 'quotation_detail' q.id %}"
+                           class="btn btn-info btn-sm">
+
+                            View
+
+                        </a>
+
+                        <a href="{% url 'quotation_pdf' q.id %}"
+                           class="btn btn-success btn-sm">
+
+                            PDF
+
+                        </a>
+
+                        {% if q.status == "Pending" %}
+
+                        <a href="{% url 'convert_to_bill' q.id %}"
+                           class="btn btn-primary btn-sm">
+
+                            Convert
+
+                        </a>
+
+                        {% endif %}
+
+                        <a href="{% url 'delete_quotation' q.id %}"
+                           class="btn btn-danger btn-sm"
+                           onclick="return confirm('Delete this quotation?')">
+
+                            Delete
+
+                        </a>
+
+                    </td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+
+                    <td colspan="6" class="text-center">
+
+                        No Quotations Found
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

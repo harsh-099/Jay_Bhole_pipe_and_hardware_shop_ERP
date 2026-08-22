@@ -1,0 +1,309 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Invoice
+{% endblock %}
+
+{% block page_title %}
+Invoice Details
+{% endblock %}
+
+{% block content %}
+
+<div class="card shadow-sm">
+
+    <div class="card-body">
+
+        <div class="row">
+
+            <div class="col-md-2 text-center">
+
+                {% if shop.logo %}
+                <img src="{{ shop.logo.url }}" height="90">
+                {% endif %}
+
+            </div>
+
+            <div class="col-md-10 text-center">
+
+                <h2 class="fw-bold">{{ shop.shop_name }}</h2>
+
+                <p class="mb-1">{{ shop.address }}</p>
+
+                <p class="mb-1">
+                    <strong>Mobile :</strong>
+                    {{ shop.mobile }}
+                </p>
+
+                <p>
+                    <strong>GST No :</strong>
+                    {{ shop.gst_number }}
+                </p>
+
+            </div>
+
+        </div>
+
+        <hr>
+
+        <h3 class="text-center">
+            TAX INVOICE
+        </h3>
+
+        <hr>
+
+        <div class="row">
+
+            <div class="col-md-6">
+
+                <p>
+                    <strong>Invoice No :</strong>
+                    {{ bill.invoice_no }}
+                </p>
+
+                <p>
+                    <strong>Customer :</strong>
+
+                    {% if bill.customer %}
+                    {{ bill.customer.name }}
+                    {% else %}
+                    Walk In Customer
+                    {% endif %}
+
+                </p>
+
+            </div>
+
+            <div class="col-md-6 text-end">
+
+                <p>
+                    <strong>Date :</strong>
+                    {{ bill.created_at|date:"d-m-Y H:i" }}
+                </p>
+
+                <p>
+                    <strong>Payment :</strong>
+                    {{ bill.payment_method }}
+                </p>
+
+            </div>
+
+        </div>
+
+        <table class="table table-bordered mt-3">
+
+            <thead class="table-dark">
+
+                <tr>
+
+                    <th>Product</th>
+
+                    <th width="80">Qty</th>
+
+                    <th width="120">Price</th>
+
+                    <th width="120">Total</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for item in items %}
+
+                <tr>
+
+                    <td>{{ item.product.name }}</td>
+
+                    <td>{{ item.quantity }}</td>
+
+                    <td>₹{{ item.price }}</td>
+
+                    <td>₹{{ item.total }}</td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+        <table class="table table-bordered w-50 ms-auto mt-3">
+
+            <tr>
+
+                <th>Sub Total</th>
+
+                <td class="text-end">
+
+                    ₹{{ bill.total_amount }}
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <th>Discount</th>
+
+                <td class="text-end">
+
+                    {% if bill.discount_type == "Percent" %}
+
+                    {{ bill.discount }} %
+
+                    {% else %}
+
+                    ₹{{ bill.discount }}
+
+                    {% endif %}
+
+                    (₹{{ bill.discount_amount }})
+
+                </td>
+
+            </tr>
+
+            <tr class="table-success">
+
+                <th>Final Total</th>
+
+                <th class="text-end text-success">
+
+                    ₹{{ bill.final_amount }}
+
+                </th>
+
+            </tr>
+
+        </table>
+        <hr>
+
+        <h4 class="text-center mb-3">
+
+            💳 Payment Details
+
+        </h4>
+
+        <table class="table table-bordered">
+
+            <tr>
+                <th>💵 Cash Paid</th>
+                <td class="text-success fw-bold">
+                    ₹{{ bill.cash_amount }}
+                </td>
+            </tr>
+
+            <tr>
+                <th>📱 UPI Paid</th>
+                <td class="text-primary fw-bold">
+                    ₹{{ bill.upi_amount }}
+                </td>
+            </tr>
+
+            <tr>
+                <th>📒 Credit</th>
+                <td class="text-danger fw-bold">
+                    ₹{{ bill.credit_amount }}
+                </td>
+            </tr>
+
+            <tr class="table-warning">
+                <th>💸 Change Returned</th>
+                <td class="fw-bold">
+                    ₹{{ bill.change_amount }}
+                </td>
+            </tr>
+
+            <tr class="table-success">
+                <th>💰 Final Paid</th>
+                <td class="fw-bold">
+                    ₹{{ bill.final_amount }}
+                </td>
+            </tr>
+
+        </table>
+
+        <hr>
+
+        <div class="text-center">
+
+            <h5 class="text-success">
+
+                🙏 Thank You Visit Again 🙏
+
+            </h5>
+
+            <small class="text-muted">
+
+                Goods once sold will not be taken back.
+
+            </small>
+
+        </div>
+
+        <hr>
+
+        <div class="text-center mt-4">
+
+            <a href="{% url 'billing' %}" class="btn btn-secondary">
+
+                <i class="fa fa-arrow-left"></i>
+
+                Back
+
+            </a>
+
+            <button onclick="window.print()" class="btn btn-primary">
+
+                <i class="fa fa-print"></i>
+
+                Print
+
+            </button>
+
+            <a href="{% url 'download_invoice' bill.id %}" class="btn btn-success">
+
+                <i class="fa fa-file-pdf"></i>
+
+                Download PDF
+
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+<style>
+    @media print {
+
+        .navbar,
+        .sidebar,
+        .btn {
+
+            display: none !important;
+
+        }
+
+        body {
+
+            margin: 0;
+
+        }
+
+        .card {
+
+            border: none;
+
+            box-shadow: none;
+
+        }
+
+    }
+</style>
+
+{% endblock %}

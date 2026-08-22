@@ -1,0 +1,224 @@
+{% extends 'base.html' %}
+
+{% block title %}Customers{% endblock %}
+
+{% block page_title %}
+Customers
+{% endblock %}
+
+{% block content %}
+
+<div class="card shadow-sm">
+
+    <div class="card-header">
+
+        <div class="row align-items-center">
+
+            <div class="col-md-6">
+
+                <form method="GET">
+
+                    <div class="input-group">
+
+                        <input
+                            type="text"
+                            name="search"
+                            class="form-control"
+                            placeholder="Search Customer..."
+                            value="{{ search }}">
+
+                        <button class="btn btn-primary">
+
+                            <i class="fa fa-search"></i>
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+            <div class="col-md-6 text-end">
+
+                <a href="/customers/add/" class="btn btn-primary">
+
+                    <i class="fa-solid fa-user-plus"></i>
+
+                    Add Customer
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="card-body">
+
+        <div class="mb-3">
+
+            <b>Total Customers :</b>
+
+            {{ total_customers }}
+
+        </div>
+
+        <table class="table table-hover align-middle">
+
+            <thead class="table-dark">
+
+                <tr>
+
+                    <th>ID</th>
+
+                    <th>Name</th>
+
+                    <th>Mobile</th>
+
+                    <th>Address</th>
+
+                    <th>Credit</th>
+
+                    <th width="170">Action</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for customer in customers %}
+
+                <tr>
+
+                    <td>{{ customer.id }}</td>
+
+                    <td>{{ customer.name }}</td>
+
+                    <td>{{ customer.mobile }}</td>
+
+                    <td>{{ customer.address }}</td>
+
+                    <td>
+
+                        {% if customer.credit_balance > 0 %}
+
+                        <span class="badge bg-danger">
+
+                            ₹ {{ customer.credit_balance }}
+
+                        </span>
+
+                        {% else %}
+
+                        <span class="badge bg-success">
+
+                            ₹0
+
+                        </span>
+
+                        {% endif %}
+
+                    </td>
+
+                    <td>
+
+                        <a href="/customers/ledger/{{ customer.id }}/"
+                           class="btn btn-info btn-sm">
+
+                            Ledger
+
+                        </a>
+
+                        <a href="/customers/edit/{{ customer.id }}/"
+                           class="btn btn-warning btn-sm">
+
+                            <i class="fa fa-pen"></i>
+
+                        </a>
+
+                        <a href="/customers/delete/{{ customer.id }}/"
+                           class="btn btn-danger btn-sm"
+                           onclick="return confirm('Delete Customer ?')">
+
+                            <i class="fa fa-trash"></i>
+
+                        </a>
+
+                    </td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+
+                    <td colspan="6" class="text-center">
+
+                        No Customers Found
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+        <nav>
+
+            <ul class="pagination justify-content-center">
+
+                {% if customers.has_previous %}
+
+                <li class="page-item">
+
+                    <a class="page-link"
+                       href="?page={{ customers.previous_page_number }}&search={{ search }}">
+
+                        Previous
+
+                    </a>
+
+                </li>
+
+                {% endif %}
+
+                <li class="page-item active">
+
+                    <span class="page-link">
+
+                        {{ customers.number }}
+
+                    </span>
+
+                </li>
+
+                {% if customers.has_next %}
+
+                <li class="page-item">
+
+                    <a class="page-link"
+                       href="?page={{ customers.next_page_number }}&search={{ search }}">
+
+                        Next
+
+                    </a>
+
+                </li>
+
+                {% endif %}
+
+            </ul>
+
+        </nav>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+
+    <h2 class="mb-4">
+
+        Payment Mode Report
+
+    </h2>
+    <div class="mb-3">
+
+        <a href="{% url 'payment_mode_pdf' %}?from_date={{ from_date }}&to_date={{ to_date }}" class="btn btn-danger">
+
+            <i class="fa fa-file-pdf"></i>
+
+            Download PDF
+
+        </a>
+
+        <button onclick="window.print()" class="btn btn-primary">
+
+            <i class="fa fa-print"></i>
+
+            Print
+
+        </button>
+
+    </div>
+
+
+    <form method="GET" class="row mb-4">
+
+        <div class="col-md-4">
+
+            <label>From Date</label>
+
+            <input type="date" name="from_date" value="{{ from_date }}" class="form-control">
+
+        </div>
+
+        <div class="col-md-4">
+
+            <label>To Date</label>
+
+            <input type="date" name="to_date" value="{{ to_date }}" class="form-control">
+
+        </div>
+
+        <div class="col-md-2">
+
+            <label>&nbsp;</label>
+
+            <button class="btn btn-primary w-100">
+
+                Search
+
+            </button>
+
+        </div>
+
+    </form>
+
+    <table class="table table-bordered">
+
+        <thead class="table-dark">
+
+            <tr>
+
+                <th>Payment Mode</th>
+
+                <th>Total Bills</th>
+
+                <th>Total Amount</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            <tr>
+
+                <td>Cash</td>
+
+                <td>{{ cash_count }}</td>
+
+                <td>₹{{ cash_total }}</td>
+
+            </tr>
+
+            <tr>
+
+                <td>UPI</td>
+
+                <td>{{ upi_count }}</td>
+
+                <td>₹{{ upi_total }}</td>
+
+            </tr>
+
+            <tr>
+
+                <td>Credit</td>
+
+                <td>{{ credit_count }}</td>
+
+                <td>₹{{ credit_total }}</td>
+
+            </tr>
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}

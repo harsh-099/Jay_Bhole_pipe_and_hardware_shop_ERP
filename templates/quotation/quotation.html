@@ -1,0 +1,320 @@
+{% extends 'base.html' %}
+
+{% block title %}
+New Quotation
+{% endblock %}
+
+{% block page_title %}
+New Quotation
+{% endblock %}
+
+{% block content %}
+
+<div class="row">
+
+    <!-- Product List -->
+
+    <div class="col-md-7">
+
+        <div class="card shadow">
+
+            <div class="card-header bg-primary text-white">
+
+                <h5>
+
+                    Products
+
+                </h5>
+
+            </div>
+
+            <div class="card-body">
+
+                <input type="text"
+                       id="searchProduct"
+                       class="form-control mb-3"
+                       placeholder="Search Product...">
+
+                <table class="table table-hover">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Product</th>
+
+                            <th>Rate</th>
+
+                            <th></th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="productTable">
+
+                        {% for product in products %}
+
+                        <tr>
+
+                            <td>
+
+                                {{ product.name }}
+
+                            </td>
+
+                            <td>
+
+                                ₹{{ product.selling_price }}
+
+                            </td>
+
+                            <td>
+
+                                <a href="{% url 'add_to_quotation' product.id %}"
+
+                                   class="btn btn-success btn-sm">
+
+                                    Add
+
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Cart -->
+
+    <div class="col-md-5">
+
+        <div class="card shadow">
+
+            <div class="card-header bg-success text-white">
+
+                <h5>
+
+                    Quotation Cart
+
+                </h5>
+
+            </div>
+
+            <div class="card-body">
+
+                <form method="POST"
+                      action="{% url 'save_quotation' %}">
+
+                    {% csrf_token %}
+
+                    <label>
+
+                        Existing Customer
+
+                    </label>
+
+                    <select name="customer"
+                            class="form-control">
+
+                        <option value="">
+
+                            Walk-in Customer
+
+                        </option>
+
+                        {% for customer in customers %}
+
+                        <option value="{{ customer.id }}">
+
+                            {{ customer.name }}
+
+                        </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                    <hr>
+
+                    <h6>
+
+                        Walk-in / New Customer
+
+                    </h6>
+
+                    <input type="text"
+                           name="customer_name"
+                           class="form-control mb-2"
+                           placeholder="Customer Name">
+
+                    <input type="text"
+                           name="mobile"
+                           class="form-control mb-2"
+                           placeholder="Mobile">
+
+                    <textarea
+                        name="address"
+                        class="form-control mb-2"
+                        placeholder="Address"></textarea>
+
+                    <div class="form-check mb-3">
+
+                        <input class="form-check-input"
+                               type="checkbox"
+                               name="save_customer"
+                               value="1">
+
+                        <label class="form-check-label">
+
+                            Save as Customer
+
+                        </label>
+
+                    </div>
+
+                    <table class="table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Item</th>
+
+                                <th>Qty</th>
+
+                                <th>Total</th>
+
+                                <th></th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            {% for item in cart %}
+
+                            <tr>
+
+                                <td>
+
+                                    {{ item.name }}
+
+                                </td>
+
+                                <td>
+
+                                    <a href="{% url 'quotation_decrease_qty' item.id %}">
+
+                                        -
+
+                                    </a>
+
+                                    {{ item.quantity }}
+
+                                    <a href="{% url 'quotation_increase_qty' item.id %}">
+
+                                        +
+
+                                    </a>
+
+                                </td>
+
+                                <td>
+
+                                    ₹{{ item.total }}
+
+                                </td>
+
+                                <td>
+
+                                    <a href="{% url 'quotation_remove_item' item.id %}"
+
+                                       class="text-danger">
+
+                                        X
+
+                                    </a>
+
+                                </td>
+
+                            </tr>
+
+                            {% empty %}
+
+                            <tr>
+
+                                <td colspan="4">
+
+                                    Cart Empty
+
+                                </td>
+
+                            </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                    <hr>
+
+                    <h4>
+
+                        Total :
+
+                        ₹{{ grand_total }}
+
+                    </h4>
+
+                    <button class="btn btn-primary w-100">
+
+                        Save Quotation
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+document.getElementById("searchProduct").addEventListener("keyup", function(){
+
+    let value = this.value.toLowerCase();
+
+    let rows = document.querySelectorAll("#productTable tr");
+
+    rows.forEach(function(row){
+
+        row.style.display = row.innerText.toLowerCase().includes(value)
+
+            ? ""
+
+            : "none";
+
+    });
+
+});
+
+</script>
+
+{% endblock %}

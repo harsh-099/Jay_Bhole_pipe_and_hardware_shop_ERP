@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <style>
+        @page {
+            size: A4;
+            margin: 12px;
+        }
+
+        body {
+            font-family: DejaVu Sans;
+            font-size: 14px;
+            line-height: 1.2;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            border: 1px solid #000;
+            padding: 4px;
+        }
+
+        .no-border {
+            border: none;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        .right {
+            text-align: right;
+        }
+
+        .heading {
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .title {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .small {
+            font-size: 11px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <table class="no-border">
+
+        <tr>
+
+            <td class="no-border" width="70">
+
+                {% if shop.logo %}
+
+                <img src="{{ shop.logo.path }}" width="60" height="60">
+
+                {% endif %}
+
+            </td>
+
+            <td class="no-border center">
+
+                <div class="title">
+
+                    {{ shop.shop_name }}
+
+                </div>
+
+                <div class="small">
+
+                    {{ shop.address }}
+
+                </div>
+
+                <div class="small">
+
+                    Mobile : {{ shop.mobile }}
+
+                </div>
+
+                <div class="small">
+
+                    GST : {{ shop.gst_number }}
+
+                </div>
+
+            </td>
+
+        </tr>
+
+    </table>
+
+    <hr>
+
+    <h2 class="heading">
+
+        TAX INVOICE
+
+    </h2>
+
+    <hr>
+    <table>
+
+        <tr>
+
+            <td width="65%">
+
+                <b>Invoice :</b> {{ bill.invoice_no }}<br>
+
+                <b>Customer :</b>
+
+                {% if bill.customer %}
+                {{ bill.customer.name }}
+                {% else %}
+                Walk In Customer
+                {% endif %}
+
+            </td>
+
+            <td>
+
+                <b>Date :</b>
+
+                {{ bill.created_at|date:"d-m-Y H:i" }}
+
+                <br>
+
+                <b>Payment :</b>
+
+                {{ bill.payment_method }}
+
+            </td>
+
+        </tr>
+
+    </table>
+
+    <br>
+
+    <table>
+
+        <thead>
+
+            <tr>
+
+                <th>Product</th>
+
+                <th width="45">Qty</th>
+
+                <th width="80">Rate</th>
+
+                <th width="90">Amount</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for item in items %}
+
+            <tr>
+
+                <td>{{ item.product.name }}</td>
+
+                <td class="center">{{ item.quantity }}</td>
+
+                <td class="right">₹{{ item.price }}</td>
+
+                <td class="right">₹{{ item.total }}</td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+    <br>
+
+    <table width="45%" align="right">
+
+        <tr>
+
+            <th>Sub Total</th>
+
+            <td class="right">
+
+                ₹{{ bill.total_amount }}
+
+            </td>
+
+        </tr>
+
+        <tr>
+
+            <th>Discount</th>
+
+            <td class="right">
+
+                {% if bill.discount_type == "Percent" %}
+
+                {{ bill.discount }} %
+
+                (₹{{ bill.discount_amount }})
+
+                {% else %}
+
+                ₹{{ bill.discount }}
+
+                {% endif %}
+
+            </td>
+
+        </tr>
+
+        <tr>
+
+            <th>Grand Total</th>
+
+            <th class="right">
+
+                ₹{{ bill.final_amount }}
+
+            </th>
+
+        </tr>
+
+    </table>
+
+    <br>
+    <h3 align="center">
+
+        Payment Details
+
+    </h3>
+
+    <table>
+
+        <tr>
+
+            <th width="50%">Cash</th>
+
+            <td class="right">₹{{ bill.cash_amount }}</td>
+
+        </tr>
+
+        <tr>
+
+            <th>UPI</th>
+
+            <td class="right">₹{{ bill.upi_amount }}</td>
+
+        </tr>
+
+        <tr>
+
+            <th>Credit</th>
+
+            <td class="right">₹{{ bill.credit_amount }}</td>
+
+        </tr>
+
+        <tr>
+
+            <th>Change</th>
+
+            <td class="right">₹{{ bill.change_amount }}</td>
+
+        </tr>
+
+        <tr>
+
+            <th>Total Paid</th>
+
+            <th class="right">
+
+                ₹{{ bill.final_amount }}
+
+            </th>
+
+        </tr>
+
+    </table>
+
+    <br>
+
+    <hr>
+
+    <table class="no-border">
+
+        <tr>
+
+            <td class="no-border" width="65%">
+
+                <b>Terms & Conditions</b><br>
+
+                • Goods once sold will not be taken back.<br>
+
+                • Warranty as per company policy.<br>
+
+                • Please keep this invoice safely.
+
+            </td>
+
+            <td class="no-border center">
+
+                <br>
+
+                _____________________
+
+                <br>
+
+                Authorized Signature
+
+            </td>
+
+        </tr>
+
+    </table>
+
+    <hr>
+
+    <div class="center">
+
+        <b>
+
+            THANK YOU • VISIT AGAIN
+
+        </b>
+
+        <br>
+
+        <font size="2">
+
+            Printed :
+
+            {{ bill.created_at|date:"d-m-Y H:i" }}
+
+            &nbsp;&nbsp;&nbsp;&nbsp;
+
+            Invoice :
+
+            {{ bill.invoice_no }}
+
+        </font>
+
+    </div>
+
+</body>
+
+</html>

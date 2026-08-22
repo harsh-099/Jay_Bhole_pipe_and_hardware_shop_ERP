@@ -1,0 +1,229 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+
+    <div class="d-flex justify-content-between mb-3">
+
+        <h2>Monthly Sales Report</h2>
+
+        <div>
+
+            <a href="{% url 'monthly_sales_pdf' %}?month={{ month }}&year={{ year }}" class="btn btn-danger">
+
+                Download PDF
+
+            </a>
+
+            <button onclick="window.print()" class="btn btn-primary">
+
+                Print
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <form method="GET" class="row mb-4">
+
+        <div class="col-md-3">
+
+            <label>Month</label>
+
+            <select name="month" class="form-control">
+
+                {% for value, name in months %}
+
+                <option value="{{ value }}" {% if month == value %} selected {% endif %}>
+
+                    {{ name }}
+
+                </option>
+
+                {% endfor %}
+
+            </select>
+            
+
+
+        </div>
+
+        <div class="col-md-3">
+
+            <label>Year</label>
+
+            <input type="number" name="year" class="form-control" value="{{ year }}">
+
+        </div>
+
+        <div class="col-md-2">
+
+            <label>&nbsp;</label>
+
+            <button class="btn btn-success w-100">
+
+                Search
+
+            </button>
+
+        </div>
+
+    </form>
+
+    <div class="row mb-3">
+
+        <div class="col">
+
+            <div class="card shadow">
+
+                <div class="card-body">
+
+                    <b>Total Bills</b>
+
+                    <h3>{{ total_bills }}</h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col">
+
+            <div class="card shadow">
+
+                <div class="card-body">
+
+                    <b>Total Sales</b>
+
+                    <h3>₹{{ total_sales }}</h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col">
+
+            <div class="card shadow">
+
+                <div class="card-body">
+
+                    <b>Cash</b>
+
+                    <h3>₹{{ cash_sales }}</h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col">
+
+            <div class="card shadow">
+
+                <div class="card-body">
+
+                    <b>UPI</b>
+
+                    <h3>₹{{ upi_sales }}</h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col">
+
+            <div class="card shadow">
+
+                <div class="card-body">
+
+                    <b>Credit</b>
+
+                    <h3>₹{{ credit_sales }}</h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <table class="table table-bordered">
+
+        <thead class="table-dark">
+
+            <tr>
+
+                <th>Invoice</th>
+
+                <th>Date</th>
+
+                <th>Customer</th>
+
+                <th>Payment</th>
+
+                <th>Amount</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for bill in bills %}
+
+            <tr>
+
+                <td>{{ bill.invoice_no }}</td>
+
+                <td>{{ bill.created_at|date:"d-m-Y" }}</td>
+
+                <td>
+
+                    {% if bill.customer %}
+
+                    {{ bill.customer.name }}
+
+                    {% else %}
+
+                    Walk In Customer
+
+                    {% endif %}
+
+                </td>
+
+                <td>{{ bill.payment_method }}</td>
+
+                <td>₹{{ bill.final_amount }}</td>
+
+            </tr>
+
+            {% empty %}
+
+            <tr>
+
+                <td colspan="5" align="center">
+
+                    No Data Found
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Import Products
+{% endblock %}
+
+{% block page_title %}
+Import Products
+{% endblock %}
+
+{% block content %}
+
+<div class="card shadow">
+
+    <div class="card-header bg-success text-white">
+
+        <h4>
+
+            Import Products From Excel
+
+        </h4>
+
+    </div>
+
+    <div class="card-body">
+
+        <form method="POST"
+              enctype="multipart/form-data">
+
+            {% csrf_token %}
+
+            <div class="mb-3">
+
+                <label>
+
+                    Select Excel File
+
+                </label>
+
+                <input
+                    type="file"
+                    name="excel_file"
+                    class="form-control"
+                    accept=".xlsx"
+                    required>
+
+            </div>
+
+            <button class="btn btn-success">
+
+                <i class="fa fa-upload"></i>
+
+                Import Excel
+
+            </button>
+
+            <a href="/products/"
+               class="btn btn-secondary">
+
+                Back
+
+            </a>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

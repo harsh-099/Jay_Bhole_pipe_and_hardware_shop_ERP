@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Product{% endblock %}
+
+{% block page_title %}
+Add Product
+{% endblock %}
+
+{% block content %}
+
+<div class="card shadow-sm">
+
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+
+        <h4 class="mb-0">
+            <i class="fa-solid fa-box"></i>
+            Add New Product
+        </h4>
+
+        <a href="/products/" class="btn btn-light btn-sm">
+            <i class="fa-solid fa-arrow-left"></i>
+            Back
+        </a>
+
+    </div>
+
+    <div class="card-body">
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <div class="row">
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Product Name</label>
+                    {{ form.name }}
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Category</label>
+                    {{ form.category }}
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label class="form-label fw-bold">Purchase Price</label>
+                    {{ form.purchase_price }}
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label class="form-label fw-bold">Selling Price</label>
+                    {{ form.selling_price }}
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label class="form-label fw-bold">Stock Quantity</label>
+                    {{ form.quantity }}
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Unit</label>
+                    {{ form.unit }}
+                </div>
+
+            </div>
+
+            <hr>
+
+            <button class="btn btn-success">
+                <i class="fa-solid fa-floppy-disk"></i>
+                Save Product
+            </button>
+
+            <button type="reset" class="btn btn-warning">
+                <i class="fa-solid fa-rotate-right"></i>
+                Reset
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

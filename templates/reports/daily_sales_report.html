@@ -1,0 +1,187 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+
+    <div class="d-flex justify-content-between mb-3">
+
+        <h2>
+
+            Daily Sales Report
+
+        </h2>
+
+        <div>
+
+            <a href="{% url 'daily_sales_pdf' %}" class="btn btn-danger">
+
+                Download PDF
+
+            </a>
+
+            <button onclick="window.print()" class="btn btn-primary">
+
+                Print
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <div class="row mb-4">
+
+        <div class="col-md-3">
+
+            <div class="card shadow">
+
+                <div class="card-body">
+
+                    <h6>Total Bills</h6>
+
+                    <h3>{{ total_bills }}</h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <div class="card shadow">
+
+                <div class="card-body">
+
+                    <h6>Total Sales</h6>
+
+                    <h3>₹{{ total_sales }}</h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-2">
+
+            <div class="card shadow">
+
+                <div class="card-body">
+
+                    <h6>Cash</h6>
+
+                    <h4>₹{{ cash_sales }}</h4>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-2">
+
+            <div class="card shadow">
+
+                <div class="card-body">
+
+                    <h6>UPI</h6>
+
+                    <h4>₹{{ upi_sales }}</h4>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-2">
+
+            <div class="card shadow">
+
+                <div class="card-body">
+
+                    <h6>Credit</h6>
+
+                    <h4>₹{{ credit_sales }}</h4>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-dark">
+
+            <tr>
+
+                <th>Invoice</th>
+
+                <th>Time</th>
+
+                <th>Customer</th>
+
+                <th>Payment</th>
+
+                <th>Amount</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for bill in bills %}
+
+            <tr>
+
+                <td>{{ bill.invoice_no }}</td>
+
+                <td>{{ bill.created_at|date:"h:i A" }}</td>
+
+                <td>
+
+                    {% if bill.customer %}
+
+                    {{ bill.customer.name }}
+
+                    {% else %}
+
+                    Walk In Customer
+
+                    {% endif %}
+
+                </td>
+
+                <td>{{ bill.payment_method }}</td>
+
+                <td>₹{{ bill.final_amount }}</td>
+
+            </tr>
+
+            {% empty %}
+
+            <tr>
+
+                <td colspan="5" class="text-center">
+
+                    No Sales Today
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}

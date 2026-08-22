@@ -1,0 +1,307 @@
+{% extends 'base.html' %}
+
+{% block title %}
+
+Stock Report
+
+{% endblock %}
+
+{% block page_title %}
+
+Stock Report
+
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <h3 class="fw-bold">
+
+            <i class="fa-solid fa-boxes-stacked"></i>
+
+            Inventory Stock Report
+
+        </h3>
+
+        <div>
+
+            <a href="{% url 'stock_report_pdf' %}" class="btn btn-danger">
+
+                <i class="fa-solid fa-file-pdf"></i>
+
+                PDF
+
+            </a>
+
+            <button onclick="window.print()" class="btn btn-primary">
+
+                <i class="fa-solid fa-print"></i>
+
+                Print
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- Summary Cards -->
+
+    <div class="row mb-4">
+
+        <div class="col-md-3">
+
+            <div class="card shadow border-0">
+
+                <div class="card-body text-center">
+
+                    <small class="text-muted">
+
+                        Total Products
+
+                    </small>
+
+                    <h3 class="mt-2">
+
+                        {{ products|length }}
+
+                    </h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <div class="card shadow border-success">
+
+                <div class="card-body text-center">
+
+                    <small class="text-muted">
+
+                        Purchase Value
+
+                    </small>
+
+                    <h3 class="text-success mt-2">
+
+                        ₹{{ total_purchase_value }}
+
+                    </h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <div class="card shadow border-primary">
+
+                <div class="card-body text-center">
+
+                    <small class="text-muted">
+
+                        Selling Value
+
+                    </small>
+
+                    <h3 class="text-primary mt-2">
+
+                        ₹{{ total_selling_value }}
+
+                    </h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <div class="card shadow border-warning">
+
+                <div class="card-body text-center">
+
+                    <small class="text-muted">
+
+                        Expected Profit
+
+                    </small>
+
+                    <h3 class="text-warning mt-2">
+
+                        ₹{{ total_profit }}
+
+                    </h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="card shadow">
+
+        <div class="card-body">
+
+            <div class="table-responsive">
+
+                <table class="table table-bordered table-hover align-middle">
+
+                    <thead class="table-dark">
+
+                        <tr>
+
+                            <th>#</th>
+
+                            <th>Product</th>
+
+                            <th>Category</th>
+
+                            <th class="text-center">Qty</th>
+
+                            <th class="text-end">Purchase</th>
+
+                            <th class="text-end">Selling</th>
+
+                            <th class="text-end">Purchase Value</th>
+
+                            <th class="text-end">Selling Value</th>
+
+                            <th class="text-end">Expected Profit</th>
+
+                            <th>Status</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for product in products %}
+
+                        <tr>
+
+                            <td>
+
+                                {{ forloop.counter }}
+
+                            </td>
+
+                            <td>
+
+                                {{ product.name }}
+
+                            </td>
+
+                            <td>
+
+                                {{ product.category }}
+
+                            </td>
+
+                            <td class="text-center">
+
+                                {{ product.quantity }}
+
+                            </td>
+
+                            <td class="text-end">
+
+                                ₹{{ product.purchase_price }}
+
+                            </td>
+
+                            <td class="text-end">
+
+                                ₹{{ product.selling_price }}
+
+                            </td>
+
+                            <td class="text-end fw-bold">
+
+                                ₹{{ product.purchase_value }}
+
+                            </td>
+
+                            <td class="text-end fw-bold text-primary">
+
+                                ₹{{ product.selling_value }}
+
+                            </td>
+
+                            <td class="text-end fw-bold text-success">
+
+                                ₹{{ product.expected_profit }}
+
+                            </td>
+
+                            <td>
+
+                                {% if product.quantity == 0 %}
+
+                                <span class="badge bg-danger">
+
+                                    Out Of Stock
+
+                                </span>
+
+                                {% elif product.quantity <= 5 %} <span class="badge bg-warning text-dark">
+
+                                    Low Stock
+
+                                    </span>
+
+                                    {% else %}
+
+                                    <span class="badge bg-success">
+
+                                        Available
+
+                                    </span>
+
+                                    {% endif %}
+
+                            </td>
+
+                        </tr>
+
+                        {% empty %}
+
+                        <tr>
+
+                            <td colspan="10" class="text-center">
+
+                                No Products Found
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <style>
+        @page {
+
+            size: A4;
+
+            margin: 12px;
+
+        }
+
+        body {
+
+            font-family: DejaVu Sans;
+
+            font-size: 14px;
+
+            line-height: 1.2;
+
+        }
+
+        table {
+
+            width: 100%;
+
+            border-collapse: collapse;
+
+        }
+
+        th,
+
+        td {
+
+            border: 1px solid #000;
+
+            padding: 4px;
+
+        }
+
+        .no-border {
+
+            border: none;
+
+        }
+
+        .center {
+
+            text-align: center;
+
+        }
+
+        .right {
+
+            text-align: right;
+
+        }
+
+        .heading {
+
+            font-size: 18px;
+
+            font-weight: bold;
+
+            text-align: center;
+
+        }
+
+        .title {
+
+            font-size: 18px;
+
+            font-weight: bold;
+
+        }
+
+        .small {
+
+            font-size: 11px;
+
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <table class="no-border">
+
+        <tr>
+
+            <td class="no-border" width="70">
+
+                {% if shop.logo %}
+
+                <img src="{{ shop.logo.path }}" width="60" height="60">
+
+                {% endif %}
+
+            </td>
+
+            <td class="no-border center">
+
+                <div class="title">
+
+                    {{ shop.shop_name }}
+
+                </div>
+
+                <div class="small">
+
+                    {{ shop.address }}
+
+                </div>
+
+                <div class="small">
+
+                    Mobile :
+
+                    {{ shop.mobile }}
+
+                </div>
+
+                <div class="small">
+
+                    GST :
+
+                    {{ shop.gst_number }}
+
+                </div>
+
+            </td>
+
+        </tr>
+
+    </table>
+
+    <hr>
+
+    <h2 class="heading">
+
+        PURCHASE ORDER
+
+    </h2>
+
+    <hr>
+
+    <table>
+
+        <tr>
+
+            <td width="65%">
+
+                <b>
+
+                    PO No :
+
+                </b>
+
+                {{ po.po_no }}
+
+                <br>
+
+                <b>
+
+                    Supplier :
+
+                </b>
+
+                {{ po.supplier.name }}
+
+                <br>
+
+                <b>
+
+                    Mobile :
+
+                </b>
+
+                {{ po.supplier.mobile }}
+
+                <br>
+
+                <b>
+
+                    GST :
+
+                </b>
+
+                {{ po.supplier.gst_number }}
+
+            </td>
+
+            <td>
+
+                <b>
+
+                    Date :
+
+                </b>
+
+                {{ po.order_date|date:"d-m-Y" }}
+
+                <br>
+
+                <b>
+
+                    Expected :
+
+                </b>
+
+                {{ po.expected_delivery|date:"d-m-Y" }}
+
+                <br>
+
+                <b>
+
+                    Status :
+
+                </b>
+
+                {{ po.status }}
+
+            </td>
+
+        </tr>
+
+    </table>
+
+    <br>
+    <table>
+
+        <thead>
+
+            <tr>
+
+                <th>
+
+                    Product
+
+                </th>
+
+                <th width="45">
+
+                    Qty
+
+                </th>
+
+                <th width="80">
+
+                    Rate
+
+                </th>
+
+                <th width="90">
+
+                    Amount
+
+                </th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for item in items %}
+
+            <tr>
+
+                <td>
+
+                    {{ item.product.name }}
+
+                </td>
+
+                <td class="center">
+
+                    {{ item.quantity }}
+
+                </td>
+
+                <td class="right">
+
+                    ₹{{ item.price }}
+
+                </td>
+
+                <td class="right">
+
+                    ₹{{ item.total }}
+
+                </td>
+
+            </tr>
+
+            {% empty %}
+
+            <tr>
+
+                <td colspan="4" class="center">
+
+                    No Products
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+    <br>
+
+    <table width="45%" align="right">
+
+        <tr>
+
+            <th>
+
+                Sub Total
+
+            </th>
+
+            <td class="right">
+
+                ₹{{ po.subtotal }}
+
+            </td>
+
+        </tr>
+
+        <tr>
+
+            <th>
+
+                Discount
+
+            </th>
+
+            <td class="right">
+
+                ₹{{ po.discount }}
+
+            </td>
+
+        </tr>
+
+        <tr>
+
+            <th>
+
+                Grand Total
+
+            </th>
+
+            <th class="right">
+
+                ₹{{ po.final_amount }}
+
+            </th>
+
+        </tr>
+
+    </table>
+
+    <br>
+    <br>
+    <h3 align="center">
+
+        Payment Details
+
+    </h3>
+
+    <table>
+
+        <tr>
+
+            <th width="50%">
+
+                Payment Method
+
+            </th>
+
+            <td>
+
+                {{ po.payment_method }}
+
+            </td>
+
+        </tr>
+
+        <tr>
+
+            <th>
+
+                Paid Amount
+
+            </th>
+
+            <td class="right">
+
+                ₹{{ po.paid_amount }}
+
+            </td>
+
+        </tr>
+
+        <tr>
+
+            <th>
+
+                Balance Amount
+
+            </th>
+
+            <td class="right">
+
+                ₹{{ po.balance_amount }}
+
+            </td>
+
+        </tr>
+
+        <tr>
+
+            <th>
+
+                Expected Delivery
+
+            </th>
+
+            <td>
+
+                {% if po.expected_delivery %}
+
+                {{ po.expected_delivery|date:"d-m-Y" }}
+
+                {% else %}
+
+                -
+
+                {% endif %}
+
+            </td>
+
+        </tr>
+
+        <tr>
+
+            <th>
+
+                Order Status
+
+            </th>
+
+            <td>
+
+                {{ po.status }}
+
+            </td>
+
+        </tr>
+
+    </table>
+
+    <br>
+
+    {% if po.remarks %}
+
+    <table>
+
+        <tr>
+
+            <th width="20%">
+
+                Remarks
+
+            </th>
+
+            <td>
+
+                {{ po.remarks }}
+
+            </td>
+
+        </tr>
+
+    </table>
+
+    <br>
+
+    {% endif %}
+    <hr>
+
+    <table class="no-border">
+
+        <tr>
+
+            <td class="no-border" width="65%">
+
+                <b>
+
+                    Terms & Conditions
+
+                </b>
+
+                <br><br>
+
+                • Goods should be supplied strictly according to this Purchase Order.
+
+                <br>
+
+                • Please mention the Purchase Order Number on the Invoice.
+
+                <br>
+
+                • Delivery should be completed on or before the Expected Delivery Date.
+
+                <br>
+
+                • Damaged or defective goods will not be accepted.
+
+                <br>
+
+                • Payment will be made according to the agreed payment terms.
+
+                <br>
+
+                • Any rate or quantity changes must be approved before dispatch.
+
+            </td>
+
+            <td class="no-border center" valign="bottom">
+
+                <br><br><br><br>
+
+                ________________________
+
+                <br>
+
+                <b>
+
+                    Authorized Signature
+
+                </b>
+
+                <br>
+
+                {{ shop.shop_name }}
+
+            </td>
+
+        </tr>
+
+    </table>
+
+    <hr>
+
+    <div class="center">
+
+        <b>
+
+            THANK YOU FOR YOUR BUSINESS
+
+        </b>
+
+        <br>
+
+        <font size="2">
+
+            Purchase Order :
+
+            {{ po.po_no }}
+
+            &nbsp;&nbsp;&nbsp;&nbsp;
+
+            Generated :
+
+            {{ po.order_date|date:"d-m-Y" }}
+
+        </font>
+
+    </div>
+
+</body>
+
+</html>

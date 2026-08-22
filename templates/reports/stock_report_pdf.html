@@ -1,0 +1,420 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <style>
+        @page {
+            size: A4;
+            margin: 15px;
+        }
+
+        body {
+            font-family: DejaVu Sans;
+            font-size: 12px;
+            color: #222;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            border: 1px solid #666;
+            padding: 6px;
+        }
+
+        .no-border {
+            border: none;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        .right {
+            text-align: right;
+        }
+
+        .title {
+            font-size: 30px;
+            font-weight: bold;
+            color: #0d47a1;
+        }
+
+        .subtitle {
+            font-size: 13px;
+        }
+
+        .report-title {
+            background: #0d47a1;
+            color: white;
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            padding: 8px;
+        }
+
+        .table-head {
+            background: #0d47a1;
+            color: white;
+            font-weight: bold;
+        }
+
+        .summary th {
+            background: #0d47a1;
+            color: white;
+        }
+
+        .low-stock {
+            color: #ff9800;
+            font-weight: bold;
+        }
+
+        .out-stock {
+            color: red;
+            font-weight: bold;
+        }
+
+        .ok-stock {
+            color: green;
+            font-weight: bold;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <table class="no-border">
+
+        <tr>
+
+            <td class="no-border" width="120">
+
+                {% if shop.logo %}
+
+                <img src="{{ shop.logo.path }}" width="95" height="95">
+
+                {% endif %}
+
+            </td>
+
+            <td class="no-border center">
+
+                <div class="title">
+
+                    {{ shop.shop_name }}
+
+                </div>
+
+                <div class="subtitle">
+
+                    <b>Owner :</b>
+
+                    {{ shop.owner_name }}
+
+                </div>
+
+                <div class="subtitle">
+
+                    {{ shop.address }}
+
+                </div>
+
+                <div class="subtitle">
+
+                    Mobile : {{ shop.mobile }}
+
+                </div>
+
+                <div class="subtitle">
+
+                    GST : {{ shop.gst_number }}
+
+                </div>
+
+            </td>
+
+        </tr>
+
+    </table>
+
+    <br>
+
+    <div class="report-title">
+
+        STOCK REPORT
+
+    </div>
+
+    <br>
+
+    <table class="no-border">
+
+        <tr>
+
+            <td class="no-border">
+
+                <b>Generated :</b>
+
+                {{ current_time|date:"d-m-Y h:i A" }}
+
+            </td>
+
+            <td class="no-border right">
+
+                <b>Total Products :</b>
+
+                {{ products|length }}
+
+            </td>
+
+        </tr>
+
+    </table>
+
+    <br>
+
+    <table>
+
+        <thead>
+
+            <tr class="table-head">
+
+                <th>#</th>
+
+                <th>Product</th>
+
+                <th>Category</th>
+
+                <th>Stock</th>
+
+                <th>Purchase</th>
+
+                <th>Selling</th>
+
+                <th>Value</th>
+
+                <th>Status</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for product in products %}
+
+            <tr>
+
+                <td>
+
+                    {{ forloop.counter }}
+
+                </td>
+
+                <td>
+
+                    {{ product.name }}
+
+                </td>
+
+                <td>
+
+                    {{ product.category }}
+
+                </td>
+
+                <td class="center">
+
+                    {{ product.quantity }}
+
+                </td>
+
+                <td class="right">
+
+                    ₹{{ product.purchase_price }}
+
+                </td>
+
+                <td class="right">
+
+                    ₹{{ product.selling_price }}
+
+                </td>
+
+                <td class="right">
+
+                    ₹{% widthratio product.quantity 1 product.purchase_price %}
+
+                </td>
+
+                <td class="center">
+
+                    {% if product.quantity == 0 %}
+
+                    <span class="out-stock">
+
+                        Out Of Stock
+
+                    </span>
+
+                    {% elif product.quantity <= 5 %} <span class="low-stock">
+
+                        Low Stock
+
+                        </span>
+
+                        {% else %}
+
+                        <span class="ok-stock">
+
+                            Available
+
+                        </span>
+
+                        {% endif %}
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+    <br>
+
+    <table class="summary" width="45%" align="right">
+
+        <tr>
+
+            <th>
+
+                Total Stock Value
+
+            </th>
+
+            <th class="right">
+
+                ₹{{ total_stock_value }}
+
+            </th>
+
+        </tr>
+
+    </table>
+
+    <br><br><br><br>
+
+    <hr>
+
+    <table class="no-border">
+
+        <tr>
+
+            <td class="no-border" width="70%">
+
+                <b>Generated By</b>
+
+                <br><br>
+
+                {{ shop.shop_name }}
+
+                <br>
+
+                Owner :
+
+                {{ shop.owner_name }}
+
+                <br>
+
+                {{ shop.address }}
+
+                <br>
+
+                Mobile :
+
+                {{ shop.mobile }}
+
+                <br>
+
+                GST :
+
+                {{ shop.gst_number }}
+
+            </td>
+
+            <td class="no-border center">
+
+                <br><br><br>
+
+                _____________________
+
+                <br>
+
+                Authorized Signature
+
+            </td>
+
+        </tr>
+
+    </table>
+
+    <hr>
+
+    <table class="no-border">
+
+        <tr>
+
+            <td class="no-border">
+
+                Printed On :
+
+                {{ current_time|date:"d-m-Y h:i A" }}
+
+            </td>
+
+            <td class="no-border right">
+
+                Items :
+
+                {{ products|length }}
+
+            </td>
+
+        </tr>
+
+    </table>
+
+    <div class="center">
+
+        <br>
+
+        <b>
+
+            ***** END OF STOCK REPORT *****
+
+        </b>
+
+        <br><br>
+
+        <font size="2">
+
+            Generated by {{ shop.shop_name }}
+
+        </font>
+
+    </div>
+
+</body>
+
+</html>

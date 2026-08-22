@@ -1,0 +1,181 @@
+{% extends 'base.html' %}
+
+{% block title %}Purchase Orders{% endblock %}
+
+{% block page_title %}
+Purchase Orders
+{% endblock %}
+
+{% block content %}
+
+<div class="card shadow">
+
+    <div class="card-header d-flex justify-content-between">
+
+        <h4>Purchase Orders</h4>
+
+        <a href="{% url 'add_purchase_order' %}" class="btn btn-primary">
+
+            <i class="fa fa-plus"></i>
+
+            New PO
+
+        </a>
+
+    </div>
+
+    <div class="card-body">
+
+        <form method="GET">
+
+            <div class="input-group mb-3">
+
+                <input
+
+                    type="text"
+
+                    name="search"
+
+                    class="form-control"
+
+                    placeholder="Search PO"
+
+                    value="{{ search }}">
+
+                <button class="btn btn-primary">
+
+                    Search
+
+                </button>
+
+            </div>
+
+        </form>
+
+        <table class="table table-hover">
+
+            <thead class="table-dark">
+
+                <tr>
+
+                    <th>PO No</th>
+
+                    <th>Supplier</th>
+
+                    <th>Date</th>
+
+                    <th>Status</th>
+
+                    <th>Items</th>
+
+                    <th>Action</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for po in orders %}
+
+                <tr>
+
+                    <td>
+
+                        <strong>{{ po.po_no }}</strong>
+
+                    </td>
+
+                    <td>
+
+                        {{ po.supplier.name }}
+
+                    </td>
+
+                    <td>
+
+                        {{ po.order_date }}
+
+                    </td>
+
+                    <td>
+
+                        {% if po.status == "Pending" %}
+
+                        <span class="badge bg-warning">
+
+                            Pending
+
+                        </span>
+
+                        {% elif po.status == "Ordered" %}
+
+                        <span class="badge bg-info">
+
+                            Ordered
+
+                        </span>
+
+                        {% elif po.status == "Received" %}
+
+                        <span class="badge bg-success">
+
+                            Received
+
+                        </span>
+
+                        {% else %}
+
+                        <span class="badge bg-danger">
+
+                            Cancelled
+
+                        </span>
+
+                        {% endif %}
+
+                    </td>
+
+                    <td>
+
+                        {{ po.items.count }}
+
+                    </td>
+
+                    <td>
+
+                        <a href="{% url 'view_purchase_order' po.id %}"
+
+                            class="btn btn-primary btn-sm">
+
+                            <i class="fa fa-eye"></i>
+
+                        </a>
+
+                    </td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+
+                    <td colspan="6" class="text-center">
+
+                        No Purchase Orders
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}
