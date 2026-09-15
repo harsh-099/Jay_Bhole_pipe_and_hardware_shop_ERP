@@ -153,17 +153,11 @@ WSGI_APPLICATION = 'hardware_shop.wsgi.application'
 # Testing साठी SQLite ठेवले आहे.
 
 DATABASES = {
-
     'default': {
-
-        'ENGINE':
-            'django.db.backends.sqlite3',
-
-        'NAME':
-            BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': '/tmp/db.sqlite3',
     }
 }
-
 
 # =========================================================
 # PASSWORD VALIDATION
