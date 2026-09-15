@@ -38,4 +38,4 @@ pycairo==1.29.0
 cssselect2==0.8.0
 tinycss2==1.5.1
 html5lib==1.1
-webencodings==0.1.1
+webencodings==0.5.1
