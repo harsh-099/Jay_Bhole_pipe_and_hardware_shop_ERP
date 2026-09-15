@@ -216,7 +216,7 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # WhiteNoise compressed static files
 STATICFILES_STORAGE = (
-    'whitenoise.storage.CompressedManifestStaticFilesStorage'
+    'whitenoise.storage.StaticFilesStorage'
 )
 
 
