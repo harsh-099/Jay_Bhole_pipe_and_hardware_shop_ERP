@@ -31,7 +31,6 @@ pyHanko==0.32.0
 pyhanko-certvalidator==0.29.0
 
 lxml==6.0.2
-svglib==1.6.0
 
 
 cssselect2==0.8.0
