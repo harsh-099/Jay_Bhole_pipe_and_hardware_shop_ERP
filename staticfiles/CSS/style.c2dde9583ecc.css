@@ -1,0 +1,133 @@
+body{
+
+background:#eef2f7;
+
+}
+
+.sidebar{
+
+background:#0f172a;
+
+min-height:100vh;
+
+}
+
+.logo{
+
+color:white;
+
+}
+
+.sidebar hr{
+
+border-color:#334155;
+
+}
+
+.sidebar .nav-link{
+
+color:#cbd5e1;
+
+padding:14px 20px;
+
+font-size:15px;
+
+}
+
+.sidebar .nav-link i{
+
+width:25px;
+
+}
+
+.sidebar .nav-link:hover{
+
+background:#1d4ed8;
+
+color:white;
+
+}
+
+.card{
+
+border:none;
+
+border-radius:15px;
+
+}
+
+.table{
+
+background:white;
+
+}
+
+.navbar{
+
+height:70px;
+
+}
+
+.btn-primary{
+
+border-radius:10px;
+
+}
+.dashboard-card{
+    border-radius:15px;
+    transition:.3s;
+}
+
+.dashboard-card:hover{
+    transform:translateY(-5px);
+}
+
+.card-header{
+    font-weight:600;
+}
+
+.table thead{
+    background:#0f172a;
+    color:white;
+}
+
+.alert{
+    border-radius:10px;
+}
+.sidebar{
+
+    min-height:100vh;
+
+    background:#1f2937;
+
+}
+
+.sidebar .nav-link{
+
+    color:white;
+
+    padding:12px 18px;
+
+}
+
+.sidebar .nav-link:hover{
+
+    background:#2563eb;
+
+    color:white;
+
+    border-radius:8px;
+
+}
+
+.sidebar .nav-link.active{
+
+    background:#2563eb;
+
+    color:white;
+
+    border-radius:8px;
+
+    font-weight:bold;
+
+}

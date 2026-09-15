@@ -1,7 +1,6 @@
 from decimal import Decimal
 
-from django.shortcuts import render, redirect
-
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import Quotation, QuotationItem
 from products.models import Product
 from customers.models import Customer
@@ -328,11 +327,13 @@ def quotation_detail(request, id):
         }
 
     )
-
-@allowed_roles(["Admin","Manager","Cashier"])
+@allowed_roles(["Admin", "Manager", "Cashier"])
 def quotation_pdf(request, id):
 
-    quotation = Quotation.objects.get(id=id)
+    quotation = get_object_or_404(
+        Quotation,
+        id=id
+    )
 
     items = QuotationItem.objects.filter(
         quotation=quotation
@@ -340,94 +341,17 @@ def quotation_pdf(request, id):
 
     shop = ShopSettings.objects.first()
 
-    response = HttpResponse(
-        content_type="application/pdf"
+    context = {
+        "quotation": quotation,
+        "items": items,
+        "shop": shop,
+    }
+
+    return render(
+        request,
+        "quotation/quotation_print.html",
+        context
     )
-
-    response[
-        "Content-Disposition"
-    ] = f'attachment; filename="{quotation.quotation_no}.pdf"'
-
-    pdf = canvas.Canvas(response)
-
-    pdf.setFont("Helvetica-Bold",18)
-
-    pdf.drawString(
-        150,
-        800,
-        shop.shop_name
-    )
-
-    pdf.setFont(
-        "Helvetica",
-        11
-    )
-
-    pdf.drawString(
-        50,
-        760,
-        f"Quotation : {quotation.quotation_no}"
-    )
-
-    pdf.drawString(
-        50,
-        740,
-        f"Customer : {quotation.customer}"
-    )
-
-    y=690
-
-    pdf.drawString(50,y,"Product")
-
-    pdf.drawString(260,y,"Qty")
-
-    pdf.drawString(340,y,"Rate")
-
-    pdf.drawString(450,y,"Total")
-
-    y-=20
-
-    for item in items:
-
-        pdf.drawString(
-            50,
-            y,
-            item.product.name
-        )
-
-        pdf.drawString(
-            260,
-            y,
-            str(item.quantity)
-        )
-
-        pdf.drawString(
-            340,
-            y,
-            str(item.price)
-        )
-
-        pdf.drawString(
-            450,
-            y,
-            str(item.total)
-        )
-
-        y-=20
-
-    pdf.drawString(
-
-        320,
-
-        y-20,
-
-        f"Grand Total : ₹{quotation.total_amount}"
-
-    )
-
-    pdf.save()
-
-    return response
 
 @allowed_roles(["Admin","Manager","Cashier"])
 def delete_quotation(request,id):

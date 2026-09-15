@@ -182,19 +182,6 @@ def export_products_excel(request):
 
     return response
 
-
-from decimal import Decimal, InvalidOperation
-
-def to_decimal(value):
-
-    if value in (None, "", "-", " "):
-        return Decimal("0")
-
-    try:
-        return Decimal(str(value).replace(",", "").replace("₹", "").strip())
-
-    except (InvalidOperation, ValueError):
-        return Decimal("0")
 from decimal import Decimal, InvalidOperation
 
 from openpyxl import load_workbook
@@ -204,6 +191,22 @@ from django.shortcuts import redirect, render
 
 from accounts.decorators import allowed_roles
 from .models import Product
+
+
+def to_decimal(value):
+    """
+    Excel मधील value Decimal मध्ये convert करतो.
+    Result फक्त 2 decimal places मध्ये ठेवतो.
+    """
+
+    if value is None or value == "":
+        return Decimal("0.00")
+
+    try:
+        return Decimal(str(value)).quantize(Decimal("0.01"))
+    except (InvalidOperation, ValueError, TypeError):
+        return Decimal("0.00")
+
 
 @allowed_roles(["Admin", "Manager", "Accountant"])
 def import_products_excel(request):
@@ -220,33 +223,62 @@ def import_products_excel(request):
         messages.error(request, "Please Select Excel File.")
         return redirect("product_list")
 
-    wb = load_workbook(excel_file)
-    sheet = wb.active
+    try:
+        wb = load_workbook(excel_file, data_only=True)
+        sheet = wb.active
+
+    except Exception as e:
+        messages.error(
+            request,
+            f"Excel file read error: {e}"
+        )
+        return redirect("product_list")
 
     imported = 0
     updated = 0
     skipped = 0
 
-    for row_no, row in enumerate(sheet.iter_rows(min_row=2, values_only=True), start=2):
+    for row_no, row in enumerate(
+        sheet.iter_rows(min_row=2, values_only=True),
+        start=2
+    ):
 
         try:
 
-            if row[1] is None:
+            # Product name
+            if len(row) < 7 or row[1] is None:
                 skipped += 1
                 continue
 
             name = str(row[1]).strip()
 
-            category = str(row[2]).strip() if row[2] else ""
+            # Category
+            category = (
+                str(row[2]).strip()
+                if row[2] is not None
+                else ""
+            )
 
+            # Purchase Price
             purchase_price = to_decimal(row[3])
 
+            # Selling Price
             selling_price = to_decimal(row[4])
 
-            quantity = int(row[5] or 0)
+            # Quantity
+            try:
+                quantity = int(float(row[5] or 0))
+            except (ValueError, TypeError):
+                quantity = 0
 
-            unit = str(row[6]).strip() if row[6] else ""
+            # Unit
+            unit = (
+                str(row[6]).strip()
+                if row[6] is not None
+                else ""
+            )
 
+            # Find existing product
             product = Product.objects.filter(
                 name__iexact=name
             ).first()
@@ -258,6 +290,7 @@ def import_products_excel(request):
                 product.selling_price = selling_price
                 product.quantity = quantity
                 product.unit = unit
+
                 product.save()
 
                 updated += 1
@@ -265,24 +298,18 @@ def import_products_excel(request):
             else:
 
                 Product.objects.create(
-
                     name=name,
-
                     category=category,
-
                     purchase_price=purchase_price,
-
                     selling_price=selling_price,
-
                     quantity=quantity,
-
                     unit=unit
-
                 )
 
                 imported += 1
 
             print(
+                f"Row {row_no}:",
                 name,
                 category,
                 purchase_price,
@@ -295,11 +322,15 @@ def import_products_excel(request):
 
             skipped += 1
 
-            print(f"Row {row_no} Error ->", e)
+            print(
+                f"Row {row_no} Error -> {e}"
+            )
 
     messages.success(
         request,
-        f"Imported : {imported} | Updated : {updated} | Skipped : {skipped}"
+        f"Imported : {imported} | "
+        f"Updated : {updated} | "
+        f"Skipped : {skipped}"
     )
 
     return redirect("product_list")

@@ -30,9 +30,16 @@ Billing (POS)
 
             <div class="card-body">
 
-                <input type="text" id="productSearch" class="form-control mb-3" placeholder="🔍 Search Product...">
+                <div class="product-search-wrapper">
+                    <input type="text"
+                           id="productSearch"
+                           class="form-control"
+                           autocomplete="off"
+                           placeholder="🔍 Search Product...">
+                </div>
 
-                <table class="table table-hover">
+                <div class="product-table-container">
+                    <table class="table table-hover">
 
                     <thead class="table-dark">
 
@@ -138,6 +145,7 @@ Billing (POS)
                     </tbody>
 
                 </table>
+                    </div>
 
             </div>
 
@@ -339,7 +347,7 @@ Billing (POS)
                                     ₹
                                     <span id="subtotal">
 
-                                        {{ grand_total }}
+                                        {{ grand_total | floatformat:2 }}
 
                                     </span>
 
@@ -853,6 +861,82 @@ Billing (POS)
 
 </div>
 
+
+
+<style>
+/* =====================================
+   POS Product Panel
+   ===================================== */
+.product-search-wrapper {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: #fff;
+    padding-bottom: 10px;
+}
+
+.product-search-wrapper .form-control {
+    height: 46px;
+    font-size: 16px;
+}
+
+.product-table-container {
+    height: 500px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+}
+
+.product-table-container thead th {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: #212529 !important;
+    color: #fff;
+}
+
+.product-table-container .product-row {
+    vertical-align: middle;
+}
+
+.product-table-container .product-row:hover {
+    background-color: #f8f9fa;
+}
+
+.product-table-container .product-row td:first-child {
+    font-weight: 500;
+}
+
+.product-table-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.product-table-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.product-table-container::-webkit-scrollbar-thumb {
+    background: #adb5bd;
+    border-radius: 10px;
+}
+
+.product-table-container::-webkit-scrollbar-thumb:hover {
+    background: #6c757d;
+}
+
+.product-table-container {
+    scrollbar-width: thin;
+    scrollbar-color: #adb5bd #f1f1f1;
+}
+
+@media (max-width: 768px) {
+    .product-table-container {
+        height: 400px;
+    }
+}
+</style>
 
 <script>
 
@@ -1631,6 +1715,30 @@ Billing (POS)
     calculatePayment();
 
     updateUPIQR();
+
+
+    // =====================================
+    // Product Search
+    // =====================================
+
+    document.getElementById("productSearch").addEventListener("input", function () {
+
+        let searchValue = this.value.toLowerCase().trim();
+        let productRows = document.querySelectorAll(".product-row");
+
+        productRows.forEach(function (row) {
+
+            let productName = row
+                .querySelector("td:first-child")
+                .innerText
+                .toLowerCase()
+                .trim();
+
+            row.style.display =
+                productName.includes(searchValue) ? "" : "none";
+        });
+
+    });
 
 </script>
 

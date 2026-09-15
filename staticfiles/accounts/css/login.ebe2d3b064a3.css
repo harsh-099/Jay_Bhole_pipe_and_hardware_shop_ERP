@@ -1,0 +1,296 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow: hidden;
+    background: #0f172a;
+}
+
+.background {
+    position: fixed;
+    inset: 0;
+    background:
+        linear-gradient(135deg, #2563eb, #1e3a8a, #0f172a);
+    background-size: 300% 300%;
+    animation: gradientMove 12s ease infinite;
+}
+
+@keyframes gradientMove {
+
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+
+}
+
+.background::before {
+
+    content: "";
+
+    position: absolute;
+
+    width: 420px;
+
+    height: 420px;
+
+    border-radius: 50%;
+
+    background: rgba(255, 255, 255, .08);
+
+    top: -100px;
+
+    left: -120px;
+
+    filter: blur(40px);
+
+}
+
+.background::after {
+
+    content: "";
+
+    position: absolute;
+
+    width: 380px;
+
+    height: 380px;
+
+    border-radius: 50%;
+
+    background: rgba(255, 255, 255, .05);
+
+    right: -120px;
+
+    bottom: -100px;
+
+    filter: blur(50px);
+
+}
+
+.login-card {
+
+    position: relative;
+
+    z-index: 10;
+
+    padding: 40px;
+
+    border-radius: 20px;
+
+    background: rgba(255, 255, 255, .12);
+
+    backdrop-filter: blur(16px);
+
+    -webkit-backdrop-filter: blur(16px);
+
+    border: 1px solid rgba(255, 255, 255, .18);
+
+    box-shadow:
+
+        0 20px 50px rgba(0, 0, 0, .35);
+
+    animation: fadeIn .7s ease;
+
+}
+
+@keyframes fadeIn {
+
+    from {
+
+        opacity: 0;
+
+        transform: translateY(30px);
+
+    }
+
+    to {
+
+        opacity: 1;
+
+        transform: translateY(0);
+
+    }
+
+}
+
+.logo {
+
+    width: 90px;
+
+    height: 90px;
+
+    object-fit: contain;
+
+    margin-bottom: 12px;
+
+    border-radius: 50%;
+
+    background: white;
+
+    padding: 8px;
+
+    box-shadow: 0 5px 18px rgba(0, 0, 0, .25);
+
+}
+
+.shop-name {
+
+    color: #fff;
+
+    font-size: 30px;
+
+    font-weight: 700;
+
+    margin-bottom: 5px;
+
+}
+
+.text-muted {
+
+    color: #e5e7eb !important;
+
+}
+
+.form-label {
+
+    color: white;
+
+    font-weight: 600;
+
+}
+
+.form-control {
+
+    height: 48px;
+
+    border: none;
+
+    border-radius: 10px;
+
+}
+
+.form-control:focus {
+
+    box-shadow: 0 0 0 .25rem rgba(59, 130, 246, .35);
+
+}
+
+.input-group-text {
+
+    background: white;
+
+    border: none;
+
+}
+
+.btn-outline-secondary {
+
+    border: none;
+
+    background: white;
+
+}
+
+.login-btn {
+
+    height: 50px;
+
+    border-radius: 12px;
+
+    font-size: 17px;
+
+    font-weight: 700;
+
+    background: #2563eb;
+
+    color: white;
+
+    transition: .3s;
+
+}
+
+.login-btn:hover {
+
+    background: #1d4ed8;
+
+    transform: translateY(-2px);
+
+    box-shadow: 0 8px 25px rgba(37, 99, 235, .45);
+
+}
+
+.form-check-label {
+
+    color: white;
+
+}
+
+.forgot-link {
+
+    color: #fff;
+
+    text-decoration: none;
+
+    font-size: 14px;
+
+}
+
+.forgot-link:hover {
+
+    text-decoration: underline;
+
+    color: #f8fafc;
+
+}
+
+.footer {
+
+    color: #e5e7eb;
+
+    font-size: 13px;
+
+}
+
+.alert {
+
+    border-radius: 10px;
+
+}
+
+@media(max-width:768px) {
+
+    .login-card {
+
+        padding: 28px;
+
+        margin: 15px;
+
+    }
+
+    .shop-name {
+
+        font-size: 24px;
+
+    }
+
+    .logo {
+
+        width: 75px;
+
+        height: 75px;
+
+    }
+
+}
