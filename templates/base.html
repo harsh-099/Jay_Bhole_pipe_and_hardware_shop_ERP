@@ -1,5 +1,5 @@
 {% load static %}
-{% load auth_extras %}
+
 
 <!DOCTYPE html>
 
@@ -152,35 +152,20 @@
                 <hr>
 
                 <ul class="nav flex-column">
-
                     <!-- Dashboard -->
-
                     <li class="nav-item">
-
                         <a href="/" class="nav-link">
-
                             <i class="fa-solid fa-house"></i>
-
                             Dashboard
-
                         </a>
-
                     </li>
-
                     <hr>
-
                     <li class="text-white px-3 small fw-bold">
-
                         MASTER
-
                     </li>
-
-                    {% if request.user|has_any_group:"Admin,Manager,Store" %}
 
                     <li>
-
                         <a href="/products/" class="nav-link">
-
                             <i class="fa-solid fa-box"></i>
 
                             Products
@@ -188,10 +173,6 @@
                         </a>
 
                     </li>
-
-                    {% endif %}
-
-                    {% if request.user|has_any_group:"Admin,Manager,Cashier" %}
 
                     <li>
 
@@ -205,9 +186,6 @@
 
                     </li>
 
-                    {% endif %}
-
-                    {% if request.user|has_any_group:"Admin,Manager,Store" %}
 
                     <li>
 
@@ -221,9 +199,6 @@
 
                     </li>
 
-                    {% endif %}
-
-                    {% if request.user|has_any_group:"Admin,Manager,Store" %}
 
                     <li>
 
@@ -237,7 +212,7 @@
 
                     </li>
 
-                    {% endif %}
+
 
                     <hr>
 
@@ -247,7 +222,6 @@
 
                     </li>
 
-                    {% if request.user|has_any_group:"Admin,Manager,Cashier" %}
 
                     <li>
 
@@ -261,9 +235,6 @@
 
                     </li>
 
-                    {% endif %}
-
-                    {% if request.user|has_any_group:"Admin,Manager,Cashier" %}
 
                     <li>
 
@@ -277,8 +248,7 @@
 
                     </li>
 
-                    {% endif %}
-                    {% if request.user|has_any_group:"Admin,Manager,Store" %}
+
                     <li>
 
                         <a href="/purchases/add/" class="nav-link">
@@ -290,9 +260,7 @@
                         </a>
 
                     </li>
-                    {% endif %}
 
-                    {% if request.user|has_any_group:"Admin,Manager" %}
                     <li>
 
                         <a href="/expenses/" class="nav-link">
@@ -304,7 +272,6 @@
                         </a>
 
                     </li>
-                    {% endif %}
 
                     <hr>
 
@@ -314,7 +281,7 @@
 
                     </li>
 
-                    {% if request.user|has_any_group:"Admin,Manager,Cashier" %}
+
                     <li>
 
                         <a href="/sale-return/" class="nav-link">
@@ -326,9 +293,7 @@
                         </a>
 
                     </li>
-                    {% endif %}
 
-                    {% if request.user|has_any_group:"Admin,Manager,Store" %}
                     <li>
 
                         <a href="/purchase-return/" class="nav-link">
@@ -340,7 +305,6 @@
                         </a>
 
                     </li>
-                    {% endif %}
 
                     <hr>
 
@@ -350,7 +314,6 @@
 
                     </li>
 
-                    {% if request.user|has_any_group:"Admin,Manager,Store" %}
                     <li>
 
                         <a href="/inventory/" class="nav-link">
@@ -362,11 +325,9 @@
                         </a>
 
                     </li>
-                    {% endif %}
 
                     <hr>
 
-                    {% if request.user|has_any_group:"Admin,Manager" %}
 
                     <li class="nav-item">
 
@@ -599,7 +560,7 @@
 
                     </li>
 
-                    {% endif %}
+
 
                     <li>
 
@@ -633,33 +594,8 @@
 
                     </li>
 
-                    {% if request.user|has_any_group:"Admin,Cashier,Manager" %}
 
-                    <li class="text-white px-3 small fw-bold">
 
-                        ADMIN
-
-                    </li>
-
-                    {% if request.user|has_group:"Admin" %}
-
-                    <li>
-
-                        <a href="/users/" class="nav-link">
-
-                            <i class="fa-solid fa-users-gear"></i>
-
-                            User Management
-
-                        </a>
-
-                    </li>
-
-                    {% endif %}
-
-                    <hr>
-
-                    {% endif %}
                     <hr>
 
                     <li class="text-white px-3 small fw-bold">
@@ -668,7 +604,6 @@
 
                     </li>
 
-                    {% if request.user|has_any_group:"Admin" %}
 
                     <li>
 
@@ -694,9 +629,7 @@
 
                     </li>
 
-                    {% endif %}
 
-                    {% if request.user|has_any_group:"Admin,Cashier,Manager" %}
 
                     <li>
 
@@ -710,7 +643,6 @@
 
                     </li>
 
-                    {% endif %}
 
                 </ul>
 
@@ -719,33 +651,19 @@
                 <div class="px-3 py-2 text-white">
 
                     <small>
-
                         Logged in as
-
                     </small>
 
                     <br>
 
                     <strong>
-
                         {{ request.user.username }}
-
                     </strong>
 
                     <br>
 
                     <small class="text-secondary">
-
-                        {% if request.user.groups.first %}
-
-                        {{ request.user.groups.first.name }}
-
-                        {% else %}
-
                         Administrator
-
-                        {% endif %}
-
                     </small>
 
                 </div>
