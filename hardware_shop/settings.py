@@ -69,8 +69,10 @@ INSTALLED_APPS = [
     'activitylog',
     'advisor',
     'globalsearch',
-    'debug_toolbar',
+    
 ]
+if DEBUG:
+    INSTALLED_APPS += ["debug_toolbar"]
 
 
 # =========================================================
@@ -78,27 +80,26 @@ INSTALLED_APPS = [
 # =========================================================
 
 MIDDLEWARE = [
-
     'django.middleware.security.SecurityMiddleware',
 
-    # WhiteNoise - Vercel/static files साठी
+    # WhiteNoise - static files
     'whitenoise.middleware.WhiteNoiseMiddleware',
 
     'django.contrib.sessions.middleware.SessionMiddleware',
-
     'django.middleware.common.CommonMiddleware',
-
     'django.middleware.csrf.CsrfViewMiddleware',
 
-    "django.middleware.common.CommonMiddleware",
-    "debug_toolbar.middleware.DebugToolbarMiddleware",
-
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-
     'django.contrib.messages.middleware.MessageMiddleware',
-
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+if DEBUG:
+    MIDDLEWARE.insert(
+        4,
+        "debug_toolbar.middleware.DebugToolbarMiddleware"
+    )
+
 
 
 # =========================================================
