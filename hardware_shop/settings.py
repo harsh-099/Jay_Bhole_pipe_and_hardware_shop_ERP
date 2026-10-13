@@ -69,6 +69,7 @@ INSTALLED_APPS = [
     'activitylog',
     'advisor',
     'globalsearch',
+    'debug_toolbar',
 ]
 
 
@@ -88,6 +89,9 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
 
     'django.middleware.csrf.CsrfViewMiddleware',
+
+    "django.middleware.common.CommonMiddleware",
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
 
     'django.contrib.auth.middleware.AuthenticationMiddleware',
 
@@ -253,3 +257,4 @@ LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
 
 LOGOUT_REDIRECT_URL = '/login/'
+INTERNAL_IPS = ["127.0.0.1"]
