@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% block body_class %}dashboard-page{% endblock %}
 
 {% block title %}Dashboard{% endblock %}
 
@@ -10,103 +11,7 @@ Dashboard
 
 <div class="row mb-4">
 
-    <div class="col-12">
-
-        <div class="card shadow-lg border-0 bg-dark text-white">
-
-            <div class="card-body p-4">
-
-                <div class="d-flex justify-content-between align-items-center">
-
-                    <div>
-
-                        <h3 class="fw-bold mb-2">
-
-                            <i class="fa-solid fa-brain text-warning me-2"></i>
-
-                            Today's Business Brief
-
-                        </h3>
-
-                        <p class="mb-0 text-light">
-
-                            Welcome {{ request.user.first_name|default:request.user.username }} 👋
-
-                        </p>
-
-                    </div>
-
-                    <div class="text-end">
-
-                        <small class="text-light">
-
-                            {{ now|date:"d M Y" }}
-
-                        </small>
-
-                    </div>
-
-                </div>
-
-                <hr class="border-secondary">
-
-                <div class="row text-center">
-
-                    <div class="col-md-3">
-
-                        <h4 class="text-success">
-
-                            ₹{{ brief.today_sales }}
-
-                        </h4>
-
-                        <small>Today's Sales</small>
-
-                    </div>
-
-                    <div class="col-md-3">
-
-                        <h4 class="text-danger">
-
-                            ₹{{ brief.today_expense }}
-
-                        </h4>
-
-                        <small>Today's Expenses</small>
-
-                    </div>
-
-                    <div class="col-md-3">
-
-                        <h4 class="text-info">
-
-                            {{ brief.bills }}
-
-                        </h4>
-
-                        <small>Invoices</small>
-
-                    </div>
-
-                    <div class="col-md-3">
-
-                        <h4 class="text-warning">
-
-                            {{ brief.trend }}
-
-                        </h4>
-
-                        <small>Sales Trend</small>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
+   
 
 </div>
 

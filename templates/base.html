@@ -29,24 +29,20 @@
 
     <style>
         .sidebar {
-
             background: #1f2937;
-
-            min-height: 100vh;
-
+            height: 100vh;
+            min-height: 0;
             width: 260px;
-
             transition: .3s;
-
+            overflow-y: auto;
             overflow-x: hidden;
-
+            flex-shrink: 0;
         }
 
         .sidebar.collapsed {
-
             width: 75px;
-
         }
+
 
         .sidebar.collapsed h4,
         .sidebar.collapsed p,
@@ -117,12 +113,53 @@
             width: 45px !important;
 
         }
+
+        /* Dashboard only: keep the page fixed */
+
+        /* Sidebar: full height with its own vertical scroll */
+        body.dashboard-page #sidebar {
+            height: 100vh;
+            min-height: 0;
+            overflow-y: auto;
+            overflow-x: hidden;
+            flex-shrink: 0;
+        }
+
+        /* Keep sidebar scrollbar usable */
+        body.dashboard-page #sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        body.dashboard-page #sidebar::-webkit-scrollbar-thumb {
+            background: #6b7280;
+            border-radius: 10px;
+        }
+
+
+        body.dashboard-page #mainContent {
+            height: 100vh;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Navbar stays fixed; only content scrolls */
+        body.dashboard-page #mainContent>.navbar {
+            flex-shrink: 0;
+        }
+
+        body.dashboard-page #mainContent>.dashboard-scroll-content {
+            flex: 1;
+            min-height: 0;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
     </style>
 
 </head>
 
-<body>
-
+<body class="{% block body_class %}{% endblock %}">
     <div class="container-fluid">
 
         <div class="row">
@@ -815,13 +852,15 @@
 
                 </nav>
 
-                <div class="p-4">
+
+                <div class="p-4 dashboard-scroll-content">
 
                     {% block content %}
 
                     {% endblock %}
 
                 </div>
+
 
             </div>
 

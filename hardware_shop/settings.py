@@ -27,8 +27,8 @@ SECRET_KEY = os.environ.get(
 DEBUG = os.environ.get("DJANGO_DEBUG", "True").lower() == "true"
 
 ALLOWED_HOSTS = [
-    host.strip()
-    for host in os.environ.get(
+   host.strip()
+ for host in os.environ.get(
         "DJANGO_ALLOWED_HOSTS",
         "localhost,127.0.0.1"
     ).split(",")
