@@ -1,186 +1,193 @@
 {% extends 'base.html' %}
 
+{% block title %}
+Daily Sales Report
+{% endblock %}
+
+{% block page_title %}
+Daily Sales Report
+{% endblock %}
+
 {% block content %}
 
-<div class="container">
+<style>
+    .report-scroll-container {
+        max-height: calc(100vh - 100px);
+        overflow-y: auto;
+        overflow-x: auto;
+        padding: 0 5px 20px;
+    }
 
-    <div class="d-flex justify-content-between mb-3">
+    .report-scroll-container::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
 
-        <h2>
+    .report-scroll-container::-webkit-scrollbar-thumb {
+        background: #adb5bd;
+        border-radius: 10px;
+    }
 
+    .report-scroll-container::-webkit-scrollbar-thumb:hover {
+        background: #6c757d;
+    }
+
+    @media print {
+        .report-scroll-container {
+            max-height: none;
+            overflow: visible;
+        }
+
+        .report-actions {
+            display: none !important;
+        }
+    }
+</style>
+
+<div class="container-fluid report-scroll-container">
+
+    <!-- Header -->
+
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+
+        <h2 class="mb-0">
             Daily Sales Report
-
         </h2>
 
-        <div>
+        <div class="report-actions">
 
-            <a href="{% url 'daily_sales_pdf' %}" class="btn btn-danger">
-
+            <a href="{% url 'daily_sales_pdf' %}"
+               class="btn btn-danger">
                 Download PDF
-
             </a>
 
-            <button onclick="window.print()" class="btn btn-primary">
-
+            <button onclick="window.print()"
+                    class="btn btn-primary">
                 Print
-
             </button>
 
         </div>
 
     </div>
 
-    <div class="row mb-4">
+    <!-- Sales Summary -->
 
-        <div class="col-md-3">
+    <div class="row g-3 mb-4">
 
-            <div class="card shadow">
+        <div class="col-xl-3 col-md-6">
 
+            <div class="card shadow h-100">
                 <div class="card-body">
-
                     <h6>Total Bills</h6>
-
                     <h3>{{ total_bills }}</h3>
-
                 </div>
-
             </div>
 
         </div>
 
-        <div class="col-md-3">
+        <div class="col-xl-3 col-md-6">
 
-            <div class="card shadow">
-
+            <div class="card shadow h-100">
                 <div class="card-body">
-
                     <h6>Total Sales</h6>
-
                     <h3>₹{{ total_sales }}</h3>
-
                 </div>
-
             </div>
 
         </div>
 
-        <div class="col-md-2">
+        <div class="col-xl-2 col-md-4 col-6">
 
-            <div class="card shadow">
-
+            <div class="card shadow h-100">
                 <div class="card-body">
-
                     <h6>Cash</h6>
-
                     <h4>₹{{ cash_sales }}</h4>
-
                 </div>
-
             </div>
 
         </div>
 
-        <div class="col-md-2">
+        <div class="col-xl-2 col-md-4 col-6">
 
-            <div class="card shadow">
-
+            <div class="card shadow h-100">
                 <div class="card-body">
-
                     <h6>UPI</h6>
-
                     <h4>₹{{ upi_sales }}</h4>
-
                 </div>
-
             </div>
 
         </div>
 
-        <div class="col-md-2">
+        <div class="col-xl-2 col-md-4 col-6">
 
-            <div class="card shadow">
-
+            <div class="card shadow h-100">
                 <div class="card-body">
-
                     <h6>Credit</h6>
-
                     <h4>₹{{ credit_sales }}</h4>
-
                 </div>
-
             </div>
 
         </div>
 
     </div>
 
-    <table class="table table-bordered table-hover">
+    <!-- Sales Table -->
 
-        <thead class="table-dark">
+    <div class="table-responsive">
 
-            <tr>
+        <table class="table table-bordered table-hover">
 
-                <th>Invoice</th>
+            <thead class="table-dark">
 
-                <th>Time</th>
+                <tr>
+                    <th>Invoice</th>
+                    <th>Time</th>
+                    <th>Customer</th>
+                    <th>Payment</th>
+                    <th>Amount</th>
+                </tr>
 
-                <th>Customer</th>
+            </thead>
 
-                <th>Payment</th>
+            <tbody>
 
-                <th>Amount</th>
+                {% for bill in bills %}
 
-            </tr>
+                <tr>
 
-        </thead>
+                    <td>{{ bill.invoice_no }}</td>
 
-        <tbody>
+                    <td>{{ bill.created_at|date:"h:i A" }}</td>
 
-            {% for bill in bills %}
+                    <td>
+                        {% if bill.customer %}
+                            {{ bill.customer.name }}
+                        {% else %}
+                            Walk In Customer
+                        {% endif %}
+                    </td>
 
-            <tr>
+                    <td>{{ bill.payment_method }}</td>
 
-                <td>{{ bill.invoice_no }}</td>
+                    <td>₹{{ bill.final_amount }}</td>
 
-                <td>{{ bill.created_at|date:"h:i A" }}</td>
+                </tr>
 
-                <td>
+                {% empty %}
 
-                    {% if bill.customer %}
+                <tr>
+                    <td colspan="5" class="text-center">
+                        No Sales Today
+                    </td>
+                </tr>
 
-                    {{ bill.customer.name }}
+                {% endfor %}
 
-                    {% else %}
+            </tbody>
 
-                    Walk In Customer
+        </table>
 
-                    {% endif %}
-
-                </td>
-
-                <td>{{ bill.payment_method }}</td>
-
-                <td>₹{{ bill.final_amount }}</td>
-
-            </tr>
-
-            {% empty %}
-
-            <tr>
-
-                <td colspan="5" class="text-center">
-
-                    No Sales Today
-
-                </td>
-
-            </tr>
-
-            {% endfor %}
-
-        </tbody>
-
-    </table>
+    </div>
 
 </div>
 

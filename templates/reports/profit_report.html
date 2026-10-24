@@ -1,263 +1,394 @@
 {% extends 'base.html' %}
 
+{% block title %}
+Business Profit Report
+{% endblock %}
+
+{% block page_title %}
+Business Profit Report
+{% endblock %}
+
 {% block content %}
 
-<div class="container">
+<style>
+    .report-scroll-container {
+        max-height: calc(100vh - 100px);
+        overflow-y: auto;
+        overflow-x: auto;
+        padding: 0 5px 20px;
+    }
 
-    <h2 class="mb-4">
+    .report-scroll-container::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
 
-        Business Profit Report
+    .report-scroll-container::-webkit-scrollbar-thumb {
+        background: #adb5bd;
+        border-radius: 10px;
+    }
 
-    </h2>
+    .report-scroll-container::-webkit-scrollbar-thumb:hover {
+        background: #6c757d;
+    }
 
-    <div class="mb-3">
+    .report-scroll-container::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
 
-        <a href="{% url 'profit_report_pdf' %}?from_date={{ from_date|default_if_none:'' }}&to_date={{ to_date|default_if_none:'' }}"
-            class="btn btn-danger">
+    .profit-card {
+        height: 100%;
+        border: none;
+        border-radius: 10px;
+        transition: transform 0.2s ease;
+    }
 
-            Download PDF
+    .profit-card:hover {
+        transform: translateY(-2px);
+    }
 
-        </a>
+    @media print {
+        .report-scroll-container {
+            max-height: none;
+            overflow: visible;
+        }
 
-        <button onclick="window.print()" class="btn btn-primary">
+        .no-print {
+            display: none !important;
+        }
 
-            Print
+        .profit-card {
+            break-inside: avoid;
+        }
+    }
+</style>
 
-        </button>
+<div class="report-scroll-container">
+
+    <div class="container-fluid">
+
+        <!-- Header -->
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+
+            <h2 class="mb-0">
+                Business Profit Report
+            </h2>
+
+            <div class="d-flex gap-2 no-print">
+
+                <a href="{% url 'profit_report_pdf' %}?from_date={{ from_date|default_if_none:'' }}&to_date={{ to_date|default_if_none:'' }}"
+                   class="btn btn-danger">
+
+                    <i class="fa fa-file-pdf me-1"></i>
+                    Download PDF
+
+                </a>
+
+                <button type="button"
+                        onclick="window.print()"
+                        class="btn btn-primary">
+
+                    <i class="fa fa-print me-1"></i>
+                    Print
+
+                </button>
+
+            </div>
+
+        </div>
+
+        <!-- Date Filter -->
+        <div class="card shadow-sm border-0 mb-4 no-print">
+
+            <div class="card-body">
+
+                <form method="GET" class="row g-3 align-items-end">
+
+                    <div class="col-md-4 col-sm-6">
+
+                        <label for="from_date" class="form-label">
+                            From Date
+                        </label>
+
+                        <input type="date"
+                               name="from_date"
+                               id="from_date"
+                               class="form-control"
+                               value="{{ from_date|default_if_none:'' }}">
+
+                    </div>
+
+                    <div class="col-md-4 col-sm-6">
+
+                        <label for="to_date" class="form-label">
+                            To Date
+                        </label>
+
+                        <input type="date"
+                               name="to_date"
+                               id="to_date"
+                               class="form-control"
+                               value="{{ to_date|default_if_none:'' }}">
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        <button type="submit"
+                                class="btn btn-success w-100">
+
+                            <i class="fa fa-search me-1"></i>
+                            Search
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+        <!-- Profit Summary Cards -->
+        <div class="row g-3 mb-4">
+
+            <!-- Total Sales -->
+            <div class="col-xl-4 col-md-6">
+
+                <div class="card profit-card shadow-sm">
+
+                    <div class="card-body">
+
+                        <h6 class="text-muted mb-2">
+                            Total Sales
+                        </h6>
+
+                        <h3 class="fw-bold text-primary mb-0">
+                            ₹{{ total_sales|floatformat:2 }}
+                        </h3>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Total Purchase -->
+            <div class="col-xl-4 col-md-6">
+
+                <div class="card profit-card shadow-sm">
+
+                    <div class="card-body">
+
+                        <h6 class="text-muted mb-2">
+                            Total Purchase
+                        </h6>
+
+                        <h3 class="fw-bold mb-0">
+                            ₹{{ total_purchase|floatformat:2 }}
+                        </h3>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Total Expense -->
+            <div class="col-xl-4 col-md-6">
+
+                <div class="card profit-card shadow-sm">
+
+                    <div class="card-body">
+
+                        <h6 class="text-muted mb-2">
+                            Total Expense
+                        </h6>
+
+                        <h3 class="fw-bold text-danger mb-0">
+                            ₹{{ total_expense|floatformat:2 }}
+                        </h3>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Gross Profit -->
+            <div class="col-xl-4 col-md-6">
+
+                <div class="card profit-card shadow-sm">
+
+                    <div class="card-body">
+
+                        <h6 class="text-muted mb-2">
+                            Gross Profit
+                        </h6>
+
+                        <h3 class="fw-bold mb-0
+                            {% if gross_profit >= 0 %}
+                                text-success
+                            {% else %}
+                                text-danger
+                            {% endif %}">
+
+                            ₹{{ gross_profit|floatformat:2 }}
+
+                        </h3>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Net Profit -->
+            <div class="col-xl-4 col-md-6">
+
+                <div class="card profit-card shadow-sm">
+
+                    <div class="card-body">
+
+                        <h6 class="text-muted mb-2">
+                            Net Profit
+                        </h6>
+
+                        <h3 class="fw-bold mb-0
+                            {% if profit >= 0 %}
+                                text-success
+                            {% else %}
+                                text-danger
+                            {% endif %}">
+
+                            ₹{{ profit|floatformat:2 }}
+
+                        </h3>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Profit Margin -->
+            <div class="col-xl-4 col-md-6">
+
+                <div class="card profit-card shadow-sm">
+
+                    <div class="card-body">
+
+                        <h6 class="text-muted mb-2">
+                            Profit Margin
+                        </h6>
+
+                        <h3 class="fw-bold text-info mb-0">
+                            {{ profit_margin }}%
+                        </h3>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Detailed Profit Table -->
+        <div class="card shadow-sm border-0">
+
+            <div class="card-header bg-white py-3">
+
+                <h5 class="mb-0">
+                    Profit and Loss Summary
+                </h5>
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="table-responsive">
+
+                    <table class="table table-bordered table-hover align-middle mb-0">
+
+                        <thead class="table-dark">
+
+                            <tr>
+                                <th>Particular</th>
+                                <th class="text-end">Amount</th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            <tr>
+                                <td>Total Sales</td>
+                                <td class="text-end">
+                                    ₹{{ total_sales|floatformat:2 }}
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>Total Purchase</td>
+                                <td class="text-end">
+                                    ₹{{ total_purchase|floatformat:2 }}
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>Total Expense</td>
+                                <td class="text-end">
+                                    ₹{{ total_expense|floatformat:2 }}
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="fw-semibold">
+                                    Gross Profit
+                                </td>
+                                <td class="text-end fw-semibold">
+                                    ₹{{ gross_profit|floatformat:2 }}
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="fw-bold">
+                                    Net Profit
+                                </td>
+                                <td class="text-end fw-bold
+                                    {% if profit >= 0 %}
+                                        text-success
+                                    {% else %}
+                                        text-danger
+                                    {% endif %}">
+
+                                    ₹{{ profit|floatformat:2 }}
+
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="fw-semibold">
+                                    Profit Margin
+                                </td>
+                                <td class="text-end fw-semibold">
+                                    {{ profit_margin }}%
+                                </td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
 
     </div>
-
-    <form method="GET" class="row mb-4">
-
-        <div class="col-md-4">
-
-            <label>
-
-                From Date
-
-            </label>
-
-            <input type="date" name="from_date" class="form-control" value="{{ from_date }}">
-
-        </div>
-
-        <div class="col-md-4">
-
-            <label>
-
-                To Date
-
-            </label>
-
-            <input type="date" name="to_date" class="form-control" value="{{ to_date }}">
-
-        </div>
-
-        <div class="col-md-4">
-
-            <label>&nbsp;</label>
-
-            <button class="btn btn-success w-100">
-
-                Search
-
-            </button>
-
-        </div>
-
-    </form>
-
-    <div class="row">
-
-        <div class="col-md-4 mb-3">
-
-            <div class="card shadow">
-
-                <div class="card-body">
-
-                    <h6>Total Sales</h6>
-
-                    <h3>
-
-                        ₹{{ total_sales }}
-
-                    </h3>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="col-md-4 mb-3">
-
-            <div class="card shadow">
-
-                <div class="card-body">
-
-                    <h6>Total Purchase</h6>
-
-                    <h3>
-
-                        ₹{{ total_purchase }}
-
-                    </h3>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="col-md-4 mb-3">
-
-            <div class="card shadow">
-
-                <div class="card-body">
-
-                    <h6>Total Expense</h6>
-
-                    <h3>
-
-                        ₹{{ total_expense }}
-
-                    </h3>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="col-md-4 mb-3">
-
-            <div class="card shadow">
-
-                <div class="card-body">
-
-                    <h6>Gross Profit</h6>
-
-                    <h3>
-
-                        ₹{{ gross_profit }}
-
-                    </h3>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="col-md-4 mb-3">
-
-            <div class="card shadow">
-
-                <div class="card-body">
-
-                    <h6>Net Profit</h6>
-
-                    <h3 class="{% if profit >= 0 %}text-success{% else %}text-danger{% endif %}">
-
-                        ₹{{ profit }}
-
-                    </h3>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="col-md-4 mb-3">
-
-            <div class="card shadow">
-
-                <div class="card-body">
-
-                    <h6>Profit Margin</h6>
-
-                    <h3>
-
-                        {{ profit_margin }} %
-
-                    </h3>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <table class="table table-bordered mt-4">
-
-        <thead class="table-dark">
-
-            <tr>
-
-                <th>Particular</th>
-
-                <th>Amount</th>
-
-            </tr>
-
-        </thead>
-
-        <tbody>
-
-            <tr>
-
-                <td>Total Sales</td>
-
-                <td>₹{{ total_sales }}</td>
-
-            </tr>
-
-            <tr>
-
-                <td>Total Purchase</td>
-
-                <td>₹{{ total_purchase }}</td>
-
-            </tr>
-
-            <tr>
-
-                <td>Total Expense</td>
-
-                <td>₹{{ total_expense }}</td>
-
-            </tr>
-
-            <tr>
-
-                <td>Gross Profit</td>
-
-                <td>₹{{ gross_profit }}</td>
-
-            </tr>
-
-            <tr>
-
-                <td>Net Profit</td>
-
-                <td>₹{{ profit }}</td>
-
-            </tr>
-
-            <tr>
-
-                <td>Profit Margin</td>
-
-                <td>{{ profit_margin }} %</td>
-
-            </tr>
-
-        </tbody>
-
-    </table>
 
 </div>
 

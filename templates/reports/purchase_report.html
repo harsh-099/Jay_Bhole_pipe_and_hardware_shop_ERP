@@ -1,53 +1,242 @@
 {% extends 'base.html' %}
 
+{% block title %}
+Purchase Report
+{% endblock %}
+
+{% block page_title %}
+Purchase Report
+{% endblock %}
+
 {% block content %}
 
-<div class="container">
+<style>
+    .report-scroll-container {
+        max-height: calc(100vh - 100px);
+        overflow-y: auto;
+        overflow-x: auto;
+        padding: 0 5px 20px;
+    }
 
-    <h2 class="mb-4">
+    .report-scroll-container::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
 
-        Purchase Report
+    .report-scroll-container::-webkit-scrollbar-thumb {
+        background: #adb5bd;
+        border-radius: 10px;
+    }
 
-    </h2>
+    .report-scroll-container::-webkit-scrollbar-thumb:hover {
+        background: #6c757d;
+    }
 
-    <div class="mb-3">
+    .report-scroll-container::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
 
-        <a href="{% url 'purchase_report_pdf' %}?from_date={{ from_date|default_if_none:'' }}&to_date={{ to_date|default_if_none:'' }}"
-           class="btn btn-danger">
+    @media print {
+        .report-scroll-container {
+            max-height: none;
+            overflow: visible;
+        }
 
-            📄 Download PDF
+        .no-print {
+            display: none !important;
+        }
+    }
+</style>
 
-        </a>
+<div class="report-scroll-container">
 
-        <button
-            onclick="window.print()"
-            class="btn btn-primary">
+    <div class="container-fluid">
 
-            🖨 Print
+        <!-- Header -->
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
 
-        </button>
+            <h2 class="mb-0">
+                Purchase Report
+            </h2>
 
-    </div>
+            <div class="d-flex gap-2 no-print">
 
-    <div class="row mb-4">
+                <a href="{% url 'purchase_report_pdf' %}?from_date={{ from_date|default_if_none:'' }}&to_date={{ to_date|default_if_none:'' }}"
+                   class="btn btn-danger">
 
-        <div class="col-md-4">
+                    📄 Download PDF
 
-            <div class="card shadow border-0">
+                </a>
 
-                <div class="card-body">
+                <button type="button"
+                        onclick="window.print()"
+                        class="btn btn-primary">
 
-                    <h6>
+                    🖨 Print
 
-                        Total Purchase
+                </button>
 
-                    </h6>
+            </div>
 
-                    <h3>
+        </div>
 
-                        ₹{{ total_purchase }}
+        <!-- Total Purchase Card -->
+        <div class="row g-3 mb-4">
 
-                    </h3>
+            <div class="col-xl-4 col-md-6">
+
+                <div class="card shadow-sm border-0 h-100">
+
+                    <div class="card-body">
+
+                        <h6 class="text-muted mb-2">
+                            Total Purchase
+                        </h6>
+
+                        <h3 class="fw-bold text-primary mb-0">
+                            ₹{{ total_purchase|floatformat:2 }}
+                        </h3>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Date Filter -->
+        <div class="card shadow-sm border-0 mb-4 no-print">
+
+            <div class="card-body">
+
+                <form method="GET" class="row g-3 align-items-end">
+
+                    <div class="col-md-4 col-sm-6">
+
+                        <label for="from_date" class="form-label">
+                            From Date
+                        </label>
+
+                        <input
+                            type="date"
+                            name="from_date"
+                            id="from_date"
+                            class="form-control"
+                            value="{{ from_date|default_if_none:'' }}">
+
+                    </div>
+
+                    <div class="col-md-4 col-sm-6">
+
+                        <label for="to_date" class="form-label">
+                            To Date
+                        </label>
+
+                        <input
+                            type="date"
+                            name="to_date"
+                            id="to_date"
+                            class="form-control"
+                            value="{{ to_date|default_if_none:'' }}">
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        <button type="submit"
+                                class="btn btn-success w-100">
+
+                            Search
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+        <!-- Purchase Details -->
+        <div class="card shadow-sm border-0">
+
+            <div class="card-header bg-white py-3">
+
+                <h5 class="mb-0">
+                    Purchase Details
+                </h5>
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="table-responsive">
+
+                    <table class="table table-bordered table-hover align-middle mb-0">
+
+                        <thead class="table-dark">
+
+                            <tr>
+                                <th style="min-width: 140px;">Purchase No</th>
+                                <th style="min-width: 160px;">Date</th>
+                                <th style="min-width: 180px;">Supplier</th>
+                                <th style="min-width: 130px;">Payment</th>
+                                <th class="text-end" style="min-width: 150px;">Total</th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            {% for purchase in purchases %}
+
+                            <tr>
+
+                                <td class="fw-semibold">
+                                    {{ purchase.purchase_no }}
+                                </td>
+
+                                <td>
+                                    {{ purchase.created_at|date:"d-m-Y H:i" }}
+                                </td>
+
+                                <td>
+                                    {% if purchase.supplier %}
+                                        {{ purchase.supplier.name }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    {{ purchase.payment_method }}
+                                </td>
+
+                                <td class="text-end fw-semibold">
+                                    ₹{{ purchase.final_amount|floatformat:2 }}
+                                </td>
+
+                            </tr>
+
+                            {% empty %}
+
+                            <tr>
+
+                                <td colspan="5" class="text-center py-4 text-muted">
+
+                                    No Purchase Found
+
+                                </td>
+
+                            </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
 
                 </div>
 
@@ -57,152 +246,6 @@
 
     </div>
 
-    <form method="GET" class="row mb-4">
-
-        <div class="col-md-4">
-
-            <label>
-
-                From Date
-
-            </label>
-
-            <input
-                type="date"
-                name="from_date"
-                class="form-control"
-                value="{{ from_date }}">
-
-        </div>
-
-        <div class="col-md-4">
-
-            <label>
-
-                To Date
-
-            </label>
-
-            <input
-                type="date"
-                name="to_date"
-                class="form-control"
-                value="{{ to_date }}">
-
-        </div>
-
-        <div class="col-md-4">
-
-            <label>&nbsp;</label>
-
-            <button
-                class="btn btn-success w-100">
-
-                Search
-
-            </button>
-
-        </div>
-
-    </form>
-
-    <table class="table table-bordered table-hover">
-
-        <thead class="table-dark">
-
-            <tr>
-
-                <th>
-
-                    Purchase No
-
-                </th>
-
-                <th>
-
-                    Date
-
-                </th>
-
-                <th>
-
-                    Supplier
-
-                </th>
-
-                <th>
-
-                    Payment
-
-                </th>
-
-                <th>
-
-                    Total
-
-                </th>
-
-            </tr>
-
-        </thead>
-
-        <tbody>
-
-            {% for purchase in purchases %}
-
-            <tr>
-
-                <td>
-
-                    {{ purchase.purchase_no }}
-
-                </td>
-
-                <td>
-
-                    {{ purchase.created_at|date:"d-m-Y H:i" }}
-
-                </td>
-
-                <td>
-
-                    {{ purchase.supplier.name }}
-
-                </td>
-
-                <td>
-
-                    {{ purchase.payment_method }}
-
-                </td>
-
-                <td>
-
-                    ₹{{ purchase.final_amount }}
-
-                </td>
-
-            </tr>
-
-            {% empty %}
-
-            <tr>
-
-                <td colspan="5" class="text-center">
-
-                    No Purchase Found
-
-                </td>
-
-            </tr>
-
-            {% endfor %}
-
-        </tbody>
-
-    </table>
-
 </div>
 
 {% endblock %}
-```

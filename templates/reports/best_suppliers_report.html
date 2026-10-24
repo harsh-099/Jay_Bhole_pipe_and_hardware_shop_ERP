@@ -1,90 +1,112 @@
 {% extends 'base.html' %}
 
+{% block title %}
+Best Suppliers Report
+{% endblock %}
+
 {% block content %}
 
-<div class="container">
+<style>
+    .report-scroll-container {
+        max-height: calc(100vh - 100px);
+        overflow-y: auto;
+        overflow-x: auto;
+        padding-bottom: 20px;
+    }
 
-    <div class="d-flex justify-content-between mb-3">
+    .report-scroll-container::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
 
-        <h2>
+    .report-scroll-container::-webkit-scrollbar-thumb {
+        background: #adb5bd;
+        border-radius: 10px;
+    }
 
+    .report-scroll-container::-webkit-scrollbar-thumb:hover {
+        background: #6c757d;
+    }
+
+    @media print {
+        .report-scroll-container {
+            max-height: none;
+            overflow: visible;
+        }
+
+        .report-actions {
+            display: none !important;
+        }
+    }
+</style>
+
+<div class="container-fluid report-scroll-container">
+
+    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+
+        <h2 class="mb-0">
             Best Suppliers Report
-
         </h2>
 
-        <div>
+        <div class="report-actions">
 
-            <a href="{% url 'best_suppliers_pdf' %}" class="btn btn-danger">
-
+            <a href="{% url 'best_suppliers_pdf' %}"
+               class="btn btn-danger">
                 Download PDF
-
             </a>
 
-            <button onclick="window.print()" class="btn btn-primary">
-
+            <button onclick="window.print()"
+                    class="btn btn-primary">
                 Print
-
             </button>
 
         </div>
 
     </div>
 
-    <table class="table table-bordered table-hover">
+    <div class="table-responsive">
 
-        <thead class="table-dark">
+        <table class="table table-bordered table-hover">
 
-            <tr>
+            <thead class="table-dark">
 
-                <th>Rank</th>
+                <tr>
+                    <th>Rank</th>
+                    <th>Supplier</th>
+                    <th>Total Orders</th>
+                    <th>Total Purchase</th>
+                    <th>Current Balance</th>
+                </tr>
 
-                <th>Supplier</th>
+            </thead>
 
-                <th>Total Orders</th>
+            <tbody>
 
-                <th>Total Purchase</th>
+                {% for supplier in suppliers %}
 
-                <th>Current Balance</th>
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ supplier.name }}</td>
+                    <td>{{ supplier.total_orders }}</td>
+                    <td>₹{{ supplier.total_purchase|default:0 }}</td>
+                    <td>₹{{ supplier.balance }}</td>
+                </tr>
 
-            </tr>
+                {% empty %}
 
-        </thead>
+                <tr>
+                    <td colspan="5" class="text-center">
+                        No Supplier Found
+                    </td>
+                </tr>
 
-        <tbody>
+                {% endfor %}
 
-            {% for supplier in suppliers %}
+            </tbody>
 
-            <tr>
+        </table>
 
-                <td>{{ forloop.counter }}</td>
-
-                <td>{{ supplier.name }}</td>
-
-                <td>{{ supplier.total_orders }}</td>
-
-                <td>₹{{ supplier.total_purchase|default:0 }}</td>
-
-                <td>₹{{ supplier.balance }}</td>
-
-            </tr>
-
-            {% empty %}
-
-            <tr>
-
-                <td colspan="5" class="text-center">
-
-                    No Supplier Found
-
-                </td>
-
-            </tr>
-
-            {% endfor %}
-
-        </tbody>
-
-    </table>
+    </div>
 
 </div>
 

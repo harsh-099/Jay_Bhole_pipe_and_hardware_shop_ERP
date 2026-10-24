@@ -1,31 +1,69 @@
 {% extends 'base.html' %}
 
+{% block title %}
+Customer Ledger Report
+{% endblock %}
+
+{% block page_title %}
+Customer Ledger Report
+{% endblock %}
+
 {% block content %}
 
-<div class="container">
+<style>
+    .report-scroll-container {
+        max-height: calc(100vh - 100px);
+        overflow-y: auto;
+        overflow-x: auto;
+        padding: 0 5px 20px;
+    }
 
-    <div class="d-flex justify-content-between mb-3">
+    .report-scroll-container::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
 
-        <h2>
+    .report-scroll-container::-webkit-scrollbar-thumb {
+        background: #adb5bd;
+        border-radius: 10px;
+    }
 
+    .report-scroll-container::-webkit-scrollbar-thumb:hover {
+        background: #6c757d;
+    }
+
+    @media print {
+        .report-scroll-container {
+            max-height: none;
+            overflow: visible;
+        }
+
+        .report-actions {
+            display: none !important;
+        }
+    }
+</style>
+
+<div class="container-fluid report-scroll-container">
+
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+
+        <h2 class="mb-0">
             Customer Ledger Report
-
         </h2>
 
-        <div>
+        <div class="report-actions">
 
             {% if selected_customer %}
 
-            <a href="{% url 'customer_ledger_pdf' %}?customer={{ selected_customer.id }}" class="btn btn-danger">
-
+            <a href="{% url 'customer_ledger_pdf' %}?customer={{ selected_customer.id }}"
+               class="btn btn-danger">
                 Download PDF
-
             </a>
 
-            <button onclick="window.print()" class="btn btn-primary">
-
+            <button onclick="window.print()"
+                    class="btn btn-primary">
                 Print
-
             </button>
 
             {% endif %}
@@ -33,6 +71,8 @@
         </div>
 
     </div>
+
+    <!-- Customer Search -->
 
     <form method="GET">
 
@@ -43,17 +83,14 @@
                 <select name="customer" class="form-control">
 
                     <option value="">
-
                         Select Customer
-
                     </option>
 
                     {% for customer in customers %}
 
-                    <option value="{{ customer.id }}" {% if selected_customer.id == customer.id %} selected {% endif %}>
-
+                    <option value="{{ customer.id }}"
+                        {% if selected_customer.id == customer.id %}selected{% endif %}>
                         {{ customer.name }}
-
                     </option>
 
                     {% endfor %}
@@ -64,10 +101,8 @@
 
             <div class="col-md-2">
 
-                <button class="btn btn-success">
-
+                <button type="submit" class="btn btn-success">
                     Search
-
                 </button>
 
             </div>
@@ -78,20 +113,20 @@
 
     {% if selected_customer %}
 
-    <div class="row mb-4">
+    <!-- Customer Summary -->
 
-        <div class="col-md-3">
+    <div class="row g-3 mb-4">
 
-            <div class="card shadow">
+        <div class="col-md-3 col-sm-6">
+
+            <div class="card shadow h-100">
 
                 <div class="card-body">
 
                     <h6>Total Sales</h6>
 
                     <h3>
-
                         ₹{{ total_sales }}
-
                     </h3>
 
                 </div>
@@ -100,18 +135,16 @@
 
         </div>
 
-        <div class="col-md-3">
+        <div class="col-md-3 col-sm-6">
 
-            <div class="card shadow">
+            <div class="card shadow h-100">
 
                 <div class="card-body">
 
                     <h6>Paid</h6>
 
                     <h3>
-
                         ₹{{ total_paid }}
-
                     </h3>
 
                 </div>
@@ -120,18 +153,16 @@
 
         </div>
 
-        <div class="col-md-3">
+        <div class="col-md-3 col-sm-6">
 
-            <div class="card shadow">
+            <div class="card shadow h-100">
 
                 <div class="card-body">
 
                     <h6>Credit</h6>
 
                     <h3>
-
                         ₹{{ total_credit }}
-
                     </h3>
 
                 </div>
@@ -140,18 +171,16 @@
 
         </div>
 
-        <div class="col-md-3">
+        <div class="col-md-3 col-sm-6">
 
-            <div class="card shadow border-danger">
+            <div class="card shadow border-danger h-100">
 
                 <div class="card-body">
 
                     <h6>Balance</h6>
 
                     <h3 class="text-danger">
-
                         ₹{{ current_balance }}
-
                     </h3>
 
                 </div>
@@ -162,81 +191,69 @@
 
     </div>
 
-    <table class="table table-bordered">
+    <!-- Bills Table -->
 
-        <thead class="table-dark">
+    <div class="table-responsive">
 
-            <tr>
+        <table class="table table-bordered table-hover">
 
-                <th>Date</th>
+            <thead class="table-dark">
 
-                <th>Invoice</th>
+                <tr>
+                    <th>Date</th>
+                    <th>Invoice</th>
+                    <th>Payment</th>
+                    <th>Bill Amount</th>
+                    <th>Credit</th>
+                </tr>
 
-                <th>Payment</th>
+            </thead>
 
-                <th>Bill Amount</th>
+            <tbody>
 
-                <th>Credit</th>
+                {% for bill in bills %}
 
-            </tr>
+                <tr>
 
-        </thead>
+                    <td>
+                        {{ bill.created_at|date:"d-m-Y" }}
+                    </td>
 
-        <tbody>
+                    <td>
+                        {{ bill.invoice_no }}
+                    </td>
 
-            {% for bill in bills %}
+                    <td>
+                        {{ bill.payment_method }}
+                    </td>
 
-            <tr>
+                    <td>
+                        ₹{{ bill.final_amount }}
+                    </td>
 
-                <td>
+                    <td>
+                        ₹{{ bill.credit_amount }}
+                    </td>
 
-                    {{ bill.created_at|date:"d-m-Y" }}
+                </tr>
 
-                </td>
+                {% empty %}
 
-                <td>
+                <tr>
 
-                    {{ bill.invoice_no }}
+                    <td colspan="5" class="text-center">
+                        No Bills Found
+                    </td>
 
-                </td>
+                </tr>
 
-                <td>
+                {% endfor %}
 
-                    {{ bill.payment_method }}
+            </tbody>
 
-                </td>
+        </table>
 
-                <td>
-
-                    ₹{{ bill.final_amount }}
-
-                </td>
-
-                <td>
-
-                    ₹{{ bill.credit_amount }}
-
-                </td>
-
-            </tr>
-
-            {% empty %}
-
-            <tr>
-
-                <td colspan="5" align="center">
-
-                    No Bills Found
-
-                </td>
-
-            </tr>
-
-            {% endfor %}
-
-        </tbody>
-
-    </table>
+    </div>
 
     {% endif %}
 

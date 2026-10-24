@@ -1,217 +1,322 @@
 {% extends 'base.html' %}
 
+{% block title %}
+Sales Report
+{% endblock %}
+
+{% block page_title %}
+Sales Report
+{% endblock %}
+
 {% block content %}
 
-<div class="container">
+<style>
+    .report-scroll-container {
+        max-height: calc(100vh - 100px);
+        overflow-y: auto;
+        overflow-x: auto;
+        padding: 0 5px 20px;
+    }
 
-    <h2 class="mb-4">
+    .report-scroll-container::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
 
-        Sales Report
+    .report-scroll-container::-webkit-scrollbar-thumb {
+        background: #adb5bd;
+        border-radius: 10px;
+    }
 
-    </h2>
-    <div class="mb-3">
+    .report-scroll-container::-webkit-scrollbar-thumb:hover {
+        background: #6c757d;
+    }
 
-        <a href="{% url 'sales_report_pdf' %}?from_date={{ from_date|default_if_none:'' }}&to_date={{ to_date|default_if_none:'' }}"
-            class="btn btn-danger">
+    .report-scroll-container::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
 
-            📄 Download PDF
+    .sales-summary-card {
+        height: 100%;
+        border: none;
+        border-radius: 10px;
+    }
 
-        </a>
+    @media print {
+        .report-scroll-container {
+            max-height: none;
+            overflow: visible;
+        }
 
-        <button onclick="window.print()" class="btn btn-primary">
+        .no-print {
+            display: none !important;
+        }
+    }
+</style>
 
-            🖨 Print
+<div class="report-scroll-container">
 
-        </button>
+    <div class="container-fluid">
+
+        <!-- Header -->
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+
+            <h2 class="mb-0">
+                Sales Report
+            </h2>
+
+            <div class="d-flex gap-2 no-print">
+
+                <a href="{% url 'sales_report_pdf' %}?from_date={{ from_date|default_if_none:'' }}&to_date={{ to_date|default_if_none:'' }}"
+                   class="btn btn-danger">
+
+                    📄 Download PDF
+
+                </a>
+
+                <button type="button"
+                        onclick="window.print()"
+                        class="btn btn-primary">
+
+                    🖨 Print
+
+                </button>
+
+            </div>
+
+        </div>
+
+        <!-- Sales Summary Cards -->
+        <div class="row g-3 mb-4">
+
+            <div class="col-xl-3 col-md-6 col-sm-6">
+
+                <div class="card sales-summary-card shadow-sm">
+
+                    <div class="card-body">
+
+                        <h6 class="text-muted mb-2">
+                            Total Sales
+                        </h6>
+
+                        <h3 class="fw-bold text-primary mb-0">
+                            ₹{{ total_sales|floatformat:2 }}
+                        </h3>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-xl-3 col-md-6 col-sm-6">
+
+                <div class="card sales-summary-card shadow-sm">
+
+                    <div class="card-body">
+
+                        <h6 class="text-muted mb-2">
+                            Cash Sales
+                        </h6>
+
+                        <h3 class="fw-bold text-success mb-0">
+                            ₹{{ cash_sales|floatformat:2 }}
+                        </h3>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-xl-3 col-md-6 col-sm-6">
+
+                <div class="card sales-summary-card shadow-sm">
+
+                    <div class="card-body">
+
+                        <h6 class="text-muted mb-2">
+                            UPI Sales
+                        </h6>
+
+                        <h3 class="fw-bold mb-0">
+                            ₹{{ upi_sales|floatformat:2 }}
+                        </h3>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-xl-3 col-md-6 col-sm-6">
+
+                <div class="card sales-summary-card shadow-sm">
+
+                    <div class="card-body">
+
+                        <h6 class="text-muted mb-2">
+                            Credit Sales
+                        </h6>
+
+                        <h3 class="fw-bold text-danger mb-0">
+                            ₹{{ credit_sales|floatformat:2 }}
+                        </h3>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Date Filter -->
+        <div class="card shadow-sm border-0 mb-4 no-print">
+
+            <div class="card-body">
+
+                <form method="GET" class="row g-3 align-items-end">
+
+                    <div class="col-md-4 col-sm-6">
+
+                        <label for="from_date" class="form-label">
+                            From Date
+                        </label>
+
+                        <input
+                            type="date"
+                            name="from_date"
+                            id="from_date"
+                            class="form-control"
+                            value="{{ from_date|default_if_none:'' }}">
+
+                    </div>
+
+                    <div class="col-md-4 col-sm-6">
+
+                        <label for="to_date" class="form-label">
+                            To Date
+                        </label>
+
+                        <input
+                            type="date"
+                            name="to_date"
+                            id="to_date"
+                            class="form-control"
+                            value="{{ to_date|default_if_none:'' }}">
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        <button type="submit"
+                                class="btn btn-primary w-100">
+
+                            Search
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+        <!-- Sales Details Table -->
+        <div class="card shadow-sm border-0">
+
+            <div class="card-header bg-white py-3">
+
+                <h5 class="mb-0">
+                    Sales Details
+                </h5>
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="table-responsive">
+
+                    <table class="table table-bordered table-hover align-middle mb-0">
+
+                        <thead class="table-dark">
+
+                            <tr>
+                                <th style="min-width: 130px;">Invoice</th>
+                                <th style="min-width: 160px;">Date</th>
+                                <th style="min-width: 180px;">Customer</th>
+                                <th style="min-width: 130px;">Payment</th>
+                                <th class="text-end" style="min-width: 150px;">Amount</th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            {% for bill in bills %}
+
+                            <tr>
+
+                                <td class="fw-semibold">
+                                    {{ bill.invoice_no }}
+                                </td>
+
+                                <td>
+                                    {{ bill.created_at|date:"d-m-Y H:i" }}
+                                </td>
+
+                                <td>
+
+                                    {% if bill.customer %}
+
+                                        {{ bill.customer.name }}
+
+                                    {% else %}
+
+                                        Walk In Customer
+
+                                    {% endif %}
+
+                                </td>
+
+                                <td>
+                                    {{ bill.payment_method }}
+                                </td>
+
+                                <td class="text-end fw-semibold">
+                                    ₹{{ bill.total_amount|floatformat:2 }}
+                                </td>
+
+                            </tr>
+
+                            {% empty %}
+
+                            <tr>
+
+                                <td colspan="5" class="text-center py-4 text-muted">
+
+                                    No Sales Found
+
+                                </td>
+
+                            </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
 
     </div>
-
-    <div class="row mb-4">
-
-        <div class="col-md-3">
-
-            <div class="card shadow">
-
-                <div class="card-body">
-
-                    <h6>Total Sales</h6>
-
-                    <h3>
-
-                        ₹{{ total_sales }}
-
-                    </h3>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="col-md-3">
-
-            <div class="card shadow">
-
-                <div class="card-body">
-
-                    <h6>Cash Sales</h6>
-
-                    <h3>
-
-                        ₹{{ cash_sales }}
-
-                    </h3>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="col-md-3">
-
-            <div class="card shadow">
-
-                <div class="card-body">
-
-                    <h6>UPI Sales</h6>
-
-                    <h3>
-
-                        ₹{{ upi_sales }}
-
-                    </h3>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="col-md-3">
-
-            <div class="card shadow">
-
-                <div class="card-body">
-
-                    <h6>Credit Sales</h6>
-
-                    <h3>
-
-                        ₹{{ credit_sales }}
-
-                    </h3>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-    <form method="GET" class="row mb-4">
-
-        <div class="col-md-4">
-
-            <label>From Date</label>
-
-            <input type="date" name="from_date" class="form-control" value="{{ from_date }}">
-
-        </div>
-
-        <div class="col-md-4">
-
-            <label>To Date</label>
-
-            <input type="date" name="to_date" class="form-control" value="{{ to_date }}">
-
-        </div>
-
-        <div class="col-md-4">
-
-            <label>&nbsp;</label>
-
-            <button type="submit" class="btn btn-primary w-100">
-
-                Search
-
-            </button>
-
-        </div>
-
-    </form>
-
-    <table class="table table-bordered">
-
-        <thead class="table-dark">
-
-            <tr>
-
-                <th>Invoice</th>
-
-                <th>Date</th>
-
-                <th>Customer</th>
-
-                <th>Payment</th>
-
-                <th>Amount</th>
-
-            </tr>
-
-        </thead>
-
-        <tbody>
-
-            {% for bill in bills %}
-
-            <tr>
-
-                <td>
-
-                    {{ bill.invoice_no }}
-
-                </td>
-
-                <td>
-
-                    {{ bill.created_at }}
-
-                </td>
-
-                <td>
-
-                    {% if bill.customer %}
-
-                    {{ bill.customer.name }}
-
-                    {% else %}
-
-                    Walk In Customer
-
-                    {% endif %}
-
-                </td>
-
-                <td>
-
-                    {{ bill.payment_method }}
-
-                </td>
-
-                <td>
-
-                    ₹{{ bill.total_amount }}
-
-                </td>
-
-            </tr>
-
-            {% endfor %}
-
-        </tbody>
-
-    </table>
 
 </div>
 

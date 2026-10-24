@@ -1,57 +1,196 @@
 {% extends 'base.html' %}
 
+{% block title %}
+Expense Report
+{% endblock %}
+
+{% block page_title %}
+Expense Report
+{% endblock %}
+
 {% block content %}
 
-<div class="container">
+<style>
+    .report-scroll-container {
+        max-height: calc(100vh - 100px);
+        overflow-y: auto;
+        overflow-x: auto;
+        padding: 0 5px 20px;
+    }
 
-    <div class="d-flex justify-content-between mb-3">
+    .report-scroll-container::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
 
-        <h2>
+    .report-scroll-container::-webkit-scrollbar-thumb {
+        background: #adb5bd;
+        border-radius: 10px;
+    }
 
-            Expense Report
+    .report-scroll-container::-webkit-scrollbar-thumb:hover {
+        background: #6c757d;
+    }
 
-        </h2>
+    .report-scroll-container::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
 
-        <div>
+    @media print {
+        .report-scroll-container {
+            max-height: none;
+            overflow: visible;
+        }
 
-            <a href="{% url 'expense_report_pdf' %}"
-               class="btn btn-danger">
+        .no-print {
+            display: none !important;
+        }
+    }
+</style>
 
-                Download PDF
+<div class="report-scroll-container">
 
-            </a>
+    <div class="container-fluid">
 
-            <button
-                onclick="window.print()"
-                class="btn btn-primary">
+        <!-- Header -->
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
 
-                Print
+            <h2 class="mb-0">
+                <i class="bi bi-cash-stack me-2"></i>
+                Expense Report
+            </h2>
 
-            </button>
+            <div class="d-flex gap-2 no-print">
+
+                <a href="{% url 'expense_report_pdf' %}"
+                   class="btn btn-danger">
+
+                    <i class="bi bi-file-earmark-pdf me-1"></i>
+                    Download PDF
+
+                </a>
+
+                <button type="button"
+                        onclick="window.print()"
+                        class="btn btn-primary">
+
+                    <i class="bi bi-printer me-1"></i>
+                    Print
+
+                </button>
+
+            </div>
 
         </div>
 
-    </div>
+        <!-- Total Expense Card -->
+        <div class="row mb-4">
 
-    <div class="row mb-4">
+            <div class="col-md-4 col-sm-6">
 
-        <div class="col-md-4">
+                <div class="card shadow-sm border-0 h-100">
 
-            <div class="card shadow border-0">
+                    <div class="card-body">
 
-                <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
 
-                    <h6>
+                            <div>
 
-                        Total Expense
+                                <h6 class="text-muted mb-2">
+                                    Total Expense
+                                </h6>
 
-                    </h6>
+                                <h3 class="text-danger fw-bold mb-0">
+                                    ₹{{ total_expense|floatformat:2 }}
+                                </h3>
 
-                    <h3>
+                            </div>
 
-                        ₹{{ total_expense }}
+                            <div class="fs-1 text-danger opacity-75">
+                                <i class="bi bi-wallet2"></i>
+                            </div>
 
-                    </h3>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Expense Table -->
+        <div class="card shadow-sm border-0">
+
+            <div class="card-header bg-white py-3">
+
+                <h5 class="mb-0">
+                    Expense Details
+                </h5>
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="table-responsive">
+
+                    <table class="table table-bordered table-hover align-middle mb-0">
+
+                        <thead class="table-dark">
+
+                            <tr>
+                                <th style="width: 70px;">#</th>
+                                <th style="min-width: 130px;">Date</th>
+                                <th style="min-width: 200px;">Category</th>
+                                <th class="text-end" style="min-width: 150px;">Amount</th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            {% for expense in expenses %}
+
+                            <tr>
+
+                                <td>
+                                    {{ forloop.counter }}
+                                </td>
+
+                                <td>
+                                    {{ expense.date|date:"d-m-Y" }}
+                                </td>
+
+                                <td>
+                                    {{ expense.category }}
+                                </td>
+
+                                <td class="text-end fw-semibold">
+                                    ₹{{ expense.amount|floatformat:2 }}
+                                </td>
+
+                            </tr>
+
+                            {% empty %}
+
+                            <tr>
+
+                                <td colspan="4" class="text-center py-4 text-muted">
+
+                                    <i class="bi bi-inbox fs-3 d-block mb-2"></i>
+
+                                    No Expense Found
+
+                                </td>
+
+                            </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
 
                 </div>
 
@@ -61,75 +200,6 @@
 
     </div>
 
-    <table class="table table-bordered table-hover">
-
-        <thead class="table-dark">
-
-            <tr>
-
-                <th>#</th>
-
-                <th>Date</th>
-
-                <th>Category</th>
-
-                <th>Amount</th>
-
-            </tr>
-
-        </thead>
-
-        <tbody>
-
-            {% for expense in expenses %}
-
-            <tr>
-
-                <td>
-
-                    {{ forloop.counter }}
-
-                </td>
-
-                <td>
-
-                    {{ expense.date|date:"d-m-Y" }}
-
-                </td>
-
-                <td>
-
-                    {{ expense.category }}
-
-                </td>
-
-                <td class="text-end">
-
-                    ₹{{ expense.amount }}
-
-                </td>
-
-            </tr>
-
-            {% empty %}
-
-            <tr>
-
-                <td colspan="4" class="text-center">
-
-                    No Expense Found
-
-                </td>
-
-            </tr>
-
-            {% endfor %}
-
-        </tbody>
-
-    </table>
-
 </div>
 
 {% endblock %}
-

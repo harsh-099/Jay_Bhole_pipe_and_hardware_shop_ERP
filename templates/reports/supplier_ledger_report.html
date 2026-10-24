@@ -1,238 +1,341 @@
 {% extends 'base.html' %}
 
+{% block title %}
+Supplier Ledger Report
+{% endblock %}
+
+{% block page_title %}
+Supplier Ledger Report
+{% endblock %}
+
 {% block content %}
 
-<div class="container">
+<style>
+    .report-scroll-container {
+        max-height: calc(100vh - 100px);
+        overflow-y: auto;
+        overflow-x: auto;
+        padding: 0 5px 20px;
+    }
 
-    <div class="d-flex justify-content-between mb-3">
+    .report-scroll-container::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
 
-        <h2>
+    .report-scroll-container::-webkit-scrollbar-thumb {
+        background: #adb5bd;
+        border-radius: 10px;
+    }
 
-            Supplier Ledger Report
+    .report-scroll-container::-webkit-scrollbar-thumb:hover {
+        background: #6c757d;
+    }
 
-        </h2>
+    .report-scroll-container::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+
+    .report-header {
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .summary-card {
+        height: 100%;
+        border-radius: 12px;
+    }
+
+    .report-table th,
+    .report-table td {
+        white-space: nowrap;
+        vertical-align: middle;
+    }
+
+    .report-table thead th {
+        position: sticky;
+        top: 0;
+        z-index: 2;
+    }
+
+    @media print {
+        .report-scroll-container {
+            max-height: none !important;
+            overflow: visible !important;
+            padding: 0 !important;
+        }
+
+        .no-print {
+            display: none !important;
+        }
+
+        .report-table th,
+        .report-table td {
+            white-space: normal;
+            font-size: 10px;
+        }
+
+        .table-responsive {
+            overflow: visible !important;
+        }
+
+        body {
+            overflow: visible !important;
+        }
+    }
+</style>
+
+<div class="report-scroll-container">
+    <div class="container-fluid">
+
+        <!-- Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4 report-header">
+
+            <h3 class="fw-bold mb-0">
+                <i class="fa-solid fa-file-invoice-dollar me-2"></i>
+                Supplier Ledger Report
+            </h3>
+
+            {% if selected_supplier %}
+            <div class="d-flex gap-2 no-print">
+
+                <a href="{% url 'supplier_ledger_pdf' %}?supplier={{ selected_supplier.id }}"
+                   class="btn btn-danger">
+                    <i class="fa-solid fa-file-pdf me-1"></i>
+                    Download PDF
+                </a>
+
+                <button type="button"
+                        onclick="window.print()"
+                        class="btn btn-primary">
+                    <i class="fa-solid fa-print me-1"></i>
+                    Print
+                </button>
+
+            </div>
+            {% endif %}
+
+        </div>
+
+        <!-- Supplier Selection -->
+        <div class="card shadow-sm border-0 mb-4 no-print">
+            <div class="card-body">
+
+                <form method="GET">
+                    <div class="row g-3 align-items-end">
+
+                        <div class="col-md-5">
+                            <label class="form-label fw-semibold">
+                                Select Supplier
+                            </label>
+
+                            <select name="supplier" class="form-select" required>
+                                <option value="">
+                                    Select Supplier
+                                </option>
+
+                                {% for supplier in suppliers %}
+                                <option value="{{ supplier.id }}"
+                                    {% if selected_supplier and supplier.id == selected_supplier.id %}
+                                        selected
+                                    {% endif %}>
+                                    {{ supplier.name }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-success w-100">
+                                <i class="fa-solid fa-magnifying-glass me-1"></i>
+                                Search
+                            </button>
+                        </div>
+
+                    </div>
+                </form>
+
+            </div>
+        </div>
 
         {% if selected_supplier %}
 
-        <div>
+        <!-- Selected Supplier -->
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-body">
+                <div class="d-flex align-items-center gap-3">
 
-            <a href="{% url 'supplier_ledger_pdf' %}?supplier={{ selected_supplier.id }}" class="btn btn-danger">
+                    <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center"
+                         style="width: 50px; height: 50px; flex-shrink: 0;">
+                        <i class="fa-solid fa-truck-field fa-lg"></i>
+                    </div>
 
-                Download PDF
+                    <div>
+                        <small class="text-muted">Selected Supplier</small>
+                        <h5 class="fw-bold mb-0">
+                            {{ selected_supplier.name }}
+                        </h5>
+                    </div>
 
-            </a>
+                </div>
+            </div>
+        </div>
 
-            <button onclick="window.print()" class="btn btn-primary">
+        <!-- Summary Cards -->
+        <div class="row g-3 mb-4">
 
-                Print
+            <div class="col-xl-4 col-md-6">
+                <div class="card summary-card shadow-sm border-0">
+                    <div class="card-body text-center">
+                        <div class="text-muted mb-2">
+                            <i class="fa-solid fa-cart-shopping me-1"></i>
+                            Total Purchase
+                        </div>
 
-            </button>
+                        <h3 class="fw-bold mb-0">
+                            ₹{{ total_purchase|floatformat:2 }}
+                        </h3>
+                    </div>
+                </div>
+            </div>
 
+            <div class="col-xl-4 col-md-6">
+                <div class="card summary-card shadow-sm border-success">
+                    <div class="card-body text-center">
+                        <div class="text-muted mb-2">
+                            <i class="fa-solid fa-circle-check me-1"></i>
+                            Total Paid
+                        </div>
+
+                        <h3 class="text-success fw-bold mb-0">
+                            ₹{{ total_paid|floatformat:2 }}
+                        </h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-4 col-md-6">
+                <div class="card summary-card shadow-sm border-danger">
+                    <div class="card-body text-center">
+                        <div class="text-muted mb-2">
+                            <i class="fa-solid fa-clock me-1"></i>
+                            Pending Balance
+                        </div>
+
+                        <h3 class="text-danger fw-bold mb-0">
+                            ₹{{ total_balance|floatformat:2 }}
+                        </h3>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Ledger Table -->
+        <div class="card shadow-sm border-0">
+
+            <div class="card-header bg-white py-3">
+                <h5 class="fw-bold mb-0">
+                    <i class="fa-solid fa-list me-2"></i>
+                    Purchase Ledger Details
+                </h5>
+            </div>
+
+            <div class="card-body">
+
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover align-middle report-table">
+
+                        <thead class="table-dark">
+                            <tr>
+                                <th>#</th>
+                                <th>Date</th>
+                                <th>Purchase No</th>
+                                <th>Payment</th>
+                                <th class="text-end">Bill Amount</th>
+                                <th class="text-end">Paid</th>
+                                <th class="text-end">Balance</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            {% for purchase in purchases %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+
+                                <td>
+                                    {{ purchase.created_at|date:"d-m-Y" }}
+                                </td>
+
+                                <td class="fw-semibold">
+                                    {{ purchase.purchase_no }}
+                                </td>
+
+                                <td>
+                                    {{ purchase.payment_method }}
+                                </td>
+
+                                <td class="text-end">
+                                    ₹{{ purchase.final_amount|floatformat:2 }}
+                                </td>
+
+                                <td class="text-end text-success">
+                                    ₹{{ purchase.paid_amount|floatformat:2 }}
+                                </td>
+
+                                <td class="text-end fw-bold
+                                    {% if purchase.balance_amount > 0 %}
+                                        text-danger
+                                    {% else %}
+                                        text-success
+                                    {% endif %}">
+                                    ₹{{ purchase.balance_amount|floatformat:2 }}
+                                </td>
+                            </tr>
+
+                            {% empty %}
+                            <tr>
+                                <td colspan="7" class="text-center py-4">
+                                    <i class="fa-solid fa-folder-open fa-2x text-muted mb-2"></i>
+                                    <p class="text-muted mb-0">
+                                        No Purchase Found for this Supplier
+                                    </p>
+                                </td>
+                            </tr>
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+                </div>
+
+            </div>
+        </div>
+
+        {% else %}
+
+        <!-- No Supplier Selected -->
+        <div class="card shadow-sm border-0">
+            <div class="card-body text-center py-5">
+
+                <i class="fa-solid fa-truck-field fa-3x text-muted mb-3"></i>
+
+                <h5 class="fw-bold">
+                    Select a Supplier
+                </h5>
+
+                <p class="text-muted mb-0">
+                    Supplier cha ledger ani purchase details baghnyasathi
+                    varun supplier select karun Search var click kara.
+                </p>
+
+            </div>
         </div>
 
         {% endif %}
 
     </div>
-
-    <form method="GET">
-
-        <div class="row">
-
-            <div class="col-md-5">
-
-                <select name="supplier" class="form-select">
-
-                    <option value="">
-
-                        Select Supplier
-
-                    </option>
-
-                    {% for supplier in suppliers %}
-
-                    <option value="{{ supplier.id }}" {% if selected_supplier and supplier.id == selected_supplier.id %}
-                        selected {% endif %}>
-
-                        {{ supplier.name }}
-
-                    </option>
-
-                    {% endfor %}
-
-                </select>
-
-            </div>
-
-            <div class="col-md-2">
-
-                <button class="btn btn-success">
-
-                    Search
-
-                </button>
-
-            </div>
-
-        </div>
-
-    </form>
-
-    {% if selected_supplier %}
-
-    <hr>
-
-    <div class="row">
-
-        <div class="col-md-4">
-
-            <div class="card shadow">
-
-                <div class="card-body text-center">
-
-                    <h6>Total Purchase</h6>
-
-                    <h3>
-
-                        ₹{{ total_purchase }}
-
-                    </h3>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="col-md-4">
-
-            <div class="card shadow">
-
-                <div class="card-body text-center">
-
-                    <h6>Total Paid</h6>
-
-                    <h3 class="text-success">
-
-                        ₹{{ total_paid }}
-
-                    </h3>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="col-md-4">
-
-            <div class="card shadow border-danger">
-
-                <div class="card-body text-center">
-
-                    <h6>Pending</h6>
-
-                    <h3 class="text-danger">
-
-                        ₹{{ total_balance }}
-
-                    </h3>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <br>
-
-    <table class="table table-bordered table-hover">
-
-        <thead class="table-dark">
-
-            <tr>
-
-                <th>Date</th>
-
-                <th>Purchase No</th>
-
-                <th>Payment</th>
-
-                <th>Bill Amount</th>
-
-                <th>Paid</th>
-
-                <th>Balance</th>
-
-            </tr>
-
-        </thead>
-
-        <tbody>
-
-            {% for purchase in purchases %}
-
-            <tr>
-
-                <td>
-
-                    {{ purchase.created_at|date:"d-m-Y" }}
-
-                </td>
-
-                <td>
-
-                    {{ purchase.purchase_no }}
-
-                </td>
-
-                <td>
-
-                    {{ purchase.payment_method }}
-
-                </td>
-
-                <td>
-
-                    ₹{{ purchase.final_amount }}
-
-                </td>
-
-                <td>
-
-                    ₹{{ purchase.paid_amount }}
-
-                </td>
-
-                <td>
-
-                    ₹{{ purchase.balance_amount }}
-
-                </td>
-
-            </tr>
-
-            {% empty %}
-
-            <tr>
-
-                <td colspan="6" align="center">
-
-                    No Purchase Found
-
-                </td>
-
-            </tr>
-
-            {% endfor %}
-
-        </tbody>
-
-    </table>
-
-    {% endif %}
-
 </div>
 
 {% endblock %}

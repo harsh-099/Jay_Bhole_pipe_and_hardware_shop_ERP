@@ -37,6 +37,7 @@
             overflow-y: auto;
             overflow-x: hidden;
             flex-shrink: 0;
+            
         }
 
         .sidebar.collapsed {
@@ -154,7 +155,11 @@
             min-height: 0;
             overflow-y: auto;
             overflow-x: hidden;
+
+
         }
+
+        
     </style>
 
 </head>
@@ -839,15 +844,10 @@
                     </button>
 
                     <div>
-
-                        <button class="btn btn-primary">
-
+                        <a href="{% url 'billing' %}" class="btn btn-primary">
                             <i class="fa-solid fa-plus"></i>
-
                             New Bill
-
-                        </button>
-
+                        </a>
                     </div>
 
                 </nav>

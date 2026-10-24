@@ -1,118 +1,309 @@
 {% extends 'base.html' %}
 
+{% block title %}
+Payment Mode Report
+{% endblock %}
+
+{% block page_title %}
+Payment Mode Report
+{% endblock %}
+
 {% block content %}
 
-<div class="container">
+<style>
+    .report-scroll-container {
+        max-height: calc(100vh - 100px);
+        overflow-y: auto;
+        overflow-x: auto;
+        padding: 0 5px 20px;
+    }
 
-    <h2 class="mb-4">
+    .report-scroll-container::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
 
-        Payment Mode Report
+    .report-scroll-container::-webkit-scrollbar-thumb {
+        background: #adb5bd;
+        border-radius: 10px;
+    }
 
-    </h2>
-    <div class="mb-3">
+    .report-scroll-container::-webkit-scrollbar-thumb:hover {
+        background: #6c757d;
+    }
 
-        <a href="{% url 'payment_mode_pdf' %}?from_date={{ from_date }}&to_date={{ to_date }}" class="btn btn-danger">
+    .report-scroll-container::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
 
-            <i class="fa fa-file-pdf"></i>
+    @media print {
+        .report-scroll-container {
+            max-height: none;
+            overflow: visible;
+        }
 
-            Download PDF
+        .no-print {
+            display: none !important;
+        }
+    }
+</style>
 
-        </a>
+<div class="report-scroll-container">
 
-        <button onclick="window.print()" class="btn btn-primary">
+    <div class="container-fluid">
 
-            <i class="fa fa-print"></i>
+        <!-- Header -->
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
 
-            Print
+            <h2 class="mb-0">
+                <i class="fa fa-chart-bar me-2"></i>
+                Payment Mode Report
+            </h2>
 
-        </button>
+            <div class="d-flex gap-2 no-print">
+
+                <a href="{% url 'payment_mode_pdf' %}?from_date={{ from_date }}&to_date={{ to_date }}"
+                   class="btn btn-danger">
+
+                    <i class="fa fa-file-pdf me-1"></i>
+                    Download PDF
+
+                </a>
+
+                <button type="button"
+                        onclick="window.print()"
+                        class="btn btn-primary">
+
+                    <i class="fa fa-print me-1"></i>
+                    Print
+
+                </button>
+
+            </div>
+
+        </div>
+
+        <!-- Date Filter -->
+        <div class="card shadow-sm border-0 mb-4 no-print">
+
+            <div class="card-body">
+
+                <form method="GET" class="row g-3 align-items-end">
+
+                    <div class="col-md-4 col-sm-6">
+
+                        <label for="from_date" class="form-label">
+                            From Date
+                        </label>
+
+                        <input type="date"
+                               name="from_date"
+                               id="from_date"
+                               value="{{ from_date }}"
+                               class="form-control">
+
+                    </div>
+
+                    <div class="col-md-4 col-sm-6">
+
+                        <label for="to_date" class="form-label">
+                            To Date
+                        </label>
+
+                        <input type="date"
+                               name="to_date"
+                               id="to_date"
+                               value="{{ to_date }}"
+                               class="form-control">
+
+                    </div>
+
+                    <div class="col-md-2 col-sm-6">
+
+                        <button type="submit"
+                                class="btn btn-primary w-100">
+
+                            <i class="fa fa-search me-1"></i>
+                            Search
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+        <!-- Payment Summary Cards -->
+        <div class="row g-3 mb-4">
+
+            <div class="col-xl-4 col-md-6">
+
+                <div class="card shadow-sm border-0 h-100">
+
+                    <div class="card-body">
+
+                        <div class="text-muted mb-2">
+                            Cash Payments
+                        </div>
+
+                        <h3 class="fw-bold text-success mb-2">
+                            ₹{{ cash_total|floatformat:2 }}
+                        </h3>
+
+                        <span class="badge bg-success">
+                            {{ cash_count }} Bills
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-xl-4 col-md-6">
+
+                <div class="card shadow-sm border-0 h-100">
+
+                    <div class="card-body">
+
+                        <div class="text-muted mb-2">
+                            UPI Payments
+                        </div>
+
+                        <h3 class="fw-bold text-primary mb-2">
+                            ₹{{ upi_total|floatformat:2 }}
+                        </h3>
+
+                        <span class="badge bg-primary">
+                            {{ upi_count }} Bills
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-xl-4 col-md-6">
+
+                <div class="card shadow-sm border-0 h-100">
+
+                    <div class="card-body">
+
+                        <div class="text-muted mb-2">
+                            Credit Payments
+                        </div>
+
+                        <h3 class="fw-bold text-danger mb-2">
+                            ₹{{ credit_total|floatformat:2 }}
+                        </h3>
+
+                        <span class="badge bg-danger">
+                            {{ credit_count }} Bills
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Payment Mode Table -->
+        <div class="card shadow-sm border-0">
+
+            <div class="card-header bg-white py-3">
+
+                <h5 class="mb-0">
+                    Payment Mode Summary
+                </h5>
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="table-responsive">
+
+                    <table class="table table-bordered table-hover align-middle mb-0">
+
+                        <thead class="table-dark">
+
+                            <tr>
+                                <th>Payment Mode</th>
+                                <th class="text-end">Total Bills</th>
+                                <th class="text-end">Total Amount</th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            <tr>
+
+                                <td>
+                                    <span class="badge bg-success me-2">Cash</span>
+                                    Cash
+                                </td>
+
+                                <td class="text-end">
+                                    {{ cash_count }}
+                                </td>
+
+                                <td class="text-end fw-semibold">
+                                    ₹{{ cash_total|floatformat:2 }}
+                                </td>
+
+                            </tr>
+
+                            <tr>
+
+                                <td>
+                                    <span class="badge bg-primary me-2">UPI</span>
+                                    UPI
+                                </td>
+
+                                <td class="text-end">
+                                    {{ upi_count }}
+                                </td>
+
+                                <td class="text-end fw-semibold">
+                                    ₹{{ upi_total|floatformat:2 }}
+                                </td>
+
+                            </tr>
+
+                            <tr>
+
+                                <td>
+                                    <span class="badge bg-danger me-2">Credit</span>
+                                    Credit
+                                </td>
+
+                                <td class="text-end">
+                                    {{ credit_count }}
+                                </td>
+
+                                <td class="text-end fw-semibold">
+                                    ₹{{ credit_total|floatformat:2 }}
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
 
     </div>
-
-
-    <form method="GET" class="row mb-4">
-
-        <div class="col-md-4">
-
-            <label>From Date</label>
-
-            <input type="date" name="from_date" value="{{ from_date }}" class="form-control">
-
-        </div>
-
-        <div class="col-md-4">
-
-            <label>To Date</label>
-
-            <input type="date" name="to_date" value="{{ to_date }}" class="form-control">
-
-        </div>
-
-        <div class="col-md-2">
-
-            <label>&nbsp;</label>
-
-            <button class="btn btn-primary w-100">
-
-                Search
-
-            </button>
-
-        </div>
-
-    </form>
-
-    <table class="table table-bordered">
-
-        <thead class="table-dark">
-
-            <tr>
-
-                <th>Payment Mode</th>
-
-                <th>Total Bills</th>
-
-                <th>Total Amount</th>
-
-            </tr>
-
-        </thead>
-
-        <tbody>
-
-            <tr>
-
-                <td>Cash</td>
-
-                <td>{{ cash_count }}</td>
-
-                <td>₹{{ cash_total }}</td>
-
-            </tr>
-
-            <tr>
-
-                <td>UPI</td>
-
-                <td>{{ upi_count }}</td>
-
-                <td>₹{{ upi_total }}</td>
-
-            </tr>
-
-            <tr>
-
-                <td>Credit</td>
-
-                <td>{{ credit_count }}</td>
-
-                <td>₹{{ credit_total }}</td>
-
-            </tr>
-
-        </tbody>
-
-    </table>
 
 </div>
 
