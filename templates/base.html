@@ -28,6 +28,29 @@
     <link rel="stylesheet" href="{% static 'css/notification.css' %}">
 
     <style>
+        .sidebar img {
+            width: 110px !important;
+            height: 110px !important;
+            object-fit: contain !important;
+            display: block !important;
+            box-sizing: border-box !important;
+            margin: 0 auto 14px !important;
+            padding: 5px !important;
+            background: #ffffff !important;
+            border: 3px solid #ff9418 !important;
+            border-radius: 18px !important;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35) !important;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .sidebar img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 22px rgba(255, 148, 24, 0.35) !important;
+        }
+
+
+
+
         .sidebar {
             background: #1f2937;
             height: 100vh;
@@ -37,7 +60,7 @@
             overflow-y: auto;
             overflow-x: hidden;
             flex-shrink: 0;
-            
+
         }
 
         .sidebar.collapsed {
@@ -158,8 +181,6 @@
 
 
         }
-
-        
     </style>
 
 </head>

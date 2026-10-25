@@ -51,6 +51,8 @@ def dashboard(request):
         Expense.objects.aggregate(total=Sum("amount"))["total"]
         or Decimal("0")
     )
+    # Total Sales after Expenses
+    sales_after_expenses = total_sales - total_expense
 
     # -----------------------------
     # Payment Counts
@@ -98,7 +100,7 @@ def dashboard(request):
         or Decimal("0")
     )
 
-    profit = gross_profit - total_expense
+    profit = gross_profit
 
     # -----------------------------
     # Recent Records
@@ -193,6 +195,7 @@ def dashboard(request):
         "total_products": total_products,
         "total_customers": total_customers,
         "total_sales": total_sales,
+        "sales_after_expenses": sales_after_expenses,
         "total_purchase": total_purchase,
         "total_udhari": total_udhari,
         "total_expense": total_expense,
@@ -213,7 +216,6 @@ def dashboard(request):
         "month_sales": month_sales,
         "month_expenses": month_expenses,
         "today_profit": today_profit,
-        
         "now": timezone.now(),
     }
 
