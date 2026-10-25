@@ -1,53 +1,409 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Login</title>
+    <title>Login | {% if shop and shop.shop_name %}{{ shop.shop_name }}{% else %}Jay Bhole Hardware Shop{% endif %}
+    </title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #101b32, #1d3557, #0b1425);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 25px 15px;
+        }
+
+        .login-wrapper {
+            width: 100%;
+            max-width: 950px;
+            min-height: 540px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            background: #ffffff;
+            border-radius: 22px;
+            overflow: hidden;
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.35);
+        }
+
+        /* Left branding section */
+
+        .brand-section {
+            background: linear-gradient(145deg, #172b4d, #0c1629);
+            color: #ffffff;
+            padding: 55px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .brand-section::before {
+            content: "";
+            position: absolute;
+            width: 280px;
+            height: 280px;
+            border: 45px solid rgba(255, 255, 255, 0.035);
+            border-radius: 50%;
+            top: -100px;
+            right: -100px;
+        }
+
+        .brand-section::after {
+            content: "";
+            position: absolute;
+            width: 220px;
+            height: 220px;
+            border: 35px solid rgba(255, 145, 0, 0.08);
+            border-radius: 50%;
+            bottom: -100px;
+            left: -80px;
+        }
+
+        .brand-content {
+            position: relative;
+            z-index: 1;
+        }
+
+
+        .brand-icon {
+            width: 180px;
+            height: 180px;
+            background: transparent;
+            color: #172b4d;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 38px;
+            margin: 0 auto 28px;
+            box-shadow: none;
+            overflow: hidden;
+        }
+
+        .brand-icon .shop-logo {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            object-position: center;
+            border-radius: 12px;
+        }
+
+        .brand-section h1 {
+            font-size: 31px;
+            font-weight: 800;
+            line-height: 1.3;
+            margin-bottom: 15px;
+            overflow-wrap: anywhere;
+        }
+
+        .brand-section h1 span {
+            color: #ff9418;
+        }
+
+        .brand-description {
+            color: #bdc9db;
+            font-size: 15px;
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 17px;
+            color: #e5ebf5;
+            font-size: 14px;
+        }
+
+        .feature-item i {
+            color: #ff9418;
+            font-size: 19px;
+        }
+
+        /* Right login section */
+
+        .login-section {
+            padding: 55px 45px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .login-heading {
+            margin-bottom: 32px;
+        }
+
+        .login-heading .welcome {
+            color: #f08a12;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .login-heading h2 {
+            font-size: 29px;
+            color: #172b4d;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .login-heading p {
+            color: #788396;
+            font-size: 14px;
+            margin-bottom: 0;
+        }
+
+        /* Django form fields */
+
+        .login-form p {
+            margin-bottom: 20px;
+        }
+
+        .login-form label {
+            display: block;
+            color: #34425a;
+            font-weight: 700;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .login-form input {
+            display: block;
+            width: 100%;
+            min-height: 48px;
+            border: 1px solid #dce2eb;
+            border-radius: 10px;
+            padding: 12px 14px;
+            font-size: 14px;
+            color: #172b4d;
+            background: #f9fafc;
+            outline: none;
+            transition: 0.25s ease;
+        }
+
+        .login-form input:focus {
+            border-color: #f08a12;
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(240, 138, 18, 0.12);
+        }
+
+        .login-form ul.errorlist {
+            list-style: none;
+            padding: 0;
+            margin: 7px 0 0;
+            color: #dc3545;
+            font-size: 12px;
+        }
+
+        .login-button {
+            width: 100%;
+            min-height: 49px;
+            margin-top: 8px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #ff9e24, #f07d00);
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 800;
+            letter-spacing: 0.3px;
+            box-shadow: 0 7px 18px rgba(240, 125, 0, 0.22);
+            transition: 0.25s ease;
+        }
+
+        .login-button:hover {
+            background: linear-gradient(135deg, #f08a12, #db6e00);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 22px rgba(240, 125, 0, 0.3);
+        }
+
+        .login-button i {
+            margin-right: 8px;
+        }
+
+        .secure-note {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            color: #8a94a6;
+            font-size: 12px;
+            margin-top: 24px;
+        }
+
+        .secure-note i {
+            color: #198754;
+        }
+
+        .login-footer {
+            text-align: center;
+            color: #9aa3b2;
+            font-size: 11px;
+            margin-top: 25px;
+        }
+
+        /* Responsive */
+
+        @media (max-width: 767px) {
+            body {
+                padding: 18px 12px;
+            }
+
+            .login-wrapper {
+                max-width: 440px;
+                grid-template-columns: 1fr;
+                border-radius: 18px;
+            }
+
+            .brand-section {
+                padding: 30px 28px;
+            }
+
+            .brand-icon {
+                width: 58px;
+                height: 58px;
+                font-size: 29px;
+                border-radius: 15px;
+                margin-bottom: 18px;
+            }
+
+            .brand-icon .shop-logo {
+                border-radius: 15px;
+            }
+
+            .brand-section h1 {
+                font-size: 24px;
+            }
+
+            .brand-description {
+                margin-bottom: 18px;
+            }
+
+            .feature-item {
+                margin-bottom: 10px;
+            }
+
+            .login-section {
+                padding: 35px 28px;
+            }
+
+            .login-heading h2 {
+                font-size: 25px;
+            }
+        }
+    </style>
 </head>
+
 <body>
 
-<div class="container">
+    <div class="login-wrapper">
 
-    <div class="row justify-content-center mt-5">
+        <!-- Branding Section -->
 
-        <div class="col-md-4">
+        <div class="brand-section">
 
-            <div class="card shadow">
+            <div class="brand-content">
 
-                <div class="card-header bg-primary text-white">
-
-                    Login
-
+                <div class="brand-icon">
+                    {% if shop and shop.logo %}
+                    <img src="{{ shop.logo.url }}" alt="{{ shop.shop_name }} Logo" class="shop-logo">
+                    {% else %}
+                    <i class="bi bi-tools"></i>
+                    {% endif %}
                 </div>
 
-                <div class="card-body">
+                <h1>
+                    {% if shop and shop.shop_name %}
+                    {{ shop.shop_name }}
+                    {% else %}
+                    Jay Bhole<br>
+                    <span>Hardware Shop</span>
+                    {% endif %}
+                </h1>
 
-                    <form method="post">
+                <p class="brand-description">
+                    Your complete hardware shop management system.
+                    Manage your business efficiently from one place.
+                </p>
 
-                        {% csrf_token %}
+                <div class="feature-item">
+                    <i class="bi bi-check-circle-fill"></i>
+                    <span>Inventory & Stock Management</span>
+                </div>
 
-                        {{ form.as_p }}
+                <div class="feature-item">
+                    <i class="bi bi-check-circle-fill"></i>
+                    <span>Billing & Invoice Management</span>
+                </div>
 
-                        <button class="btn btn-success w-100">
-
-                            Login
-
-                        </button>
-
-                    </form>
-
+                <div class="feature-item">
+                    <i class="bi bi-check-circle-fill"></i>
+                    <span>Business Reports & Tracking</span>
                 </div>
 
             </div>
 
         </div>
 
+        <!-- Login Section -->
+
+        <div class="login-section">
+
+            <div class="login-heading">
+
+                <div class="welcome">Welcome Back</div>
+
+                <h2>Sign In</h2>
+
+                <p>Enter your credentials to access your account.</p>
+
+            </div>
+
+            <form method="post" class="login-form">
+
+                {% csrf_token %}
+
+                {{ form.as_p }}
+
+                <button type="submit" class="login-button">
+                    <i class="bi bi-box-arrow-in-right"></i>
+                    Login to Dashboard
+                </button>
+
+            </form>
+
+            <div class="secure-note">
+                <i class="bi bi-shield-lock-fill"></i>
+                Secure access to your business
+            </div>
+
+            <div class="login-footer">
+                © {% if shop and shop.shop_name %}{{ shop.shop_name }}{% else %}Jay Bhole Hardware Shop{% endif %}
+            </div>
+
+        </div>
+
     </div>
 
-</div>
-
 </body>
+
 </html>

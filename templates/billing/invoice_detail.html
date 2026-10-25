@@ -10,6 +10,8 @@ Invoice Details
 
 {% block content %}
 
+<div class="invoice-page-scroll">
+
 <div class="card shadow-sm">
 
     <div class="card-body">
@@ -90,6 +92,8 @@ Invoice Details
 
         </div>
 
+        <div class="invoice-table-container">
+
         <table class="table table-bordered mt-3">
 
             <thead class="table-dark">
@@ -130,6 +134,10 @@ Invoice Details
 
         </table>
 
+        </div>
+
+        <div class="invoice-summary-container">
+
         <table class="table table-bordered w-50 ms-auto mt-3">
 
             <tr>
@@ -137,9 +145,7 @@ Invoice Details
                 <th>Sub Total</th>
 
                 <td class="text-end">
-
                     ₹{{ bill.total_amount }}
-
                 </td>
 
             </tr>
@@ -171,21 +177,22 @@ Invoice Details
                 <th>Final Total</th>
 
                 <th class="text-end text-success">
-
                     ₹{{ bill.final_amount }}
-
                 </th>
 
             </tr>
 
         </table>
+
+        </div>
+
         <hr>
 
         <h4 class="text-center mb-3">
-
             💳 Payment Details
-
         </h4>
+
+        <div class="invoice-table-container">
 
         <table class="table table-bordered">
 
@@ -226,27 +233,25 @@ Invoice Details
 
         </table>
 
+        </div>
+
         <hr>
 
         <div class="text-center">
 
             <h5 class="text-success">
-
                 🙏 Thank You Visit Again 🙏
-
             </h5>
 
             <small class="text-muted">
-
                 Goods once sold will not be taken back.
-
             </small>
 
         </div>
 
         <hr>
 
-        <div class="text-center mt-4">
+        <div class="text-center mt-4 invoice-actions">
 
             <a href="{% url 'billing' %}" class="btn btn-secondary">
 
@@ -278,32 +283,127 @@ Invoice Details
 
 </div>
 
+</div>
+
 <style>
-    @media print {
 
-        .navbar,
-        .sidebar,
-        .btn {
+/* =====================================
+   Invoice Page Scrollbar
+   ===================================== */
 
-            display: none !important;
+.invoice-page-scroll {
+    height: calc(100vh - 100px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 0 5px 20px;
+    scrollbar-width: thin;
+    scrollbar-color: #adb5bd #f1f1f1;
+}
 
-        }
+.invoice-page-scroll::-webkit-scrollbar {
+    width: 8px;
+}
 
-        body {
+.invoice-page-scroll::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
 
-            margin: 0;
+.invoice-page-scroll::-webkit-scrollbar-thumb {
+    background: #adb5bd;
+    border-radius: 10px;
+}
 
-        }
+.invoice-page-scroll::-webkit-scrollbar-thumb:hover {
+    background: #6c757d;
+}
 
-        .card {
+/* =====================================
+   Invoice Tables
+   ===================================== */
 
-            border: none;
+.invoice-table-container {
+    width: 100%;
+    overflow-x: auto;
+}
 
-            box-shadow: none;
+.invoice-table-container table {
+    margin-bottom: 0;
+}
 
-        }
+.invoice-summary-container {
+    width: 100%;
+}
 
+/* =====================================
+   Responsive Layout
+   ===================================== */
+
+@media (max-width: 768px) {
+
+    .invoice-page-scroll {
+        height: calc(100vh - 80px);
+        padding: 0 2px 15px;
     }
+
+    .invoice-page-scroll .card-body {
+        padding: 12px;
+    }
+
+    .invoice-page-scroll h2 {
+        font-size: 22px;
+    }
+
+    .invoice-page-scroll .text-end {
+        text-align: left !important;
+    }
+
+    .invoice-summary-container table {
+        width: 100% !important;
+    }
+
+    .invoice-actions .btn {
+        margin: 3px;
+    }
+
+}
+
+/* =====================================
+   Print Styles
+   ===================================== */
+
+@media print {
+
+    .navbar,
+    .sidebar,
+    .btn,
+    .invoice-actions {
+        display: none !important;
+    }
+
+    .invoice-page-scroll {
+        height: auto !important;
+        max-height: none !important;
+        overflow: visible !important;
+        padding: 0 !important;
+    }
+
+    body {
+        margin: 0;
+        overflow: visible !important;
+    }
+
+    .card {
+        border: none !important;
+        box-shadow: none !important;
+    }
+
+    .invoice-table-container {
+        overflow: visible !important;
+    }
+
+}
+
 </style>
 
 {% endblock %}
